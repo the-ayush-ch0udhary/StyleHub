@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Page Not Found (404) — StyleHub{% endblock %}
+
+{% block content %}
+<div class="container my-5 text-center" style="max-width: 580px;">
+  <div class="sh-card p-5">
+    <div class="display-1 fw-bold text-warning font-heading mb-2">404</div>
+    <h3 class="fw-bold mb-3">Garment Not Found</h3>
+    <p class="text-muted mb-4">
+      The style, collection, or page you were looking for could not be located. It might have been moved or is temporarily out of season.
+    </p>
+    <div class="d-flex justify-content-center gap-3">
+      <a href="{% url 'products:home' %}" class="btn btn-sh-primary px-4 py-2">
+        <i class="bi bi-house me-1"></i> Return Home
+      </a>
+      <a href="{% url 'products:shop' %}" class="btn btn-sh-outline px-4 py-2">
+        Browse Shop
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

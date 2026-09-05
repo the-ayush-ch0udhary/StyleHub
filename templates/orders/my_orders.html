@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Order History — StyleHub{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+  <!-- Breadcrumb -->
+  <nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb small">
+      <li class="breadcrumb-item"><a href="{% url 'products:home' %}">Home</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'accounts:profile' %}">Account</a></li>
+      <li class="breadcrumb-item active" aria-current="page">My Orders</li>
+    </ol>
+  </nav>
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h2 fw-bold mb-0">My Orders</h1>
+    <a href="{% url 'products:shop' %}" class="btn btn-sh-outline btn-sm">Shop More</a>
+  </div>
+
+  <!-- Status Tabs / Filters -->
+  <div class="d-flex flex-wrap gap-2 mb-4">
+    <a href="{% url 'orders:my_orders' %}" class="btn btn-sm {% if not status_filter %}btn-sh-primary text-white{% else %}btn-sh-outline{% endif %}">All Orders</a>
+    <a href="{% url 'orders:my_orders' %}?status=CONFIRMED" class="btn btn-sm {% if status_filter == 'CONFIRMED' %}btn-sh-primary text-white{% else %}btn-sh-outline{% endif %}">Confirmed</a>
+    <a href="{% url 'orders:my_orders' %}?status=PROCESSING" class="btn btn-sm {% if status_filter == 'PROCESSING' %}btn-sh-primary text-white{% else %}btn-sh-outline{% endif %}">Processing</a>
+    <a href="{% url 'orders:my_orders' %}?status=SHIPPED" class="btn btn-sm {% if status_filter == 'SHIPPED' %}btn-sh-primary text-white{% else %}btn-sh-outline{% endif %}">Shipped</a>
+    <a href="{% url 'orders:my_orders' %}?status=DELIVERED" class="btn btn-sm {% if status_filter == 'DELIVERED' %}btn-sh-primary text-white{% else %}btn-sh-outline{% endif %}">Delivered</a>
+    <a href="{% url 'orders:my_orders' %}?status=CANCELLED" class="btn btn-sm {% if status_filter == 'CANCELLED' %}btn-sh-primary text-white{% else %}btn-sh-outline{% endif %}">Cancelled</a>
+  </div>
+
+  {% if orders %}
+    <div class="d-flex flex-column gap-4">
+      {% for order in orders %}
+        <div class="sh-card p-4">
+          <div class="d-flex flex-wrap justify-content-between align-items-center pb-3 border-bottom gap-3">
+            <div>
+              <span class="small text-muted">Order Placed: <strong>{{ order.created_at|date:"M d, Y" }}</strong></span>
+              <div class="font-monospace fw-bold fs-6 mt-1">#{{ order.order_number }}</div>
+            </div>
+
+            <div class="d-flex align-items-center gap-3">
+              <!-- Order Status Badge -->
+              <span class="badge {% if order.status == 'DELIVERED' %}bg-success{% elif order.status == 'CANCELLED' %}bg-danger{% elif order.status == 'SHIPPED' or order.status == 'OUT_FOR_DELIVERY' %}bg-info text-dark{% else %}bg-warning text-dark{% endif %} px-3 py-2 font-monospace">
+                {{ order.get_status_display }}
+              </span>
+
+              <a href="{% url 'orders:order_detail' order.order_number %}" class="btn btn-sm btn-sh-primary">
+                View Details <i class="bi bi-chevron-right ms-1"></i>
+              </a>
+            </div>
+          </div>
+
+          <!-- Items list in order -->
+          <div class="py-3">
+            {% for item in order.items.all %}
+              <div class="d-flex align-items-center justify-content-between py-2">
+                <div>
+                  <div class="fw-bold">{{ item.product_name }}</div>
+                  <div class="small text-muted">Size: {{ item.size }} | Color: {{ item.color }} | Qty: {{ item.quantity }}</div>
+                </div>
+                <div class="fw-bold">₹{{ item.subtotal }}</div>
+              </div>
+            {% endfor %}
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center pt-3 border-top small text-muted">
+            <div>Payment: <strong>{{ order.get_payment_method_display }}</strong> ({{ order.get_payment_status_display }})</div>
+            <div class="fs-6 text-body">Total: <strong class="fs-5">₹{{ order.total_amount }}</strong></div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if orders.has_other_pages %}
+      <nav class="mt-4">
+        <ul class="pagination justify-content-center">
+          {% if orders.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page={{ orders.previous_page_number }}{% if status_filter %}&status={{ status_filter }}{% endif %}">&laquo; Prev</a></li>
+          {% endif %}
+          <li class="page-item active"><span class="page-link">{{ orders.number }}</span></li>
+          {% if orders.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ orders.next_page_number }}{% if status_filter %}&status={{ status_filter }}{% endif %}">Next &raquo;</a></li>
+          {% endif %}
+        </ul>
+      </nav>
+    {% endif %}
+  {% else %}
+    <div class="text-center py-5 sh-card p-5">
+      <i class="bi bi-box2 display-2 text-muted mb-3 d-block"></i>
+      <h3 class="fw-bold mb-2">No Orders Found</h3>
+      <p class="text-muted mb-4">You haven't placed any orders matching this filter yet.</p>
+      <a href="{% url 'products:shop' %}" class="btn btn-sh-primary px-4">Explore Collection</a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

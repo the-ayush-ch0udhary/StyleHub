@@ -1,0 +1,250 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Shop Modern Fashion & Apparel — StyleHub{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+  <!-- Breadcrumbs & Header -->
+  <nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb small">
+      <li class="breadcrumb-item"><a href="{% url 'products:home' %}">Home</a></li>
+      <li class="breadcrumb-item active" aria-current="page">
+        {% if selected_category %}{{ selected_category.name }}{% elif search_query %}Search: "{{ search_query }}"{% else %}Shop All{% endif %}
+      </li>
+    </ol>
+  </nav>
+
+  <div class="row g-4">
+    <!-- Filters Sidebar -->
+    <div class="col-lg-3">
+      <div class="filter-sidebar mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="fw-bold mb-0">Filters</h5>
+          <a href="{% url 'products:shop' %}" class="small text-danger fw-semibold">Clear All</a>
+        </div>
+
+        <form id="filter-form" action="{% url 'products:shop' %}" method="GET">
+          {% if search_query %}
+            <input type="hidden" name="q" value="{{ search_query }}">
+          {% endif %}
+          {% if current_sort %}
+            <input type="hidden" name="sort" value="{{ current_sort }}">
+          {% endif %}
+
+          <!-- Categories Filter -->
+          <div class="mb-4">
+            <div class="filter-heading">Categories</div>
+            <div class="d-flex flex-column gap-1">
+              <a href="{% url 'products:shop' %}?sort={{ current_sort }}" class="filter-link {% if not current_category %}active fw-bold text-primary{% endif %}">
+                <span>All Categories</span>
+              </a>
+              {% for cat in all_categories %}
+                <a href="{% url 'products:shop' %}?category={{ cat.slug }}&sort={{ current_sort }}" class="filter-link {% if current_category == cat.slug %}active fw-bold text-primary{% endif %}">
+                  <span>{{ cat.name }}</span>
+                  <span class="badge bg-secondary bg-opacity-25 text-body rounded-pill font-monospace small">{{ cat.p_count }}</span>
+                </a>
+              {% endfor %}
+            </div>
+          </div>
+
+          <!-- Brand Filter -->
+          <div class="mb-4">
+            <div class="filter-heading">Brand</div>
+            <select name="brand" class="form-select form-select-sm" onchange="this.form.submit()">
+              <option value="">All Brands</option>
+              {% for b in all_brands %}
+                <option value="{{ b }}" {% if current_brand == b %}selected{% endif %}>{{ b }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <!-- Size Filter -->
+          <div class="mb-4">
+            <div class="filter-heading">Size</div>
+            <div class="d-flex flex-wrap gap-2">
+              {% for s in all_sizes %}
+                <label class="btn btn-sm btn-sh-outline py-1 px-2 {% if current_size == s %}btn-sh-primary text-white{% endif %}" style="font-size: 0.8rem; cursor: pointer;">
+                  <input type="radio" name="size" value="{{ s }}" class="d-none" onchange="this.form.submit()" {% if current_size == s %}checked{% endif %}>
+                  {{ s }}
+                </label>
+              {% endfor %}
+            </div>
+          </div>
+
+          <!-- Color Filter -->
+          <div class="mb-4">
+            <div class="filter-heading">Color</div>
+            <div class="d-flex flex-wrap gap-2">
+              {% for c in all_colors %}
+                <label class="btn btn-sm btn-sh-outline py-1 px-2 d-flex align-items-center gap-1 {% if current_color == c.color %}btn-sh-primary text-white{% endif %}" style="font-size: 0.8rem; cursor: pointer;">
+                  <input type="radio" name="color" value="{{ c.color }}" class="d-none" onchange="this.form.submit()" {% if current_color == c.color %}checked{% endif %}>
+                  <span class="rounded-circle border d-inline-block" style="width: 12px; height: 12px; background-color: {{ c.color_code }};"></span>
+                  {{ c.color }}
+                </label>
+              {% endfor %}
+            </div>
+          </div>
+
+          <!-- Price Range Filter -->
+          <div class="mb-4">
+            <div class="filter-heading">Price Range (₹)</div>
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <input type="number" name="min_price" class="form-control form-control-sm" placeholder="Min" value="{{ current_min_price }}">
+              <span>-</span>
+              <input type="number" name="max_price" class="form-control form-control-sm" placeholder="Max" value="{{ current_max_price }}">
+            </div>
+            <button type="submit" class="btn btn-sm btn-sh-outline w-100">Apply Price</button>
+          </div>
+
+          <!-- Rating Filter -->
+          <div class="mb-4">
+            <div class="filter-heading">Customer Rating</div>
+            <div class="d-flex flex-column gap-1">
+              <label class="small d-flex align-items-center gap-2" style="cursor: pointer;">
+                <input type="radio" name="rating" value="4" onchange="this.form.submit()" {% if current_rating == '4' %}checked{% endif %}>
+                <span class="text-warning"><i class="bi bi-star-fill"></i> 4.0 & above</span>
+              </label>
+              <label class="small d-flex align-items-center gap-2" style="cursor: pointer;">
+                <input type="radio" name="rating" value="3" onchange="this.form.submit()" {% if current_rating == '3' %}checked{% endif %}>
+                <span class="text-warning"><i class="bi bi-star-fill"></i> 3.0 & above</span>
+              </label>
+            </div>
+          </div>
+
+          {% if current_category %}
+            <input type="hidden" name="category" value="{{ current_category }}">
+          {% endif %}
+        </form>
+      </div>
+    </div>
+
+    <!-- Products Grid & Sort Header -->
+    <div class="col-lg-9">
+      <!-- Top Control Bar -->
+      <div class="d-flex flex-wrap justify-content-between align-items-center p-3 mb-4 sh-card">
+        <div>
+          <span class="fw-bold fs-5">
+            {% if selected_category %}{{ selected_category.name }}{% elif search_query %}Results for "{{ search_query }}"{% else %}All Products{% endif %}
+          </span>
+          <span class="text-muted ms-2 small">({{ total_count }} products found)</span>
+        </div>
+
+        <div class="d-flex align-items-center gap-2 mt-2 mt-sm-0">
+          <label class="small text-muted text-nowrap">Sort By:</label>
+          <select class="form-select form-select-sm" style="min-width: 170px;" onchange="location = this.value;">
+            <option value="?{% if current_category %}category={{ current_category }}&{% endif %}{% if search_query %}q={{ search_query }}&{% endif %}{% if current_brand %}brand={{ current_brand }}&{% endif %}sort=newest" {% if current_sort == 'newest' %}selected{% endif %}>Newest Drops</option>
+            <option value="?{% if current_category %}category={{ current_category }}&{% endif %}{% if search_query %}q={{ search_query }}&{% endif %}{% if current_brand %}brand={{ current_brand }}&{% endif %}sort=price_low" {% if current_sort == 'price_low' %}selected{% endif %}>Price: Low to High</option>
+            <option value="?{% if current_category %}category={{ current_category }}&{% endif %}{% if search_query %}q={{ search_query }}&{% endif %}{% if current_brand %}brand={{ current_brand }}&{% endif %}sort=price_high" {% if current_sort == 'price_high' %}selected{% endif %}>Price: High to Low</option>
+            <option value="?{% if current_category %}category={{ current_category }}&{% endif %}{% if search_query %}q={{ search_query }}&{% endif %}{% if current_brand %}brand={{ current_brand }}&{% endif %}sort=popularity" {% if current_sort == 'popularity' %}selected{% endif %}>Popularity</option>
+            <option value="?{% if current_category %}category={{ current_category }}&{% endif %}{% if search_query %}q={{ search_query }}&{% endif %}{% if current_brand %}brand={{ current_brand }}&{% endif %}sort=rating" {% if current_sort == 'rating' %}selected{% endif %}>Highest Rated</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Products Grid -->
+      <div class="row g-4">
+        {% for product in products %}
+          <div class="col-md-4 col-6">
+            <div class="product-card">
+              <div class="product-image-wrap">
+                {% if product.primary_image %}
+                  <img src="{{ product.primary_image.image.url }}" alt="{{ product.name }}" class="product-image" loading="lazy">
+                {% else %}
+                  <img src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=600&auto=format&fit=crop&q=80" alt="{{ product.name }}" class="product-image" loading="lazy">
+                {% endif %}
+
+                <div class="product-badges">
+                  {% if product.discount_percentage > 0 %}
+                    <span class="sh-badge sh-badge-sale">{{ product.discount_percentage|floatformat:0 }}% OFF</span>
+                  {% endif %}
+                  {% if product.is_new_arrival %}
+                    <span class="sh-badge sh-badge-new">New</span>
+                  {% endif %}
+                </div>
+
+                <button type="button" class="product-wishlist-btn wishlist-toggle-btn {% if product.id in user_wishlist_ids %}active{% endif %}" data-product-id="{{ product.id }}" title="Wishlist">
+                  <i class="bi {% if product.id in user_wishlist_ids %}bi-heart-fill{% else %}bi-heart{% endif %}"></i>
+                </button>
+              </div>
+
+              <div class="product-info">
+                <span class="product-brand">{{ product.brand }}</span>
+                <a href="{% url 'products:product_detail' product.slug %}" class="product-title">{{ product.name }}</a>
+
+                <div class="d-flex align-items-center gap-1 mb-2">
+                  <div class="text-warning small">
+                    {% for i in "12345" %}
+                      {% if forloop.counter <= product.average_rating %}
+                        <i class="bi bi-star-fill"></i>
+                      {% else %}
+                        <i class="bi bi-star"></i>
+                      {% endif %}
+                    {% endfor %}
+                  </div>
+                  <span class="small text-muted">({{ product.review_count }})</span>
+                </div>
+
+                <div class="product-price-wrap">
+                  <span class="product-price-current">₹{{ product.discounted_price }}</span>
+                  {% if product.discount_percentage > 0 %}
+                    <span class="product-price-original">₹{{ product.base_price }}</span>
+                  {% endif %}
+                </div>
+
+                <a href="{% url 'products:product_detail' product.slug %}" class="btn btn-sh-outline btn-sm w-100 mt-3">
+                  Select Size & Color
+                </a>
+              </div>
+            </div>
+          </div>
+        {% empty %}
+          <div class="col-12 text-center py-5 sh-card">
+            <i class="bi bi-search fs-1 text-muted mb-3 d-block"></i>
+            <h4 class="fw-bold">No Products Match Your Filter</h4>
+            <p class="text-muted">Try adjusting your filters or search keywords to find what you're looking for.</p>
+            <a href="{% url 'products:shop' %}" class="btn btn-sh-primary mt-2">Reset Filters</a>
+          </div>
+        {% endfor %}
+      </div>
+
+      <!-- Pagination -->
+      {% if products.has_other_pages %}
+        <nav aria-label="Page navigation" class="mt-5">
+          <ul class="pagination justify-content-center">
+            {% if products.has_previous %}
+              <li class="page-item">
+                <a class="page-link" href="?page={{ products.previous_page_number }}{% if current_category %}&category={{ current_category }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}{% if current_brand %}&brand={{ current_brand }}{% endif %}{% if current_sort %}&sort={{ current_sort }}{% endif %}" aria-label="Previous">
+                  <span aria-hidden="true">&laquo; Prev</span>
+                </a>
+              </li>
+            {% else %}
+              <li class="page-item disabled"><span class="page-link">&laquo; Prev</span></li>
+            {% endif %}
+
+            {% for p in paginator.page_range %}
+              {% if products.number == p %}
+                <li class="page-item active"><span class="page-link">{{ p }}</span></li>
+              {% elif p > products.number|add:'-3' and p < products.number|add:'3' %}
+                <li class="page-item">
+                  <a class="page-link" href="?page={{ p }}{% if current_category %}&category={{ current_category }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}{% if current_brand %}&brand={{ current_brand }}{% endif %}{% if current_sort %}&sort={{ current_sort }}{% endif %}">{{ p }}</a>
+                </li>
+              {% endif %}
+            {% endfor %}
+
+            {% if products.has_next %}
+              <li class="page-item">
+                <a class="page-link" href="?page={{ products.next_page_number }}{% if current_category %}&category={{ current_category }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}{% if current_brand %}&brand={{ current_brand }}{% endif %}{% if current_sort %}&sort={{ current_sort }}{% endif %}" aria-label="Next">
+                  <span aria-hidden="true">Next &raquo;</span>
+                </a>
+              </li>
+            {% else %}
+              <li class="page-item disabled"><span class="page-link">Next &raquo;</span></li>
+            {% endif %}
+          </ul>
+        </nav>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,198 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Your Shopping Bag — StyleHub{% endblock %}
+
+{% block content %}
+<div class="container my-4" id="cart-page-container">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h2 fw-bold mb-0">Shopping Bag <span class="text-muted fs-5">({{ cart.total_items }} items)</span></h1>
+    <a href="{% url 'products:shop' %}" class="btn btn-sh-outline btn-sm"><i class="bi bi-arrow-left me-1"></i> Continue Shopping</a>
+  </div>
+
+  {% if cart.total_items > 0 %}
+    <!-- Free Shipping Progress Bar -->
+    <div class="p-3 mb-4 rounded-3 sh-card">
+      <div class="d-flex justify-content-between align-items-center mb-2 small">
+        {% if free_shipping_eligible %}
+          <span class="text-success fw-bold"><i class="bi bi-check-circle-fill me-1"></i> You have unlocked FREE Express Delivery!</span>
+        {% else %}
+          <span>Add <strong>₹{{ amount_needed_for_free_shipping }}</strong> more to unlock <strong>FREE Delivery</strong></span>
+        {% endif %}
+        <span class="text-muted">Threshold: ₹999</span>
+      </div>
+      <div class="progress" style="height: 6px;">
+        <div class="progress-bar bg-success" role="progressbar" style="width: {% if free_shipping_eligible %}100%{% else %}{{ subtotal|floatformat:0 }}%{% endif %};"></div>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <!-- Line Items List -->
+      <div class="col-lg-8">
+        <div class="sh-card p-3 p-md-4">
+          <div class="table-responsive">
+            <table class="cart-table">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Price</th>
+                  <th class="text-center">Quantity</th>
+                  <th class="text-end">Subtotal</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in items %}
+                  <tr id="cart-row-{{ item.id }}">
+                    <!-- Product Info -->
+                    <td>
+                      <div class="d-flex align-items-center gap-3">
+                        <a href="{% url 'products:product_detail' item.variant.product.slug %}">
+                          {% if item.variant.product.primary_image %}
+                            <img src="{{ item.variant.product.primary_image.image.url }}" alt="{{ item.variant.product.name }}" class="rounded-2" style="width: 65px; height: 80px; object-fit: cover; border: 1px solid var(--border-subtle);">
+                          {% else %}
+                            <img src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=600&auto=format&fit=crop&q=80" alt="{{ item.variant.product.name }}" class="rounded-2" style="width: 65px; height: 80px; object-fit: cover;">
+                          {% endif %}
+                        </a>
+                        <div>
+                          <div class="small text-muted text-uppercase">{{ item.variant.product.brand }}</div>
+                          <a href="{% url 'products:product_detail' item.variant.product.slug %}" class="fw-bold text-body text-decoration-none">{{ item.variant.product.name }}</a>
+                          <div class="small text-muted mt-1">
+                            <span>Color: <strong>{{ item.variant.color }}</strong></span> | 
+                            <span>Size: <strong>{{ item.variant.size }}</strong></span>
+                          </div>
+                          <div class="font-monospace small text-muted" style="font-size: 0.75rem;">SKU: {{ item.variant.sku }}</div>
+                        </div>
+                      </div>
+                    </td>
+
+                    <!-- Unit Price -->
+                    <td class="fw-semibold">
+                      ₹{{ item.unit_price }}
+                    </td>
+
+                    <!-- Quantity Controls -->
+                    <td class="text-center">
+                      <div class="qty-control">
+                        <button type="button" class="qty-btn cart-qty-btn" data-action="decrease" data-item-id="{{ item.id }}"><i class="bi bi-dash"></i></button>
+                        <input type="number" id="qty-input-{{ item.id }}" class="qty-val" value="{{ item.quantity }}" readonly>
+                        <button type="button" class="qty-btn cart-qty-btn" data-action="increase" data-item-id="{{ item.id }}"><i class="bi bi-plus"></i></button>
+                      </div>
+                      <div class="small text-muted mt-1" style="font-size: 0.75rem;">Max: {{ item.variant.stock_quantity }}</div>
+                    </td>
+
+                    <!-- Subtotal -->
+                    <td class="text-end fw-bold fs-6" id="item-total-{{ item.id }}">
+                      ₹{{ item.total_price }}
+                    </td>
+
+                    <!-- Remove Button -->
+                    <td class="text-end">
+                      <button type="button" class="btn btn-sm text-danger cart-remove-btn p-1" data-item-id="{{ item.id }}" title="Remove item">
+                        <i class="bi bi-trash fs-5"></i>
+                      </button>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
+            <form action="{% url 'cart:api_clear' %}" method="POST" onsubmit="return confirm('Empty your entire bag?');">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash me-1"></i> Clear Bag</button>
+            </form>
+            <span class="small text-muted"><i class="bi bi-shield-check text-success me-1"></i> Prices & inventory reserved for checkout</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Order Summary Card -->
+      <div class="col-lg-4">
+        <div class="summary-card">
+          <h4 class="fw-bold mb-3">Order Summary</h4>
+
+          <!-- Coupon Box -->
+          <div class="mb-4 pb-3 border-bottom">
+            <label class="form-label small fw-bold">Promotional Code</label>
+            <form id="coupon-form" class="d-flex gap-2">
+              <input type="text" id="coupon-code-input" class="form-control form-control-sm text-uppercase font-monospace" placeholder="e.g. WELCOME10" value="{{ coupon.code|default:'' }}">
+              <button type="submit" class="btn btn-sm btn-sh-outline text-nowrap">Apply</button>
+            </form>
+            <div id="applied-coupon-badge-wrap">
+              {% if coupon %}
+                <div class="d-flex align-items-center justify-content-between p-2 mt-2 rounded bg-success bg-opacity-10 border border-success">
+                  <span class="text-success fw-bold small"><i class="bi bi-tag-fill me-1"></i> {{ coupon.code }} Applied</span>
+                  <button type="button" id="remove-coupon-btn" class="btn btn-sm btn-link text-danger p-0 text-decoration-none small">Remove</button>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+
+          <!-- Cost Calculations -->
+          <div class="d-flex flex-column gap-2 mb-3">
+            <div class="d-flex justify-content-between text-secondary small">
+              <span>Bag Subtotal</span>
+              <span id="cart-subtotal-val" class="fw-bold text-body">₹{{ subtotal }}</span>
+            </div>
+
+            {% if savings > 0 %}
+              <div class="d-flex justify-content-between text-success small">
+                <span>MRP Savings</span>
+                <span>-₹{{ savings }}</span>
+              </div>
+            {% endif %}
+
+            <div class="d-flex justify-content-between text-success small" id="cart-discount-row" style="display: {% if discount > 0 %}flex{% else %}none{% endif %} !important;">
+              <span>Coupon Discount</span>
+              <span id="cart-discount-val">-₹{{ discount }}</span>
+            </div>
+
+            <div class="d-flex justify-content-between text-secondary small">
+              <span>Shipping Charge</span>
+              <span id="cart-shipping-val" class="{% if shipping == 0 %}text-success fw-bold{% else %}text-body{% endif %}">
+                {% if shipping == 0 %}FREE{% else %}₹{{ shipping }}{% endif %}
+              </span>
+            </div>
+
+            <div class="d-flex justify-content-between text-secondary small">
+              <span>Estimated Tax (5% GST)</span>
+              <span id="cart-tax-val" class="text-body">₹{{ tax }}</span>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-baseline pt-3 border-top mb-4">
+            <span class="fs-5 fw-bold">Total Amount</span>
+            <span id="cart-total-val" class="fs-4 fw-bold text-body">₹{{ total }}</span>
+          </div>
+
+          <a href="{% url 'orders:checkout' %}" class="btn btn-sh-primary w-100 py-3 mb-2">
+            Proceed to Checkout <i class="bi bi-arrow-right ms-2"></i>
+          </a>
+
+          <div class="text-center mt-3">
+            <div class="small text-muted"><i class="bi bi-lock-fill me-1"></i> Guaranteed Safe & Secure Checkout</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% else %}
+    <!-- Empty Cart Screen -->
+    <div class="text-center py-5 sh-card p-5 my-4">
+      <i class="bi bi-bag-x display-1 text-muted mb-3 d-block"></i>
+      <h3 class="fw-bold mb-2">Your Bag is Empty</h3>
+      <p class="text-muted mb-4" style="max-width: 420px; margin: 0 auto;">
+        Looks like you haven't added anything to your cart yet. Explore our latest designer collections and wardrobe essentials.
+      </p>
+      <a href="{% url 'products:shop' %}" class="btn btn-sh-primary px-4 py-2">
+        <i class="bi bi-bag me-1"></i> Start Shopping
+      </a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/cart.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Internal Server Error (500) — StyleHub{% endblock %}
+
+{% block content %}
+<div class="container my-5 text-center" style="max-width: 580px;">
+  <div class="sh-card p-5">
+    <div class="display-1 fw-bold text-danger font-heading mb-2">500</div>
+    <h3 class="fw-bold mb-3">Service Temporarily Interrupted</h3>
+    <p class="text-muted mb-4">
+      Our engineers have been notified and are actively resolving this issue. Please try again shortly.
+    </p>
+    <a href="{% url 'products:home' %}" class="btn btn-sh-primary px-4 py-2">
+      <i class="bi bi-house me-1"></i> Return Home
+    </a>
+  </div>
+</div>
+{% endblock %}

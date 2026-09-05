@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Verify Email Address — StyleHub{% endblock %}
+
+{% block content %}
+<div class="container my-5" style="max-width: 500px;">
+  <div class="card p-4 p-md-5 border shadow-sm text-center">
+    <!-- Icon & Header -->
+    <div class="mb-4">
+      <div class="d-inline-flex align-items-center justify-content-center bg-warning bg-opacity-10 text-warning rounded-circle p-3 mb-3" style="width: 70px; height: 70px;">
+        <i class="bi bi-shield-lock-fill fs-1"></i>
+      </div>
+      <h3 class="fw-bold mb-2">Verify Your Email</h3>
+      <p class="text-muted small mb-1">We've sent a 6-digit verification code to:</p>
+      <div class="fw-semibold text-primary font-monospace fs-6 mb-2">{{ masked_email }}</div>
+      <p class="text-muted small" style="font-size: 0.82rem;">Enter the code below to confirm your email and activate your account.</p>
+    </div>
+
+    <!-- OTP Input Form -->
+    <form method="POST" action="{% url 'accounts:verify_otp' %}" id="otpForm">
+      {% csrf_token %}
+
+      <div class="mb-4">
+        <label for="id_otp_code" class="form-label text-muted small fw-semibold text-uppercase tracking-wider mb-2">
+          6-Digit Verification Code
+        </label>
+        <div class="position-relative">
+          {{ form.otp_code }}
+        </div>
+        {% if form.otp_code.errors %}
+          <div class="text-danger small mt-2 fw-semibold">
+            <i class="bi bi-exclamation-circle me-1"></i>{{ form.otp_code.errors.0 }}
+          </div>
+        {% endif %}
+      </div>
+
+      <button type="submit" class="btn btn-dark w-100 py-2 fw-semibold mb-3">
+        <i class="bi bi-check2-circle me-1"></i> Verify & Complete Sign-Up
+      </button>
+    </form>
+
+    <!-- Resend Code & Cooldown -->
+    <div class="border-top pt-3 mt-2 text-center">
+      <p class="small text-muted mb-2">Didn't receive the email?</p>
+      
+      <form method="POST" action="{% url 'accounts:resend_otp' %}" id="resendForm" class="d-inline">
+        {% csrf_token %}
+        <button type="submit" id="resendBtn" class="btn btn-sm btn-outline-secondary px-3" {% if cooldown_remaining > 0 %}disabled{% endif %}>
+          <i class="bi bi-arrow-clockwise me-1"></i>
+          <span id="resendBtnText">
+            {% if cooldown_remaining > 0 %}
+              Resend Code in <strong id="countdownSecs">{{ cooldown_remaining }}</strong>s
+            {% else %}
+              Resend Verification Code
+            {% endif %}
+          </span>
+        </button>
+      </form>
+
+      <div class="mt-3">
+        <a href="{% url 'accounts:register' %}" class="small text-muted text-decoration-underline">
+          <i class="bi bi-arrow-left me-1"></i> Change Email or Re-enter Details
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const otpInput = document.getElementById('id_otp_code');
+    const resendBtn = document.getElementById('resendBtn');
+    const resendBtnText = document.getElementById('resendBtnText');
+    const countdownEl = document.getElementById('countdownSecs');
+    
+    // Auto-focus and numeric filter
+    if (otpInput) {
+      otpInput.focus();
+      otpInput.addEventListener('input', (e) => {
+        e.target.value = e.target.value.replace(/\D/g, '').slice(0, 6);
+        if (e.target.value.length === 6) {
+          // Optional subtle feedback
+        }
+      });
+    }
+
+    // Cooldown countdown
+    let remaining = {{ cooldown_remaining|default:0 }};
+    if (remaining > 0 && resendBtn) {
+      const interval = setInterval(() => {
+        remaining -= 1;
+        if (remaining <= 0) {
+          clearInterval(interval);
+          resendBtn.removeAttribute('disabled');
+          resendBtnText.innerHTML = 'Resend Verification Code';
+        } else {
+          resendBtnText.innerHTML = `Resend Code in <strong id="countdownSecs">${remaining}</strong>s`;
+        }
+      }, 1000);
+    }
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,75 @@
+{% load static %}
+<footer class="footer-stylehub">
+  <div class="container">
+    <div class="row g-4 mb-5">
+      <!-- Brand & Mission -->
+      <div class="col-lg-4 col-md-6">
+        <a class="navbar-brand text-white d-flex align-items-center gap-2 mb-3" href="{% url 'products:home' %}">
+          <i class="bi bi-gem text-warning fs-3"></i>
+          <span>Style</span>Hub
+        </a>
+        <p class="text-secondary small mb-4" style="line-height: 1.7;">
+          Crafting contemporary fashion with uncompromising attention to detail, sustainable tailoring, and timeless silhouette elegance. Elevate your daily wardrobe with StyleHub.
+        </p>
+        <div class="d-flex gap-3">
+          <a href="#" class="btn btn-sm btn-outline-secondary rounded-circle" style="width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center;"><i class="bi bi-instagram"></i></a>
+          <a href="#" class="btn btn-sm btn-outline-secondary rounded-circle" style="width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center;"><i class="bi bi-twitter-x"></i></a>
+          <a href="#" class="btn btn-sm btn-outline-secondary rounded-circle" style="width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center;"><i class="bi bi-facebook"></i></a>
+          <a href="#" class="btn btn-sm btn-outline-secondary rounded-circle" style="width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center;"><i class="bi bi-pinterest"></i></a>
+        </div>
+      </div>
+
+      <!-- Quick Collections -->
+      <div class="col-lg-2 col-md-6 col-6">
+        <h5 class="footer-heading">Collections</h5>
+        <ul class="list-unstyled footer-links">
+          <li><a href="{% url 'products:shop' %}">All Clothing</a></li>
+          <li><a href="{% url 'products:shop' %}?category=men">Men's Wardrobe</a></li>
+          <li><a href="{% url 'products:shop' %}?category=women">Women's Edit</a></li>
+          <li><a href="{% url 'products:shop' %}?category=jackets">Jackets & Coats</a></li>
+          <li><a href="{% url 'products:shop' %}?category=denim">Denim Essentials</a></li>
+        </ul>
+      </div>
+
+      <!-- Customer Service -->
+      <div class="col-lg-2 col-md-6 col-6">
+        <h5 class="footer-heading">Customer Care</h5>
+        <ul class="list-unstyled footer-links">
+          <li><a href="{% url 'orders:my_orders' %}">Track My Order</a></li>
+          <li><a href="{% url 'cart:cart_detail' %}">Shipping Policy</a></li>
+          <li><a href="#">Easy Returns & Refunds</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms & Conditions</a></li>
+        </ul>
+      </div>
+
+      <!-- Newsletter -->
+      <div class="col-lg-4 col-md-6">
+        <h5 class="footer-heading">Stay in the Loop</h5>
+        <p class="text-secondary small mb-3">
+          Subscribe to receive early access to new designer drops, private trunk sales, and 10% off your first order.
+        </p>
+        <form action="{% url 'products:newsletter_subscribe' %}" method="POST" class="d-flex gap-2">
+          {% csrf_token %}
+          <input type="email" name="email" class="form-control form-control-sm" placeholder="Enter your email address" required style="background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.2); color: #FFF;">
+          <button type="submit" class="btn btn-sm btn-sh-gold px-3">Join</button>
+        </form>
+        <div class="mt-4 pt-2">
+          <div class="small text-secondary mb-2">100% Secure Payments with Razorpay</div>
+          <div class="d-flex gap-2 align-items-center text-secondary fs-4">
+            <i class="bi bi-credit-card-2-front" title="Credit / Debit Cards"></i>
+            <i class="bi bi-shield-check text-success" title="SSL Encrypted"></i>
+            <i class="bi bi-wallet2" title="UPI & Netbanking"></i>
+            <i class="bi bi-cash-coin" title="Cash on Delivery"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Bar -->
+    <div class="pt-4 border-top border-secondary border-opacity-25 d-flex flex-column flex-md-row align-items-center justify-content-between text-secondary small">
+      <div>&copy; 2026 StyleHub Inc. All rights reserved. Built for discerning fashion enthusiasts.</div>
+      <div class="mt-2 mt-md-0">Designed with modern luxury aesthetics. Zero glassmorphism.</div>
+    </div>
+  </div>
+</footer>

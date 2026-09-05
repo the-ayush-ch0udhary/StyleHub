@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ title }} — StyleHub{% endblock %}
+
+{% block content %}
+<div class="container my-4" style="max-width: 600px;">
+  <!-- Breadcrumb -->
+  <nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb small">
+      <li class="breadcrumb-item"><a href="{% url 'products:home' %}">Home</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'accounts:addresses' %}">Addresses</a></li>
+      <li class="breadcrumb-item active" aria-current="page">{{ title }}</li>
+    </ol>
+  </nav>
+
+  <div class="sh-card p-4 p-md-5">
+    <h3 class="fw-bold mb-4">{{ title }}</h3>
+
+    <form method="POST">
+      {% csrf_token %}
+
+      <div class="mb-3">
+        <label class="form-label">Full Name</label>
+        {{ form.full_name }}
+        {% if form.full_name.errors %}<div class="text-danger small">{{ form.full_name.errors.0 }}</div>{% endif %}
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Phone Number</label>
+        {{ form.phone }}
+        {% if form.phone.errors %}<div class="text-danger small">{{ form.phone.errors.0 }}</div>{% endif %}
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Address Line 1</label>
+        {{ form.address_line_1 }}
+        {% if form.address_line_1.errors %}<div class="text-danger small">{{ form.address_line_1.errors.0 }}</div>{% endif %}
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Address Line 2 (Optional)</label>
+        {{ form.address_line_2 }}
+      </div>
+
+      <div class="row g-2 mb-3">
+        <div class="col-6">
+          <label class="form-label">City</label>
+          {{ form.city }}
+          {% if form.city.errors %}<div class="text-danger small">{{ form.city.errors.0 }}</div>{% endif %}
+        </div>
+        <div class="col-6">
+          <label class="form-label">State</label>
+          {{ form.state }}
+          {% if form.state.errors %}<div class="text-danger small">{{ form.state.errors.0 }}</div>{% endif %}
+        </div>
+      </div>
+
+      <div class="row g-2 mb-3">
+        <div class="col-6">
+          <label class="form-label">Postal / PIN Code</label>
+          {{ form.postal_code }}
+          {% if form.postal_code.errors %}<div class="text-danger small">{{ form.postal_code.errors.0 }}</div>{% endif %}
+        </div>
+        <div class="col-6">
+          <label class="form-label">Country</label>
+          {{ form.country }}
+          {% if form.country.errors %}<div class="text-danger small">{{ form.country.errors.0 }}</div>{% endif %}
+        </div>
+      </div>
+
+      <div class="form-check mb-4">
+        {{ form.is_default }}
+        <label class="form-check-label small" for="{{ form.is_default.id_for_label }}">
+          Set this address as default for checkout
+        </label>
+      </div>
+
+      <div class="d-flex gap-2">
+        <a href="{% url 'accounts:addresses' %}" class="btn btn-sh-outline flex-grow-1">Cancel</a>
+        <button type="submit" class="btn btn-sh-primary flex-grow-1">Save Address</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

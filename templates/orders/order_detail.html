@@ -1,0 +1,197 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Order #{{ order.order_number }} — StyleHub{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+  <!-- Breadcrumb -->
+  <nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb small">
+      <li class="breadcrumb-item"><a href="{% url 'products:home' %}">Home</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'orders:my_orders' %}">My Orders</a></li>
+      <li class="breadcrumb-item active" aria-current="page">#{{ order.order_number }}</li>
+    </ol>
+  </nav>
+
+  <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+    <div>
+      <h1 class="h2 fw-bold mb-1">Order #{{ order.order_number }}</h1>
+      <span class="text-muted small">Placed on {{ order.created_at|date:"F d, Y \a\t h:i A" }}</span>
+    </div>
+
+    <div class="d-flex gap-2">
+      <a href="{% url 'orders:order_invoice' order.order_number %}" target="_blank" class="btn btn-sh-outline btn-sm">
+        <i class="bi bi-printer me-1"></i> Print Invoice
+      </a>
+      {% if order.is_cancellable %}
+        <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#cancelOrderModal">
+          <i class="bi bi-x-circle me-1"></i> Cancel Order
+        </button>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Tracking Status Stepper -->
+  {% if order.status != 'CANCELLED' %}
+    <div class="sh-card p-4 mb-4">
+      <h5 class="fw-bold mb-4"><i class="bi bi-truck me-2 text-warning"></i> Shipment Progress</h5>
+      
+      <div class="tracking-stepper">
+        {% for step_code, step_label, step_icon in status_steps %}
+          <div class="tracking-step {% if forloop.counter0 < current_step_idx %}completed{% elif forloop.counter0 == current_step_idx %}active{% endif %}">
+            <div class="tracking-step-icon">
+              <i class="bi {{ step_icon }}"></i>
+            </div>
+            <div class="tracking-step-label">{{ step_label }}</div>
+          </div>
+        {% endfor %}
+      </div>
+
+      {% if order.tracking_number %}
+        <div class="p-2 rounded bg-info bg-opacity-10 text-info border border-info border-opacity-25 small text-center mt-3">
+          Courier Tracking Number: <strong class="font-monospace">{{ order.tracking_number }}</strong>
+        </div>
+      {% endif %}
+    </div>
+  {% else %}
+    <div class="alert alert-danger mb-4 p-3 rounded-3 d-flex align-items-center gap-2">
+      <i class="bi bi-x-circle-fill fs-4"></i>
+      <div>
+        <strong>This order has been cancelled.</strong>
+        {% if order.payment_status == 'REFUNDED' %}
+          <span> A full refund of ₹{{ order.total_amount }} has been recorded to your payment method.</span>
+        {% endif %}
+      </div>
+    </div>
+  {% endif %}
+
+  <div class="row g-4">
+    <!-- Left: Order Items Table -->
+    <div class="col-lg-8">
+      <div class="sh-card p-4">
+        <h5 class="fw-bold mb-3">Purchased Items ({{ order.total_items_count }})</h5>
+        <div class="table-responsive">
+          <table class="table table-borderless align-middle mb-0">
+            <thead class="border-bottom text-muted small text-uppercase">
+              <tr>
+                <th>Garment</th>
+                <th>Price</th>
+                <th class="text-center">Qty</th>
+                <th class="text-end">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in items %}
+                <tr class="border-bottom">
+                  <td>
+                    <div class="d-flex align-items-center gap-3">
+                      <div>
+                        <div class="fw-bold">{{ item.product_name }}</div>
+                        <div class="small text-muted">Color: {{ item.color }} | Size: {{ item.size }}</div>
+                        <div class="font-monospace text-muted" style="font-size: 0.72rem;">SKU: {{ item.sku }}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>₹{{ item.unit_price }}</td>
+                  <td class="text-center">{{ item.quantity }}</td>
+                  <td class="text-end fw-bold">₹{{ item.subtotal }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Shipping Address & Financial Breakdown -->
+    <div class="col-lg-4">
+      <!-- Shipping Address -->
+      <div class="sh-card p-4 mb-4">
+        <h6 class="fw-bold mb-3 text-uppercase small text-muted font-monospace"><i class="bi bi-geo-alt me-1 text-danger"></i> Delivery Address</h6>
+        <div class="fw-bold">{{ order.shipping_full_name }}</div>
+        <div class="small text-secondary mt-1">{{ order.shipping_address_line_1 }}</div>
+        {% if order.shipping_address_line_2 %}
+          <div class="small text-secondary">{{ order.shipping_address_line_2 }}</div>
+        {% endif %}
+        <div class="small text-secondary">{{ order.shipping_city }}, {{ order.shipping_state }} - {{ order.shipping_postal_code }}</div>
+        <div class="small text-secondary">{{ order.shipping_country }}</div>
+        <div class="small text-secondary fw-semibold mt-2"><i class="bi bi-telephone me-1"></i> {{ order.shipping_phone }}</div>
+      </div>
+
+      <!-- Payment & Bill Summary -->
+      <div class="summary-card">
+        <h6 class="fw-bold mb-3 text-uppercase small text-muted font-monospace"><i class="bi bi-receipt me-1 text-primary"></i> Payment Details</h6>
+
+        <div class="d-flex justify-content-between small text-secondary mb-2">
+          <span>Payment Mode:</span>
+          <span class="fw-semibold text-body">{{ order.get_payment_method_display }}</span>
+        </div>
+
+        <div class="d-flex justify-content-between small text-secondary mb-3">
+          <span>Payment Status:</span>
+          <span class="badge {% if order.payment_status == 'PAID' %}bg-success{% elif order.payment_status == 'REFUNDED' %}bg-info text-dark{% else %}bg-warning text-dark{% endif %} font-monospace">
+            {{ order.get_payment_status_display }}
+          </span>
+        </div>
+
+        <hr class="my-2">
+
+        <div class="d-flex justify-content-between small text-secondary mb-2">
+          <span>Subtotal</span>
+          <span>₹{{ order.subtotal }}</span>
+        </div>
+
+        {% if order.discount > 0 %}
+          <div class="d-flex justify-content-between small text-success mb-2">
+            <span>Coupon ({{ order.coupon_code }})</span>
+            <span>-₹{{ order.discount }}</span>
+          </div>
+        {% endif %}
+
+        <div class="d-flex justify-content-between small text-secondary mb-2">
+          <span>Shipping Charge</span>
+          <span>{% if order.shipping_charge == 0 %}FREE{% else %}₹{{ order.shipping_charge }}{% endif %}</span>
+        </div>
+
+        <div class="d-flex justify-content-between small text-secondary mb-2">
+          <span>Tax (5% GST)</span>
+          <span>₹{{ order.tax }}</span>
+        </div>
+
+        <div class="d-flex justify-content-between fs-5 fw-bold pt-3 border-top mt-2">
+          <span>Total Paid</span>
+          <span class="text-body">₹{{ order.total_amount }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Cancel Order Confirmation Modal -->
+{% if order.is_cancellable %}
+  <div class="modal fade" id="cancelOrderModal" tabindex="-1" aria-labelledby="cancelOrderModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content sh-card border-0">
+        <div class="modal-header border-bottom">
+          <h5 class="modal-title fw-bold text-danger" id="cancelOrderModalLabel"><i class="bi bi-exclamation-triangle-fill me-2"></i> Cancel Order #{{ order.order_number }}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <p>Are you sure you want to cancel this order? This action cannot be undone.</p>
+          <div class="alert alert-warning small mb-0">
+            <i class="bi bi-info-circle me-1"></i> All reserved stock will be returned to inventory. If you paid online via Razorpay, your refund will be credited back automatically.
+          </div>
+        </div>
+        <div class="modal-footer border-top">
+          <button type="button" class="btn btn-sh-outline btn-sm" data-bs-dismiss="modal">Keep Order</button>
+          <form action="{% url 'orders:order_cancel' order.order_number %}" method="POST">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger btn-sm">Yes, Cancel My Order</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}
+{% endblock %}
