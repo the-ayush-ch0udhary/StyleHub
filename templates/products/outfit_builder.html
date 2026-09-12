@@ -1,0 +1,469 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Outfit Studio — Interactive Mix & Match | StyleHub Luxury{% endblock %}
+{% block meta_description %}Design your complete tailored look in StyleHub Outfit Studio. Mix and match jackets, shirts, denim, sneakers, and accessories with instant 10% bundle savings.{% endblock %}
+
+{% block content %}
+<div class="container py-4 my-2">
+  <!-- Studio Header -->
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4 pb-3 border-bottom">
+    <div>
+      <div class="d-flex align-items-center gap-2 mb-1">
+        <span class="badge bg-warning text-dark font-monospace text-uppercase px-2 py-1">StyleHub Studio</span>
+        <span class="badge bg-success-subtle text-success border border-success-subtle font-monospace px-2 py-1">
+          <i class="bi bi-stars me-1"></i> 10% Bundle Discount On 2+ Pieces
+        </span>
+      </div>
+      <h1 class="display-6 fw-bold mb-1">Interactive Mix & Match Studio</h1>
+      <p class="text-muted mb-0">Build your bespoke head-to-toe outfit. Select pieces from each category to preview harmony and unlock automatic bundle savings.</p>
+    </div>
+
+    <div class="d-flex align-items-center gap-2 flex-shrink-0">
+      <button type="button" id="shuffle-outfit-btn" class="btn btn-outline-secondary d-flex align-items-center gap-2 rounded-pill px-3 py-2">
+        <i class="bi bi-shuffle"></i>
+        <span>Surprise Me</span>
+      </button>
+      <button type="button" id="clear-outfit-btn" class="btn btn-outline-danger d-flex align-items-center gap-2 rounded-pill px-3 py-2">
+        <i class="bi bi-trash3"></i>
+        <span>Reset</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <!-- Left Column: Visual Outfit Canvas & Live Order Summary -->
+    <div class="col-lg-5 col-xl-4">
+      <div class="sticky-top" style="top: 85px; z-index: 10;">
+        <div class="card border rounded-4 shadow-sm overflow-hidden bg-body">
+          <div class="card-header bg-body-tertiary border-bottom py-3 px-3 d-flex justify-content-between align-items-center">
+            <span class="fw-bold small text-uppercase font-monospace tracking-wider text-muted">
+              <i class="bi bi-person-standing text-primary me-1"></i> Your Outfit Stack
+            </span>
+            <span class="badge bg-dark rounded-pill" id="selected-count-badge">0 / 5 Selected</span>
+          </div>
+
+          <!-- Stack Visual Slots -->
+          <div class="card-body p-3 d-flex flex-column gap-2" id="outfit-stack-slots">
+            <!-- Slot 1: Outerwear -->
+            <div class="outfit-slot-card p-2 rounded-3 border d-flex align-items-center gap-3" id="slot-outer" data-slot="outer">
+              <div class="slot-thumb-wrap rounded-2 bg-body-secondary d-flex align-items-center justify-content-center flex-shrink-0" style="width: 52px; height: 52px;">
+                <i class="bi bi-snow text-muted fs-4"></i>
+              </div>
+              <div class="flex-grow-1 min-w-0">
+                <div class="text-muted small text-uppercase font-monospace" style="font-size: 0.68rem;">Outerwear / Jacket</div>
+                <div class="fw-semibold text-truncate small slot-title text-muted">None selected</div>
+                <div class="slot-price small fw-bold text-sh-accent">-</div>
+              </div>
+              <button type="button" class="btn btn-sm btn-link text-danger p-0 slot-remove-btn d-none" title="Remove piece">
+                <i class="bi bi-x-circle-fill"></i>
+              </button>
+            </div>
+
+            <!-- Slot 2: Top -->
+            <div class="outfit-slot-card p-2 rounded-3 border d-flex align-items-center gap-3" id="slot-top" data-slot="top">
+              <div class="slot-thumb-wrap rounded-2 bg-body-secondary d-flex align-items-center justify-content-center flex-shrink-0" style="width: 52px; height: 52px;">
+                <i class="bi bi-person-fill text-muted fs-4"></i>
+              </div>
+              <div class="flex-grow-1 min-w-0">
+                <div class="text-muted small text-uppercase font-monospace" style="font-size: 0.68rem;">Top / Shirt / Tee</div>
+                <div class="fw-semibold text-truncate small slot-title text-muted">None selected</div>
+                <div class="slot-price small fw-bold text-sh-accent">-</div>
+              </div>
+              <button type="button" class="btn btn-sm btn-link text-danger p-0 slot-remove-btn d-none" title="Remove piece">
+                <i class="bi bi-x-circle-fill"></i>
+              </button>
+            </div>
+
+            <!-- Slot 3: Bottom -->
+            <div class="outfit-slot-card p-2 rounded-3 border d-flex align-items-center gap-3" id="slot-bottom" data-slot="bottom">
+              <div class="slot-thumb-wrap rounded-2 bg-body-secondary d-flex align-items-center justify-content-center flex-shrink-0" style="width: 52px; height: 52px;">
+                <i class="bi bi-water text-muted fs-4"></i>
+              </div>
+              <div class="flex-grow-1 min-w-0">
+                <div class="text-muted small text-uppercase font-monospace" style="font-size: 0.68rem;">Pants / Denim</div>
+                <div class="fw-semibold text-truncate small slot-title text-muted">None selected</div>
+                <div class="slot-price small fw-bold text-sh-accent">-</div>
+              </div>
+              <button type="button" class="btn btn-sm btn-link text-danger p-0 slot-remove-btn d-none" title="Remove piece">
+                <i class="bi bi-x-circle-fill"></i>
+              </button>
+            </div>
+
+            <!-- Slot 4: Footwear -->
+            <div class="outfit-slot-card p-2 rounded-3 border d-flex align-items-center gap-3" id="slot-shoes" data-slot="shoes">
+              <div class="slot-thumb-wrap rounded-2 bg-body-secondary d-flex align-items-center justify-content-center flex-shrink-0" style="width: 52px; height: 52px;">
+                <i class="bi bi-activity text-muted fs-4"></i>
+              </div>
+              <div class="flex-grow-1 min-w-0">
+                <div class="text-muted small text-uppercase font-monospace" style="font-size: 0.68rem;">Footwear / Sneakers</div>
+                <div class="fw-semibold text-truncate small slot-title text-muted">None selected</div>
+                <div class="slot-price small fw-bold text-sh-accent">-</div>
+              </div>
+              <button type="button" class="btn btn-sm btn-link text-danger p-0 slot-remove-btn d-none" title="Remove piece">
+                <i class="bi bi-x-circle-fill"></i>
+              </button>
+            </div>
+
+            <!-- Slot 5: Accessory -->
+            <div class="outfit-slot-card p-2 rounded-3 border d-flex align-items-center gap-3" id="slot-accessory" data-slot="accessory">
+              <div class="slot-thumb-wrap rounded-2 bg-body-secondary d-flex align-items-center justify-content-center flex-shrink-0" style="width: 52px; height: 52px;">
+                <i class="bi bi-watch text-muted fs-4"></i>
+              </div>
+              <div class="flex-grow-1 min-w-0">
+                <div class="text-muted small text-uppercase font-monospace" style="font-size: 0.68rem;">Accessory / Belt</div>
+                <div class="fw-semibold text-truncate small slot-title text-muted">None selected</div>
+                <div class="slot-price small fw-bold text-sh-accent">-</div>
+              </div>
+              <button type="button" class="btn btn-sm btn-link text-danger p-0 slot-remove-btn d-none" title="Remove piece">
+                <i class="bi bi-x-circle-fill"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Studio Price & CTA -->
+          <div class="card-footer bg-body-tertiary border-top p-3">
+            <div class="d-flex justify-content-between align-items-center mb-1 small text-muted">
+              <span>Selected Pieces Subtotal</span>
+              <span id="studio-subtotal" class="fw-semibold">₹0.00</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-2 small text-success" id="studio-discount-row" style="display: none;">
+              <span>Bundle Discount (10% Off)</span>
+              <span id="studio-discount" class="fw-bold">-₹0.00</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-3 pt-2 border-top">
+              <span class="fw-bold fs-5">Outfit Total</span>
+              <span class="fs-4 fw-bold text-sh-accent" id="studio-total">₹0.00</span>
+            </div>
+
+            <button type="button" id="studio-add-to-bag-btn" class="btn btn-sh-primary btn-lg w-100 py-3 fw-bold d-flex align-items-center justify-content-center gap-2" disabled>
+              <i class="bi bi-bag-plus-fill fs-5"></i>
+              <span>Select Pieces to Add Outfit</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Interactive Category Tabbed Picker -->
+    <div class="col-lg-7 col-xl-8">
+      <!-- Tabs Navigation -->
+      <ul class="nav nav-pills nav-fill bg-body-tertiary p-2 rounded-4 mb-4 border" id="studioTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active rounded-pill fw-semibold py-2" id="outers-tab" data-bs-toggle="pill" data-bs-target="#tab-outers" type="button" role="tab">
+            🧥 Outerwear <span class="badge bg-secondary-subtle text-secondary rounded-pill ms-1">{{ outers|length }}</span>
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link rounded-pill fw-semibold py-2" id="tops-tab" data-bs-toggle="pill" data-bs-target="#tab-tops" type="button" role="tab">
+            👕 Tops <span class="badge bg-secondary-subtle text-secondary rounded-pill ms-1">{{ tops|length }}</span>
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link rounded-pill fw-semibold py-2" id="bottoms-tab" data-bs-toggle="pill" data-bs-target="#tab-bottoms" type="button" role="tab">
+            👖 Denim & Pants <span class="badge bg-secondary-subtle text-secondary rounded-pill ms-1">{{ bottoms|length }}</span>
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link rounded-pill fw-semibold py-2" id="shoes-tab" data-bs-toggle="pill" data-bs-target="#tab-shoes" type="button" role="tab">
+            👟 Footwear <span class="badge bg-secondary-subtle text-secondary rounded-pill ms-1">{{ shoes|length }}</span>
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link rounded-pill fw-semibold py-2" id="acc-tab" data-bs-toggle="pill" data-bs-target="#tab-accessories" type="button" role="tab">
+            ⌚ Accessories <span class="badge bg-secondary-subtle text-secondary rounded-pill ms-1">{{ accessories|length }}</span>
+          </button>
+        </li>
+      </ul>
+
+      <!-- Tab Panes -->
+      <div class="tab-content" id="studioTabContent">
+        <!-- Outerwear Pane -->
+        <div class="tab-pane fade show active" id="tab-outers" role="tabpanel">
+          <div class="row g-3">
+            {% for p in outers %}
+              <div class="col-md-6 col-xl-4">
+                {% include 'products/includes/studio_card.html' with item=p slot_type='outer' %}
+              </div>
+            {% empty %}
+              <div class="col-12 py-4 text-center text-muted">No outerwear available.</div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Tops Pane -->
+        <div class="tab-pane fade" id="tab-tops" role="tabpanel">
+          <div class="row g-3">
+            {% for p in tops %}
+              <div class="col-md-6 col-xl-4">
+                {% include 'products/includes/studio_card.html' with item=p slot_type='top' %}
+              </div>
+            {% empty %}
+              <div class="col-12 py-4 text-center text-muted">No tops available.</div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Bottoms Pane -->
+        <div class="tab-pane fade" id="tab-bottoms" role="tabpanel">
+          <div class="row g-3">
+            {% for p in bottoms %}
+              <div class="col-md-6 col-xl-4">
+                {% include 'products/includes/studio_card.html' with item=p slot_type='bottom' %}
+              </div>
+            {% empty %}
+              <div class="col-12 py-4 text-center text-muted">No denim/trousers available.</div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Footwear Pane -->
+        <div class="tab-pane fade" id="tab-shoes" role="tabpanel">
+          <div class="row g-3">
+            {% for p in shoes %}
+              <div class="col-md-6 col-xl-4">
+                {% include 'products/includes/studio_card.html' with item=p slot_type='shoes' %}
+              </div>
+            {% empty %}
+              <div class="col-12 py-4 text-center text-muted">No footwear available.</div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Accessories Pane -->
+        <div class="tab-pane fade" id="tab-accessories" role="tabpanel">
+          <div class="row g-3">
+            {% for p in accessories %}
+              <div class="col-md-6 col-xl-4">
+                {% include 'products/includes/studio_card.html' with item=p slot_type='accessory' %}
+              </div>
+            {% empty %}
+              <div class="col-12 py-4 text-center text-muted">No accessories available.</div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const studioState = {
+  outer: null,
+  top: null,
+  bottom: null,
+  shoes: null,
+  accessory: null,
+};
+
+function updateStudioUI() {
+  let subtotal = 0;
+  let count = 0;
+  const pids = [];
+
+  for (const slotKey in studioState) {
+    const item = studioState[slotKey];
+    const slotEl = document.getElementById(`slot-${slotKey}`);
+    if (!slotEl) continue;
+
+    const thumbWrap = slotEl.querySelector('.slot-thumb-wrap');
+    const titleEl = slotEl.querySelector('.slot-title');
+    const priceEl = slotEl.querySelector('.slot-price');
+    const removeBtn = slotEl.querySelector('.slot-remove-btn');
+
+    if (item) {
+      count++;
+      subtotal += item.price;
+      pids.push(item.id);
+
+      slotEl.classList.add('border-sh-accent', 'bg-body-secondary');
+      thumbWrap.innerHTML = `<img src="${item.imageUrl}" alt="${item.name}" class="w-100 h-100 rounded-2 object-fit-cover">`;
+      titleEl.textContent = item.name;
+      titleEl.className = 'fw-bold text-truncate small slot-title text-body';
+      priceEl.textContent = `₹${item.price.toFixed(2)}`;
+      removeBtn.classList.remove('d-none');
+    } else {
+      slotEl.classList.remove('border-sh-accent', 'bg-body-secondary');
+      thumbWrap.innerHTML = `<i class="bi bi-plus-lg text-muted fs-4"></i>`;
+      titleEl.textContent = 'None selected';
+      titleEl.className = 'fw-semibold text-truncate small slot-title text-muted';
+      priceEl.textContent = '-';
+      removeBtn.classList.add('d-none');
+    }
+  }
+
+  // Update card buttons in all tabs
+  document.querySelectorAll('.studio-card-btn').forEach(btn => {
+    const slot = btn.dataset.slot;
+    const pid = parseInt(btn.dataset.productId);
+    const isSelected = studioState[slot] && studioState[slot].id === pid;
+
+    if (isSelected) {
+      btn.className = 'btn btn-success btn-sm w-100 fw-bold studio-card-btn';
+      btn.innerHTML = '<i class="bi bi-check-circle-fill me-1"></i> Added in Outfit';
+      btn.closest('.studio-picker-card').classList.add('border-success', 'border-2', 'shadow');
+    } else {
+      btn.className = 'btn btn-outline-dark btn-sm w-100 fw-semibold studio-card-btn';
+      btn.innerHTML = '<i class="bi bi-plus-circle me-1"></i> Add to Outfit';
+      btn.closest('.studio-picker-card').classList.remove('border-success', 'border-2', 'shadow');
+    }
+  });
+
+  // Count badge
+  const countBadge = document.getElementById('selected-count-badge');
+  if (countBadge) countBadge.textContent = `${count} / 5 Selected`;
+
+  // Discount calculation
+  const discountRow = document.getElementById('studio-discount-row');
+  const discountEl = document.getElementById('studio-discount');
+  const subtotalEl = document.getElementById('studio-subtotal');
+  const totalEl = document.getElementById('studio-total');
+  const ctaBtn = document.getElementById('studio-add-to-bag-btn');
+
+  let discount = 0;
+  if (count >= 2) {
+    discount = Math.round(subtotal * 0.10 * 100) / 100;
+  }
+  const total = Math.max(0, subtotal - discount);
+
+  if (subtotalEl) subtotalEl.textContent = `₹${subtotal.toFixed(2)}`;
+  if (totalEl) totalEl.textContent = `₹${total.toFixed(2)}`;
+
+  if (discountRow) {
+    if (discount > 0) {
+      discountRow.style.display = 'flex';
+      if (discountEl) discountEl.textContent = `-₹${discount.toFixed(2)}`;
+    } else {
+      discountRow.style.display = 'none';
+    }
+  }
+
+  if (ctaBtn) {
+    if (count > 0) {
+      ctaBtn.disabled = false;
+      const discountText = count >= 2 ? ' (10% Bundle Savings)' : '';
+      ctaBtn.innerHTML = `<i class="bi bi-bag-plus-fill fs-5"></i><span>Add Entire Outfit to Bag${discountText}</span>`;
+      ctaBtn.dataset.pids = pids.join(',');
+    } else {
+      ctaBtn.disabled = true;
+      ctaBtn.innerHTML = `<i class="bi bi-bag-plus-fill fs-5"></i><span>Select Pieces to Add Outfit</span>`;
+      ctaBtn.dataset.pids = '';
+    }
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Picker Card button click
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.studio-card-btn');
+    if (btn) {
+      e.preventDefault();
+      const slot = btn.dataset.slot;
+      const pid = parseInt(btn.dataset.productId);
+      const name = btn.dataset.productName;
+      const price = parseFloat(btn.dataset.productPrice);
+      const imageUrl = btn.dataset.productImage;
+      const variantId = btn.dataset.variantId;
+
+      if (studioState[slot] && studioState[slot].id === pid) {
+        // Deselect
+        studioState[slot] = null;
+      } else {
+        // Select
+        studioState[slot] = { id: pid, name, price, imageUrl, variantId };
+      }
+      updateStudioUI();
+      return;
+    }
+
+    // Slot remove button
+    const removeBtn = e.target.closest('.slot-remove-btn');
+    if (removeBtn) {
+      e.preventDefault();
+      const slotCard = removeBtn.closest('.outfit-slot-card');
+      const slotKey = slotCard.dataset.slot;
+      studioState[slotKey] = null;
+      updateStudioUI();
+      return;
+    }
+  });
+
+  // Clear button
+  const clearBtn = document.getElementById('clear-outfit-btn');
+  if (clearBtn) {
+    clearBtn.addEventListener('click', () => {
+      for (const k in studioState) studioState[k] = null;
+      updateStudioUI();
+      showToast('Outfit stack reset.', 'info');
+    });
+  }
+
+  // Shuffle button (Random smart outfit)
+  const shuffleBtn = document.getElementById('shuffle-outfit-btn');
+  if (shuffleBtn) {
+    shuffleBtn.addEventListener('click', () => {
+      ['outer', 'top', 'bottom', 'shoes', 'accessory'].forEach(slot => {
+        const available = document.querySelectorAll(`.studio-card-btn[data-slot="${slot}"]`);
+        if (available.length > 0) {
+          const rand = available[Math.floor(Math.random() * available.length)];
+          studioState[slot] = {
+            id: parseInt(rand.dataset.productId),
+            name: rand.dataset.productName,
+            price: parseFloat(rand.dataset.productPrice),
+            imageUrl: rand.dataset.productImage,
+            variantId: rand.dataset.variantId,
+          };
+        }
+      });
+      updateStudioUI();
+      showToast('🎲 Generated a fresh curated outfit!', 'success');
+    });
+  }
+
+  // 1-Click Add Outfit to Bag CTA
+  const ctaBtn = document.getElementById('studio-add-to-bag-btn');
+  if (ctaBtn) {
+    ctaBtn.addEventListener('click', async () => {
+      const pidsStr = ctaBtn.dataset.pids || '';
+      const pids = pidsStr.split(',').map(Number).filter(Boolean);
+      if (pids.length === 0) return;
+
+      ctaBtn.disabled = true;
+      ctaBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Adding Outfit to Bag...';
+
+      try {
+        const res = await fetch('/cart/api/bundle/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken,
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+          body: JSON.stringify({ product_ids: pids })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast(data.message, 'success');
+          if (typeof window.openCartDrawer === 'function') {
+            window.openCartDrawer();
+          }
+        } else {
+          showToast(data.message || 'Could not add outfit.', 'error');
+        }
+      } catch (err) {
+        console.error('Add outfit error:', err);
+        showToast('Error adding outfit to bag.', 'error');
+      } finally {
+        ctaBtn.disabled = false;
+        updateStudioUI();
+      }
+    });
+  }
+
+  // Initialize UI with completely clean and unselected slots
+  updateStudioUI();
+});
+</script>
+{% endblock %}

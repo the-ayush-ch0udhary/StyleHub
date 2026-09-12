@@ -103,9 +103,15 @@
 
         <!-- Size Pills -->
         <div class="mb-4">
-          <div class="d-flex justify-content-between mb-2">
+          <div class="d-flex justify-content-between mb-2 align-items-center">
             <label class="form-label mb-0 fw-bold">Select Size: <span id="selected-size-name" class="text-primary fw-normal"></span></label>
-            <a href="#" class="small text-muted" data-bs-toggle="modal" data-bs-target="#sizeGuideModal"><i class="bi bi-rulers me-1"></i> Size Chart</a>
+            <div class="d-flex align-items-center gap-2">
+              <a href="#" class="small text-muted text-decoration-none" data-bs-toggle="modal" data-bs-target="#sizeGuideModal"><i class="bi bi-rulers me-1"></i> Size Chart</a>
+              <span class="text-muted small">&bull;</span>
+              <button type="button" class="btn btn-sm btn-link p-0 text-decoration-none text-sh-accent fw-bold" data-bs-toggle="modal" data-bs-target="#fitFinderModal">
+                <i class="bi bi-magic me-1"></i> Find My Fit
+              </button>
+            </div>
           </div>
           <div class="size-pill-list">
             {% for size in available_sizes %}
@@ -134,6 +140,21 @@
           </button>
         </div>
       </form>
+
+      <!-- Interactive Pincode & Express Delivery Checker -->
+      <div class="card border rounded-3 p-3 mb-4 bg-body-tertiary shadow-xs" id="pincode-checker-widget">
+        <label class="form-label fw-bold small mb-2 d-flex align-items-center gap-2">
+          <i class="bi bi-geo-alt-fill text-danger"></i>
+          <span>Check Delivery Date & COD Availability</span>
+        </label>
+        <div class="input-group input-group-sm">
+          <input type="text" id="pincode-input" class="form-control font-monospace" placeholder="Enter 6-digit Indian PIN (e.g. 110001, 400001)" maxlength="6">
+          <button class="btn btn-dark fw-semibold px-3" type="button" id="check-pincode-btn">
+            Check
+          </button>
+        </div>
+        <div id="pincode-result" class="mt-2 small d-none"></div>
+      </div>
 
       <!-- Trust Badges & Policies -->
       <div class="sh-card p-3 rounded-3 mb-4">
@@ -304,27 +325,76 @@
     </div>
   </section>
 
-  <!-- Related Products -->
-  {% if related_products %}
+  <!-- 1. Complete the Style Section -->
+  {% if complete_the_style %}
     <section class="my-5 pt-4 border-top">
-      <h3 class="fw-bold mb-4">Complete the Look</h3>
+      <div class="d-flex flex-wrap justify-content-between align-items-end mb-4 gap-2">
+        <div>
+          <span class="badge bg-warning bg-opacity-10 text-warning px-3 py-1 font-monospace text-uppercase mb-2">
+            <i class="bi bi-stars me-1"></i> Outfit Pairing
+          </span>
+          <h3 class="fw-bold mb-1">Complete the Style</h3>
+          <p class="text-muted small mb-0">Complementary wardrobe essentials curated to pair seamlessly with this {{ product.category.name|lower }}.</p>
+        </div>
+        <a href="{% url 'products:shop' %}" class="btn btn-sh-outline btn-sm">Explore All Pieces <i class="bi bi-arrow-right ms-1"></i></a>
+      </div>
+
       <div class="row g-4">
-        {% for rel in related_products %}
+        {% for piece in complete_the_style %}
           <div class="col-lg-3 col-md-4 col-6">
-            <div class="product-card">
+            <div class="product-card h-100">
               <div class="product-image-wrap">
-                {% if rel.primary_image %}
-                  <img src="{{ rel.primary_image.image.url }}" alt="{{ rel.name }}" class="product-image" loading="lazy">
+                {% if piece.primary_image %}
+                  <img src="{{ piece.primary_image.image.url }}" alt="{{ piece.name }}" class="product-image" loading="lazy">
                 {% else %}
-                  <img src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=600&auto=format&fit=crop&q=80" alt="{{ rel.name }}" class="product-image" loading="lazy">
+                  <img src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=600&auto=format&fit=crop&q=80" alt="{{ piece.name }}" class="product-image" loading="lazy">
                 {% endif %}
-              </div>
-              <div class="product-info">
-                <span class="product-brand">{{ rel.brand }}</span>
-                <a href="{% url 'products:product_detail' rel.slug %}" class="product-title">{{ rel.name }}</a>
-                <div class="product-price-wrap">
-                  <span class="product-price-current">₹{{ rel.discounted_price }}</span>
+
+                <div class="product-badges">
+                  {% if piece.outfit_role %}
+                    <span class="sh-badge" style="background: rgba(212, 175, 55, 0.95); color: #111827; font-weight: 700; letter-spacing: 0.04em;">
+                      <i class="bi bi-tag-fill me-1"></i>{{ piece.outfit_role }}
+                    </span>
+                  {% else %}
+                    <span class="sh-badge" style="background: rgba(17, 24, 39, 0.85); color: #D4AF37;">{{ piece.category.name }}</span>
+                  {% endif %}
+                  {% if piece.discount_percentage > 0 %}
+                    <span class="sh-badge sh-badge-sale">{{ piece.discount_percentage|floatformat:0 }}% OFF</span>
+                  {% endif %}
                 </div>
+
+                <button type="button" class="product-wishlist-btn wishlist-toggle-btn {% if piece.id in user_wishlist_ids %}active{% endif %}" data-product-id="{{ piece.id }}" title="Save to Wishlist">
+                  <i class="bi {% if piece.id in user_wishlist_ids %}bi-heart-fill{% else %}bi-heart{% endif %}"></i>
+                </button>
+              </div>
+
+              <div class="product-info">
+                <span class="product-brand">{{ piece.brand }}</span>
+                <a href="{% url 'products:product_detail' piece.slug %}" class="product-title">{{ piece.name }}</a>
+
+                <div class="d-flex align-items-center gap-1 mb-2">
+                  <div class="text-warning small">
+                    {% for i in "12345" %}
+                      {% if forloop.counter <= piece.average_rating %}
+                        <i class="bi bi-star-fill"></i>
+                      {% else %}
+                        <i class="bi bi-star"></i>
+                      {% endif %}
+                    {% endfor %}
+                  </div>
+                  <span class="small text-muted">({{ piece.review_count }})</span>
+                </div>
+
+                <div class="product-price-wrap">
+                  <span class="product-price-current">₹{{ piece.discounted_price }}</span>
+                  {% if piece.discount_percentage > 0 %}
+                    <span class="product-price-original">₹{{ piece.base_price }}</span>
+                  {% endif %}
+                </div>
+
+                <a href="{% url 'products:product_detail' piece.slug %}" class="btn btn-sh-outline btn-sm w-100 mt-3">
+                  Pair This Item
+                </a>
               </div>
             </div>
           </div>
@@ -332,6 +402,164 @@
       </div>
     </section>
   {% endif %}
+
+  <!-- 2. More Like This & Recommended For You Tabs -->
+  <section class="my-5 pt-4 border-top">
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+      <!-- Tabs Navigation -->
+      <ul class="nav nav-pills gap-2" id="discoveryTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active rounded-pill px-4 py-2 fw-semibold" id="more-like-this-tab" data-bs-toggle="pill" data-bs-target="#more-like-this-pane" type="button" role="tab" aria-controls="more-like-this-pane" aria-selected="true">
+            <i class="bi bi-grid-fill me-1"></i> More Like This
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link rounded-pill px-4 py-2 fw-semibold" id="recommended-tab" data-bs-toggle="pill" data-bs-target="#recommended-pane" type="button" role="tab" aria-controls="recommended-pane" aria-selected="false">
+            <i class="bi bi-heart-fill me-1"></i> Recommended For You
+          </button>
+        </li>
+      </ul>
+
+      <a href="{% url 'products:shop' %}?category={{ product.category.slug }}" class="btn btn-link text-decoration-none small text-body p-0">
+        View All in {{ product.category.name }} <i class="bi bi-arrow-right ms-1"></i>
+      </a>
+    </div>
+
+    <!-- Tabs Content -->
+    <div class="tab-content" id="discoveryTabsContent">
+      <!-- Tab 1: More Like This -->
+      <div class="tab-pane fade show active" id="more-like-this-pane" role="tabpanel" aria-labelledby="more-like-this-tab" tabindex="0">
+        <div class="row g-4">
+          {% for item in more_like_this %}
+            <div class="col-lg-3 col-md-4 col-6">
+              <div class="product-card h-100">
+                <div class="product-image-wrap">
+                  {% if item.primary_image %}
+                    <img src="{{ item.primary_image.image.url }}" alt="{{ item.name }}" class="product-image" loading="lazy">
+                  {% else %}
+                    <img src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=600&auto=format&fit=crop&q=80" alt="{{ item.name }}" class="product-image" loading="lazy">
+                  {% endif %}
+
+                  <div class="product-badges">
+                    {% if item.discount_percentage > 0 %}
+                      <span class="sh-badge sh-badge-sale">{{ item.discount_percentage|floatformat:0 }}% OFF</span>
+                    {% endif %}
+                    {% if item.is_featured %}
+                      <span class="sh-badge sh-badge-new">Featured</span>
+                    {% endif %}
+                  </div>
+
+                  <button type="button" class="product-wishlist-btn wishlist-toggle-btn {% if item.id in user_wishlist_ids %}active{% endif %}" data-product-id="{{ item.id }}" title="Save to Wishlist">
+                    <i class="bi {% if item.id in user_wishlist_ids %}bi-heart-fill{% else %}bi-heart{% endif %}"></i>
+                  </button>
+                </div>
+
+                <div class="product-info">
+                  <span class="product-brand">{{ item.brand }}</span>
+                  <a href="{% url 'products:product_detail' item.slug %}" class="product-title">{{ item.name }}</a>
+
+                  <div class="d-flex align-items-center gap-1 mb-2">
+                    <div class="text-warning small">
+                      {% for i in "12345" %}
+                        {% if forloop.counter <= item.average_rating %}
+                          <i class="bi bi-star-fill"></i>
+                        {% else %}
+                          <i class="bi bi-star"></i>
+                        {% endif %}
+                      {% endfor %}
+                    </div>
+                    <span class="small text-muted">({{ item.review_count }})</span>
+                  </div>
+
+                  <div class="product-price-wrap">
+                    <span class="product-price-current">₹{{ item.discounted_price }}</span>
+                    {% if item.discount_percentage > 0 %}
+                      <span class="product-price-original">₹{{ item.base_price }}</span>
+                    {% endif %}
+                  </div>
+
+                  <a href="{% url 'products:product_detail' item.slug %}" class="btn btn-sh-outline btn-sm w-100 mt-3">
+                    View Details
+                  </a>
+                </div>
+              </div>
+            </div>
+          {% empty %}
+            <div class="col-12 text-center py-4">
+              <p class="text-muted">No similar items found at this time.</p>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Tab 2: Recommended For You -->
+      <div class="tab-pane fade" id="recommended-pane" role="tabpanel" aria-labelledby="recommended-tab" tabindex="0">
+        <div class="row g-4">
+          {% for rec in recommended_for_you %}
+            <div class="col-lg-3 col-md-4 col-6">
+              <div class="product-card h-100">
+                <div class="product-image-wrap">
+                  {% if rec.primary_image %}
+                    <img src="{{ rec.primary_image.image.url }}" alt="{{ rec.name }}" class="product-image" loading="lazy">
+                  {% else %}
+                    <img src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=600&auto=format&fit=crop&q=80" alt="{{ rec.name }}" class="product-image" loading="lazy">
+                  {% endif %}
+
+                  <div class="product-badges">
+                    {% if rec.discount_percentage > 0 %}
+                      <span class="sh-badge sh-badge-sale">{{ rec.discount_percentage|floatformat:0 }}% OFF</span>
+                    {% endif %}
+                    {% if rec.is_bestseller %}
+                      <span class="sh-badge sh-badge-hot">Bestseller</span>
+                    {% elif rec.is_featured %}
+                      <span class="sh-badge sh-badge-new">Featured</span>
+                    {% endif %}
+                  </div>
+
+                  <button type="button" class="product-wishlist-btn wishlist-toggle-btn {% if rec.id in user_wishlist_ids %}active{% endif %}" data-product-id="{{ rec.id }}" title="Save to Wishlist">
+                    <i class="bi {% if rec.id in user_wishlist_ids %}bi-heart-fill{% else %}bi-heart{% endif %}"></i>
+                  </button>
+                </div>
+
+                <div class="product-info">
+                  <span class="product-brand">{{ rec.brand }}</span>
+                  <a href="{% url 'products:product_detail' rec.slug %}" class="product-title">{{ rec.name }}</a>
+
+                  <div class="d-flex align-items-center gap-1 mb-2">
+                    <div class="text-warning small">
+                      {% for i in "12345" %}
+                        {% if forloop.counter <= rec.average_rating %}
+                          <i class="bi bi-star-fill"></i>
+                        {% else %}
+                          <i class="bi bi-star"></i>
+                        {% endif %}
+                      {% endfor %}
+                    </div>
+                    <span class="small text-muted">({{ rec.review_count }})</span>
+                  </div>
+
+                  <div class="product-price-wrap">
+                    <span class="product-price-current">₹{{ rec.discounted_price }}</span>
+                    {% if rec.discount_percentage > 0 %}
+                      <span class="product-price-original">₹{{ rec.base_price }}</span>
+                    {% endif %}
+                  </div>
+
+                  <a href="{% url 'products:product_detail' rec.slug %}" class="btn btn-sh-outline btn-sm w-100 mt-3">
+                    View Details
+                  </a>
+                </div>
+              </div>
+            </div>
+          {% empty %}
+            <div class="col-12 text-center py-4">
+              <p class="text-muted">No recommendations available at this time.</p>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </section>
 </div>
 
 <!-- Size Chart Modal -->
@@ -363,6 +591,73 @@
             </tbody>
           </table>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- "Find My Fit" AI Sizing Recommender Modal -->
+<div class="modal fade" id="fitFinderModal" tabindex="-1" aria-labelledby="fitFinderLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content sh-card border-0 shadow-lg">
+      <div class="modal-header border-bottom py-3">
+        <div class="d-flex align-items-center gap-2">
+          <div class="rounded-circle bg-warning bg-opacity-25 text-warning p-2 d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
+            <i class="bi bi-magic fs-5"></i>
+          </div>
+          <div>
+            <h5 class="modal-title fw-bold mb-0" id="fitFinderLabel">Find My Fit</h5>
+            <div class="small text-muted" style="font-size: 0.75rem;">Intelligent sizing recommender based on your body profile</div>
+          </div>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body p-4">
+        <form id="fit-finder-form">
+          <!-- Height & Weight -->
+          <div class="row g-3 mb-3">
+            <div class="col-6">
+              <label class="form-label small fw-semibold">Height (cm)</label>
+              <input type="number" id="fit-height" class="form-control" placeholder="e.g. 175" min="130" max="220" value="176">
+            </div>
+            <div class="col-6">
+              <label class="form-label small fw-semibold">Weight (kg)</label>
+              <input type="number" id="fit-weight" class="form-control" placeholder="e.g. 72" min="40" max="150" value="74">
+            </div>
+          </div>
+
+          <!-- Body Build -->
+          <div class="mb-3">
+            <label class="form-label small fw-semibold">Body Shape / Build</label>
+            <div class="d-flex gap-2">
+              <button type="button" class="btn btn-outline-secondary btn-sm flex-fill fit-build-btn" data-build="slim">Slim</button>
+              <button type="button" class="btn btn-outline-secondary btn-sm flex-fill fit-build-btn active" data-build="regular">Regular</button>
+              <button type="button" class="btn btn-outline-secondary btn-sm flex-fill fit-build-btn" data-build="athletic">Athletic</button>
+              <button type="button" class="btn btn-outline-secondary btn-sm flex-fill fit-build-btn" data-build="husky">Husky</button>
+            </div>
+          </div>
+
+          <!-- Preferred Drape / Fit -->
+          <div class="mb-4">
+            <label class="form-label small fw-semibold">Preferred Silhouette</label>
+            <div class="d-flex gap-2">
+              <button type="button" class="btn btn-outline-secondary btn-sm flex-fill fit-pref-btn" data-fit="fitted">Fitted</button>
+              <button type="button" class="btn btn-outline-secondary btn-sm flex-fill fit-pref-btn active" data-fit="regular">Regular</button>
+              <button type="button" class="btn btn-outline-secondary btn-sm flex-fill fit-pref-btn" data-fit="oversized">Oversized</button>
+            </div>
+          </div>
+
+          <!-- Recommendation Result Box -->
+          <div id="fit-recommendation-card" class="p-3 rounded-3 bg-body-tertiary border text-center mb-3">
+            <div class="small text-muted text-uppercase font-monospace mb-1">Recommended Size For You</div>
+            <div class="display-5 fw-bold text-sh-accent mb-1" id="recommended-size-display">L</div>
+            <div class="small text-muted mb-3" id="recommended-confidence-text">94% customer match for similar body measurements</div>
+            <button type="button" id="apply-recommended-size-btn" class="btn btn-sh-primary btn-sm px-4 fw-bold">
+              <i class="bi bi-check2-circle me-1"></i> Apply Size & Select
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   </div>

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}StyleHub — Modern Luxury Fashion & Apparel{% endblock %}
+{% block title %}StyleHub - Modern Luxury Fashion & Apparel{% endblock %}
 
 {% block content %}
 <!-- Hero Section -->
@@ -23,10 +23,80 @@
           </a>
         </div>
       </div>
-      <div class="col-lg-5 text-center d-none d-lg-block">
-        <div class="p-3 bg-white bg-opacity-10 rounded-4 border border-light border-opacity-25 shadow-lg d-inline-block">
-          <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600&auto=format&fit=crop&q=80" alt="StyleHub Fashion Hero" class="img-fluid rounded-3" style="max-height: 380px; object-fit: cover;">
-        </div>
+      <div class="col-lg-5 text-center mt-4 mt-lg-0">
+        {% if hero_products %}
+          <div class="p-2 p-md-3 bg-white bg-opacity-10 rounded-4 border border-light border-opacity-25 shadow-lg d-inline-block" style="max-width: 320px; width: 100%;">
+            <div id="heroFashionCarousel" class="carousel slide carousel-fade hero-carousel-wrapper" data-bs-ride="carousel" data-bs-interval="3500" data-bs-pause="hover" style="max-width: 100%;">
+              <!-- Carousel Indicators -->
+              <div class="carousel-indicators mb-2">
+                {% for hp in hero_products %}
+                  <button type="button" data-bs-target="#heroFashionCarousel" data-bs-slide-to="{{ forloop.counter0 }}" class="{% if forloop.first %}active{% endif %}" aria-current="{% if forloop.first %}true{% else %}false{% endif %}" aria-label="Slide {{ forloop.counter }}"></button>
+                {% endfor %}
+              </div>
+
+              <!-- Carousel Slides -->
+              <div class="carousel-inner rounded-3 overflow-hidden">
+                {% for hp in hero_products %}
+                  <div class="carousel-item {% if forloop.first %}active{% endif %}" data-bs-interval="3500">
+                    <a href="{% url 'products:product_detail' hp.slug %}" class="hero-showcase-card text-decoration-none d-block position-relative" title="Click to view details for {{ hp.name }}">
+                      <!-- Image container -->
+                      <div class="hero-img-wrap position-relative" style="height: 350px; border-radius: 0.75rem;">
+                        {% if hp.primary_image %}
+                          <img src="{{ hp.primary_image.image.url }}" alt="{{ hp.name }}" class="hero-showcase-img" style="height: 100%; width: 100%; object-fit: cover; object-position: center;">
+                        {% else %}
+                          <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600&auto=format&fit=crop&q=80" alt="{{ hp.name }}" class="hero-showcase-img" style="height: 100%; width: 100%; object-fit: cover; object-position: center;">
+                        {% endif %}
+
+                        <!-- Top Badges -->
+                        <div class="position-absolute top-0 start-0 p-2 d-flex gap-1">
+                          <span class="badge bg-dark bg-opacity-75 text-warning font-monospace px-2 py-1 small rounded-pill border border-warning border-opacity-50" style="font-size: 0.7rem;">
+                            <i class="bi bi-stars me-1"></i>{{ hp.category.name|default:'Featured' }}
+                          </span>
+                          {% if hp.discount_percentage > 0 %}
+                            <span class="badge bg-danger px-2 py-1 small rounded-pill" style="font-size: 0.7rem;">
+                              {{ hp.discount_percentage|floatformat:0 }}% OFF
+                            </span>
+                          {% endif %}
+                        </div>
+
+                        <!-- Bottom Info Glass Pill (Click to open cloth details) -->
+                        <div class="hero-product-overlay position-absolute bottom-0 start-0 end-0 p-2 text-start">
+                          <div class="hero-info-glass p-2 px-3 rounded-3 d-flex align-items-center justify-content-between">
+                            <div class="text-truncate me-2">
+                              <span class="text-uppercase text-warning font-monospace d-block" style="font-size: 0.68rem; letter-spacing: 0.05em;">{{ hp.brand }}</span>
+                              <h6 class="text-white fw-bold mb-0 text-truncate" style="font-size: 0.88rem;">{{ hp.name }}</h6>
+                              <div class="d-flex align-items-center gap-2 mt-1">
+                                <span class="text-white fw-bold small">₹{{ hp.discounted_price }}</span>
+                                {% if hp.discount_percentage > 0 %}
+                                  <span class="text-light text-opacity-50 text-decoration-line-through" style="font-size: 0.72rem;">₹{{ hp.base_price }}</span>
+                                {% endif %}
+                              </div>
+                            </div>
+                            <span class="btn btn-sm btn-light rounded-circle shadow-sm flex-shrink-0 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;" title="View Details">
+                              <i class="bi bi-arrow-up-right text-dark" style="font-size: 0.75rem;"></i>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </a>
+                  </div>
+                {% endfor %}
+              </div>
+
+              <!-- Controls -->
+              <button class="carousel-control-prev" type="button" data-bs-target="#heroFashionCarousel" data-bs-slide="prev" aria-label="Previous">
+                <span class="carousel-nav-btn" aria-hidden="true" style="width: 30px; height: 30px; font-size: 0.8rem;"><i class="bi bi-chevron-left"></i></span>
+              </button>
+              <button class="carousel-control-next" type="button" data-bs-target="#heroFashionCarousel" data-bs-slide="next" aria-label="Next">
+                <span class="carousel-nav-btn" aria-hidden="true" style="width: 30px; height: 30px; font-size: 0.8rem;"><i class="bi bi-chevron-right"></i></span>
+              </button>
+            </div>
+          </div>
+        {% else %}
+          <div class="p-3 bg-white bg-opacity-10 rounded-4 border border-light border-opacity-25 shadow-lg d-inline-block" style="max-width: 320px;">
+            <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600&auto=format&fit=crop&q=80" alt="StyleHub Fashion Hero" class="img-fluid rounded-3" style="max-height: 350px; object-fit: cover;">
+          </div>
+        {% endif %}
       </div>
     </div>
   </div>
@@ -154,7 +224,21 @@
               {% endif %}
             </div>
 
-            <a href="{% url 'products:product_detail' product.slug %}" class="btn btn-sh-outline btn-sm w-100 mt-3">
+            <!-- Live Colorway Swatches Preview -->
+            {% with colors=product.get_available_colors %}
+              {% if colors %}
+                <div class="card-color-swatches d-flex align-items-center gap-1 my-2">
+                  {% for c in colors|slice:":4" %}
+                    <a href="{% url 'products:product_detail' product.slug %}?color={{ c.name }}" class="card-swatch-dot rounded-circle border" style="background-color: {{ c.code }}; width: 14px; height: 14px; display: inline-block;" title="{{ c.name }}"></a>
+                  {% endfor %}
+                  {% if colors|length > 4 %}
+                    <span class="text-muted small" style="font-size: 0.68rem;">+{{ colors|length|add:"-4" }}</span>
+                  {% endif %}
+                </div>
+              {% endif %}
+            {% endwith %}
+
+            <a href="{% url 'products:product_detail' product.slug %}" class="btn btn-sh-outline btn-sm w-100 mt-2">
               Select Size & Color
             </a>
           </div>
@@ -165,6 +249,123 @@
         <p class="text-muted">No featured products available at this time.</p>
       </div>
     {% endfor %}
+  </div>
+</section>
+
+<!-- Interactive Lookbook Canvas: Shop The Look -->
+<section class="container my-5 py-3">
+  <div class="lookbook-section-card p-4 p-lg-5 rounded-4 border bg-body-tertiary position-relative shadow-sm overflow-hidden">
+    <div class="row align-items-center g-4 g-lg-5">
+      <!-- Left: Interactive Canvas with Glowing Hotspot Pins -->
+      <div class="col-lg-6">
+        <div class="lookbook-canvas-wrap position-relative mx-auto rounded-4 overflow-hidden shadow-lg" style="max-width: 480px; height: 560px;">
+          <!-- High-Fashion Editorial Model Image -->
+          <img src="https://images.unsplash.com/photo-1509631179647-0177331693ae?w=800&auto=format&fit=crop&q=85" alt="StyleHub Editorial Lookbook" class="w-100 h-100 object-fit-cover">
+          
+          <div class="lookbook-canvas-overlay position-absolute top-0 start-0 w-100 h-100" style="background: radial-gradient(circle, transparent 40%, rgba(0,0,0,0.4) 100%);"></div>
+          
+          <div class="position-absolute top-0 start-0 m-3">
+            <span class="badge bg-dark bg-opacity-75 backdrop-blur text-white px-3 py-2 rounded-pill font-monospace small border border-light border-opacity-25">
+              <i class="bi bi-pin-map-fill text-warning me-1"></i> Interactive Lookbook
+            </span>
+          </div>
+
+          <!-- Hotspot Pins -->
+          {% for item in lookbook_items %}
+            <div class="lookbook-hotspot" style="top: {{ item.top }}%; left: {{ item.left }}%;" data-product-id="{{ item.product.id }}">
+              <button type="button" class="hotspot-pin" aria-label="{{ item.label }}">
+                <span class="hotspot-pulse"></span>
+                <span class="hotspot-dot"></span>
+              </button>
+              <!-- Popover Micro-Card -->
+              <div class="hotspot-popover shadow-lg rounded-3 p-2 bg-body border">
+                <div class="d-flex align-items-center gap-2">
+                  {% if item.product.primary_image %}
+                    <img src="{{ item.product.primary_image.image.url }}" alt="{{ item.product.name }}" class="rounded object-fit-cover" style="width: 44px; height: 44px;">
+                  {% endif %}
+                  <div class="min-w-0">
+                    <div class="text-xs text-muted text-uppercase font-monospace" style="font-size: 0.68rem;">{{ item.label }}</div>
+                    <div class="fw-bold small text-truncate" style="max-width: 140px;">{{ item.product.name }}</div>
+                    <div class="fw-bold text-sh-accent small">₹{{ item.product.discounted_price }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Right: Look Breakdown & 1-Click Buy Complete Outfit -->
+      <div class="col-lg-6">
+        <div class="d-inline-flex align-items-center gap-2 mb-2">
+          <span class="badge bg-sh-primary text-uppercase font-monospace px-3 py-1">Editorial Style</span>
+          <span class="badge bg-success-subtle text-success border border-success-subtle font-monospace px-2 py-1">
+            <i class="bi bi-tag-fill me-1"></i> 10% Bundle Savings
+          </span>
+        </div>
+        <h2 class="display-6 fw-bold mb-2">The Urban Sartorial Look</h2>
+        <p class="text-muted mb-4">A masterclass in proportions. Heavyweight cotton paired with authentic Japanese selvedge denim, a structured denim jacket, and clean low-top calfskin sneakers.</p>
+
+        <!-- Product Cards Stack -->
+        <div class="lookbook-items-list mb-4">
+          {% for item in lookbook_items %}
+            <div class="card border mb-2 rounded-3 p-2 bg-body shadow-xs transition-hover lookbook-product-row" data-product-id="{{ item.product.id }}">
+              <div class="d-flex align-items-center justify-content-between gap-3">
+                <div class="d-flex align-items-center gap-3 min-w-0">
+                  {% if item.product.primary_image %}
+                    <img src="{{ item.product.primary_image.image.url }}" alt="{{ item.product.name }}" class="rounded-2 object-fit-cover flex-shrink-0" style="width: 48px; height: 48px;">
+                  {% endif %}
+                  <div class="min-w-0">
+                    <div class="text-muted small font-monospace" style="font-size: 0.72rem;">{{ item.label }}</div>
+                    <a href="{% url 'products:product_detail' item.product.slug %}" class="fw-semibold text-reset text-decoration-none small text-truncate d-block">
+                      {{ item.product.name }}
+                    </a>
+                  </div>
+                </div>
+                <div class="text-end flex-shrink-0">
+                  <div class="fw-bold small">₹{{ item.product.discounted_price }}</div>
+                  <a href="{% url 'products:product_detail' item.product.slug %}" class="small text-decoration-none" style="font-size: 0.72rem;">View &rarr;</a>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+
+        <!-- Bundle Pricing & 1-Click Buy Action -->
+        <div class="p-3 rounded-3 bg-body border shadow-sm">
+          <div class="d-flex justify-content-between align-items-center mb-1 small text-muted">
+            <span>Outfit Subtotal (4 Items)</span>
+            <span class="text-decoration-line-through">₹{{ bundle_subtotal|floatformat:2 }}</span>
+          </div>
+          <div class="d-flex justify-content-between align-items-center mb-2 small text-success fw-semibold">
+            <span>Bundle Discount (Coupon: BUNDLE10)</span>
+            <span>-₹{{ bundle_discount|floatformat:2 }} (-10%)</span>
+          </div>
+          <div class="d-flex justify-content-between align-items-center mb-3 pt-2 border-top">
+            <div>
+              <div class="fw-bold fs-5">Complete Outfit Price</div>
+              <div class="small text-muted" style="font-size: 0.75rem;">Includes all 4 pieces + Free Express Delivery</div>
+            </div>
+            <div class="text-end">
+              <span class="fs-4 fw-bold text-sh-accent">₹{{ bundle_total|floatformat:2 }}</span>
+            </div>
+          </div>
+
+          <div class="d-grid gap-2">
+            <button type="button" id="buy-entire-outfit-btn" class="btn btn-sh-primary btn-lg py-3 fw-bold shadow-sm d-flex align-items-center justify-content-center gap-2" data-bundle-pids="{{ bundle_product_ids|join:',' }}">
+              <i class="bi bi-bag-plus-fill fs-5"></i>
+              <span>Buy The Complete Outfit (10% Off)</span>
+            </button>
+            <div class="text-center mt-1">
+              <a href="{% url 'products:outfit_builder' %}" class="small text-muted text-decoration-none">
+                <i class="bi bi-palette me-1"></i> Want to mix & match your own items? Open <strong>Outfit Studio &rarr;</strong>
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
   </div>
 </section>
 
@@ -225,7 +426,21 @@
               {% endif %}
             </div>
 
-            <a href="{% url 'products:product_detail' product.slug %}" class="btn btn-sh-outline btn-sm w-100 mt-3">
+            <!-- Live Colorway Swatches Preview -->
+            {% with colors=product.get_available_colors %}
+              {% if colors %}
+                <div class="card-color-swatches d-flex align-items-center gap-1 my-2">
+                  {% for c in colors|slice:":4" %}
+                    <a href="{% url 'products:product_detail' product.slug %}?color={{ c.name }}" class="card-swatch-dot rounded-circle border" style="background-color: {{ c.code }}; width: 14px; height: 14px; display: inline-block;" title="{{ c.name }}"></a>
+                  {% endfor %}
+                  {% if colors|length > 4 %}
+                    <span class="text-muted small" style="font-size: 0.68rem;">+{{ colors|length|add:"-4" }}</span>
+                  {% endif %}
+                </div>
+              {% endif %}
+            {% endwith %}
+
+            <a href="{% url 'products:product_detail' product.slug %}" class="btn btn-sh-outline btn-sm w-100 mt-2">
               View Details
             </a>
           </div>
@@ -235,3 +450,80 @@
   </div>
 </section>
 {% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // 1-Click Buy Complete Outfit
+  const buyLookBtn = document.getElementById('buy-entire-outfit-btn');
+  if (buyLookBtn) {
+    buyLookBtn.addEventListener('click', async () => {
+      const pidsStr = buyLookBtn.dataset.bundlePids || '';
+      const pids = pidsStr.split(',').map(Number).filter(Boolean);
+      buyLookBtn.disabled = true;
+      buyLookBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Adding Entire Outfit...';
+
+      try {
+        const res = await fetch('/cart/api/bundle/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken,
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+          body: JSON.stringify({ product_ids: pids })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast(data.message, 'success');
+          if (typeof window.openCartDrawer === 'function') {
+            window.openCartDrawer();
+          }
+        } else {
+          showToast(data.message || 'Could not add bundle', 'error');
+        }
+      } catch (err) {
+        console.error('Bundle add error:', err);
+        showToast('Could not add bundle to bag.', 'error');
+      } finally {
+        buyLookBtn.disabled = false;
+        buyLookBtn.innerHTML = '<i class="bi bi-bag-plus-fill fs-5 me-2"></i> Buy The Complete Outfit (10% Off)';
+      }
+    });
+  }
+
+  // Hotspot hover highlighting
+  const hotspots = document.querySelectorAll('.lookbook-hotspot');
+  const rows = document.querySelectorAll('.lookbook-product-row');
+
+  hotspots.forEach(h => {
+    const pid = h.dataset.productId;
+    h.addEventListener('mouseenter', () => {
+      rows.forEach(r => {
+        if (r.dataset.productId === pid) {
+          r.classList.add('border-sh-accent', 'bg-body-secondary');
+        }
+      });
+    });
+    h.addEventListener('mouseleave', () => {
+      rows.forEach(r => r.classList.remove('border-sh-accent', 'bg-body-secondary'));
+    });
+  });
+
+  rows.forEach(r => {
+    const pid = r.dataset.productId;
+    r.addEventListener('mouseenter', () => {
+      hotspots.forEach(h => {
+        if (h.dataset.productId === pid) {
+          h.classList.add('active');
+        }
+      });
+    });
+    r.addEventListener('mouseleave', () => {
+      hotspots.forEach(h => h.classList.remove('active'));
+    });
+  });
+});
+</script>
+{% endblock %}
+

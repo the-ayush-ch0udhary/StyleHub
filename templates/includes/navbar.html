@@ -1,10 +1,10 @@
 {% load static %}
 <nav class="navbar navbar-expand-lg navbar-stylehub">
-  <div class="container">
+  <div class="container-fluid px-3 px-lg-4 px-xl-5">
     <!-- Brand Logo -->
-    <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'products:home' %}">
-      <i class="bi bi-gem text-warning fs-4"></i>
-      <span>Style</span>Hub
+    <a class="navbar-brand d-flex align-items-center gap-2 flex-shrink-0" href="{% url 'products:home' %}">
+      <img src="{% static 'img/stylehub-icon.png' %}" alt="StyleHub" class="d-inline-block" style="height: 38px; width: auto; object-fit: contain;">
+      <span class="fs-4 fw-bold tracking-tight"><span style="color: #027a8d;">Style</span><span style="color: #ff6b4a;">Hub</span></span>
     </a>
 
     <!-- Mobile Toggler Buttons -->
@@ -15,12 +15,12 @@
       </button>
 
       <!-- Cart Icon Mobile -->
-      <a href="{% url 'cart:cart_detail' %}" class="nav-badge-icon" aria-label="Cart">
+      <button type="button" class="nav-badge-icon border-0 bg-transparent cart-drawer-trigger p-0" data-bs-toggle="offcanvas" data-bs-target="#cartDrawerOffcanvas" aria-label="Shopping Bag">
         <i class="bi bi-bag"></i>
         <span id="navbar-cart-count-mobile" class="nav-badge-count" style="display: {% if cart_item_count > 0 %}inline-flex{% else %}none{% endif %};">
           {{ cart_item_count }}
         </span>
-      </a>
+      </button>
 
       <!-- Hamburger Button -->
       <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMainContent" aria-controls="navbarMainContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -31,17 +31,23 @@
     <!-- Collapsible Content -->
     <div class="collapse navbar-collapse" id="navbarMainContent">
       <!-- Primary Links -->
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0 align-items-lg-center">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0 align-items-lg-center gap-1 gap-xl-2 flex-nowrap">
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'products:home' %}">Home</a>
+          <a class="nav-link text-nowrap {% if request.resolver_match.url_name == 'home' %}active fw-bold text-sh-accent{% endif %}" href="{% url 'products:home' %}">Home</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'products:shop' %}">Shop All</a>
+          <a class="nav-link text-nowrap {% if request.resolver_match.url_name == 'shop' %}active fw-bold text-sh-accent{% endif %}" href="{% url 'products:shop' %}">Shop All</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-nowrap d-inline-flex align-items-center gap-1 {% if request.resolver_match.url_name == 'outfit_builder' %}active fw-bold text-sh-accent{% endif %}" href="{% url 'products:outfit_builder' %}">
+            <span>Outfit Studio</span>
+            <span class="badge bg-warning text-dark rounded-pill py-0 px-1 ms-1 font-monospace" style="font-size: 0.62rem; line-height: 1.4;">Mix & Match</span>
+          </a>
         </li>
         
         <!-- Categories Dropdown -->
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <a class="nav-link dropdown-toggle text-nowrap" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             Categories
           </a>
           <ul class="dropdown-menu border-0 shadow-lg rounded-3 py-2">
@@ -82,13 +88,13 @@
           </span>
         </a>
 
-        <!-- Cart Link -->
-        <a href="{% url 'cart:cart_detail' %}" class="nav-badge-icon d-none d-lg-inline-flex" title="Shopping Bag">
+        <!-- Cart Link (Triggers Drawer) -->
+        <button type="button" class="nav-badge-icon border-0 bg-transparent cart-drawer-trigger d-none d-lg-inline-flex" data-bs-toggle="offcanvas" data-bs-target="#cartDrawerOffcanvas" title="Shopping Bag">
           <i class="bi bi-bag"></i>
           <span id="navbar-cart-count" class="nav-badge-count" style="display: {% if cart_item_count > 0 %}inline-flex{% else %}none{% endif %};">
             {{ cart_item_count }}
           </span>
-        </a>
+        </button>
 
         <!-- User Authentication Account Menu -->
         {% if user.is_authenticated %}

@@ -18,6 +18,7 @@ ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '127.0.0.1,localhost,testserver'
 
 # Application definition
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -25,9 +26,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
-    
-    # Third-party apps
-    'rest_framework',
     
     # Local apps
     'accounts.apps.AccountsConfig',
@@ -133,7 +131,11 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
 STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
@@ -189,12 +191,88 @@ MESSAGE_TAGS = {
     messages.ERROR: 'danger',
 }
 
-# REST Framework
-REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',
+# Jazzmin Admin Configuration
+JAZZMIN_SETTINGS = {
+    "site_title": "StyleHub Admin",
+    "site_header": "StyleHub",
+    "site_brand": "StyleHub",
+    "site_logo": "img/stylehub-icon.png",
+    "site_icon": "img/favicon.png",
+    "login_logo": "img/stylehub-logo.png",
+    "site_logo_classes": "img-fluid",
+    "welcome_sign": "Welcome to StyleHub Administration",
+    "copyright": "StyleHub Luxury Fashion Ltd",
+    "search_model": ["auth.User", "products.Product", "orders.Order"],
+    "user_avatar": None,
+    "topmenu_links": [
+        {"name": "Home", "url": "admin:index", "permissions": ["auth.view_user"]},
+        {"name": "View Store", "url": "products:home", "new_window": True},
+        {"name": "Analytics Dashboard", "url": "dashboard:index", "new_window": True},
     ],
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.SessionAuthentication',
+    "show_sidebar": True,
+    "navigation_expanded": True,
+    "order_with_respect_to": [
+        "products",
+        "orders",
+        "coupons",
+        "cart",
+        "wishlist",
+        "reviews",
+        "accounts",
+        "auth",
     ],
+    "icons": {
+        "auth": "fas fa-users-cog",
+        "auth.user": "fas fa-user",
+        "auth.Group": "fas fa-users",
+        "accounts.UserProfile": "fas fa-id-card",
+        "accounts.Address": "fas fa-map-marker-alt",
+        "accounts.EmailVerificationOTP": "fas fa-key",
+        "products.Product": "fas fa-tshirt",
+        "products.Category": "fas fa-tags",
+        "products.ProductVariant": "fas fa-layer-group",
+        "orders.Order": "fas fa-shopping-bag",
+        "cart.CartItem": "fas fa-shopping-cart",
+        "coupons.Coupon": "fas fa-ticket-alt",
+        "coupons.CouponUsage": "fas fa-receipt",
+        "reviews.Review": "fas fa-star",
+        "wishlist.WishlistItem": "fas fa-heart",
+    },
+    "default_icon_parents": "fas fa-chevron-circle-right",
+    "default_icon_children": "fas fa-circle",
+    "changeform_format": "horizontal_tabs",
 }
+
+JAZZMIN_UI_TWEAKS = {
+    "navbar_small_text": False,
+    "footer_small_text": False,
+    "body_small_text": False,
+    "brand_small_text": False,
+    "brand_colour": "navbar-dark",
+    "accent": "accent-primary",
+    "navbar": "navbar-dark",
+    "no_navbar_border": False,
+    "navbar_fixed": True,
+    "layout_boxed": False,
+    "footer_fixed": False,
+    "sidebar_fixed": True,
+    "sidebar": "sidebar-dark-primary",
+    "sidebar_nav_small_text": False,
+    "sidebar_disable_expand": False,
+    "sidebar_nav_child_indent": True,
+    "sidebar_nav_compact_style": False,
+    "sidebar_nav_legacy_style": False,
+    "sidebar_nav_flat_style": False,
+    "theme": "default",
+    "default_theme_mode": "dark",
+    "button_classes": {
+        "primary": "btn-primary",
+        "secondary": "btn-secondary",
+        "info": "btn-info",
+        "warning": "btn-warning",
+        "danger": "btn-danger",
+        "success": "btn-success"
+    }
+}
+
+

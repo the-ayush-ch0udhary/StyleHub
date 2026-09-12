@@ -17,11 +17,22 @@
 
   <div class="row g-4">
     <!-- Filters Sidebar -->
-    <div class="col-lg-3">
-      <div class="filter-sidebar mb-4">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-          <h5 class="fw-bold mb-0">Filters</h5>
-          <a href="{% url 'products:shop' %}" class="small text-danger fw-semibold">Clear All</a>
+    <div class="col-xl-3 col-lg-4">
+      <div class="filter-sidebar filter-sidebar-sticky mb-4">
+        <!-- Sidebar Header -->
+        <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-sliders2 text-sh-accent fs-5"></i>
+            <h5 class="fw-bold mb-0">Filters</h5>
+            {% if active_filter_count > 0 %}
+              <span class="badge bg-warning text-dark rounded-pill font-monospace" style="font-size: 0.72rem;">{{ active_filter_count }}</span>
+            {% endif %}
+          </div>
+          {% if active_filter_count > 0 %}
+            <a href="{% url 'products:shop' %}{% if search_query %}?q={{ search_query }}{% endif %}" class="btn btn-sm btn-link text-danger text-decoration-none p-0 fw-semibold" style="font-size: 0.8rem;">
+              <i class="bi bi-arrow-counterclockwise me-1"></i> Clear All
+            </a>
+          {% endif %}
         </div>
 
         <form id="filter-form" action="{% url 'products:shop' %}" method="GET">
@@ -32,26 +43,78 @@
             <input type="hidden" name="sort" value="{{ current_sort }}">
           {% endif %}
 
+          <!-- Active Filter Tags / Chips -->
+          {% if active_filter_count > 0 %}
+            <div class="mb-3 pb-3 border-bottom">
+              <div class="text-xs text-uppercase font-monospace text-muted mb-2" style="font-size: 0.7rem;">Active Filters</div>
+              <div class="d-flex flex-wrap gap-1">
+                {% if selected_category %}
+                  <span class="badge bg-body-secondary text-body border d-flex align-items-center gap-1 py-1 px-2">
+                    {{ selected_category.name }}
+                    <a href="{% url 'products:shop' %}?{% if current_brand %}brand={{ current_brand }}&{% endif %}{% if current_size %}size={{ current_size }}&{% endif %}{% if current_color %}color={{ current_color }}&{% endif %}{% if current_sort %}sort={{ current_sort }}{% endif %}" class="text-muted text-decoration-none ms-1">&times;</a>
+                  </span>
+                {% endif %}
+                {% if current_brand %}
+                  <span class="badge bg-body-secondary text-body border d-flex align-items-center gap-1 py-1 px-2">
+                    {{ current_brand }}
+                    <a href="{% url 'products:shop' %}?{% if current_category %}category={{ current_category }}&{% endif %}{% if current_size %}size={{ current_size }}&{% endif %}{% if current_color %}color={{ current_color }}&{% endif %}{% if current_sort %}sort={{ current_sort }}{% endif %}" class="text-muted text-decoration-none ms-1">&times;</a>
+                  </span>
+                {% endif %}
+                {% if current_size %}
+                  <span class="badge bg-body-secondary text-body border d-flex align-items-center gap-1 py-1 px-2">
+                    Size: {{ current_size }}
+                    <a href="{% url 'products:shop' %}?{% if current_category %}category={{ current_category }}&{% endif %}{% if current_brand %}brand={{ current_brand }}&{% endif %}{% if current_color %}color={{ current_color }}&{% endif %}{% if current_sort %}sort={{ current_sort }}{% endif %}" class="text-muted text-decoration-none ms-1">&times;</a>
+                  </span>
+                {% endif %}
+                {% if current_color %}
+                  <span class="badge bg-body-secondary text-body border d-flex align-items-center gap-1 py-1 px-2">
+                    Color: {{ current_color }}
+                    <a href="{% url 'products:shop' %}?{% if current_category %}category={{ current_category }}&{% endif %}{% if current_brand %}brand={{ current_brand }}&{% endif %}{% if current_size %}size={{ current_size }}&{% endif %}{% if current_sort %}sort={{ current_sort }}{% endif %}" class="text-muted text-decoration-none ms-1">&times;</a>
+                  </span>
+                {% endif %}
+                {% if current_min_price or current_max_price %}
+                  <span class="badge bg-body-secondary text-body border d-flex align-items-center gap-1 py-1 px-2">
+                    ₹{{ current_min_price|default:"0" }} - ₹{{ current_max_price|default:"∞" }}
+                    <a href="{% url 'products:shop' %}?{% if current_category %}category={{ current_category }}&{% endif %}{% if current_brand %}brand={{ current_brand }}&{% endif %}{% if current_size %}size={{ current_size }}&{% endif %}{% if current_color %}color={{ current_color }}&{% endif %}{% if current_sort %}sort={{ current_sort }}{% endif %}" class="text-muted text-decoration-none ms-1">&times;</a>
+                  </span>
+                {% endif %}
+                {% if current_rating %}
+                  <span class="badge bg-body-secondary text-body border d-flex align-items-center gap-1 py-1 px-2">
+                    {{ current_rating }}★ & above
+                    <a href="{% url 'products:shop' %}?{% if current_category %}category={{ current_category }}&{% endif %}{% if current_brand %}brand={{ current_brand }}&{% endif %}{% if current_size %}size={{ current_size }}&{% endif %}{% if current_color %}color={{ current_color }}&{% endif %}{% if current_sort %}sort={{ current_sort }}{% endif %}" class="text-muted text-decoration-none ms-1">&times;</a>
+                  </span>
+                {% endif %}
+              </div>
+            </div>
+          {% endif %}
+
           <!-- Categories Filter -->
-          <div class="mb-4">
-            <div class="filter-heading">Categories</div>
+          <div class="filter-section-block">
+            <div class="filter-heading">
+              <i class="bi bi-grid-fill"></i>
+              <span>Categories</span>
+            </div>
             <div class="d-flex flex-column gap-1">
-              <a href="{% url 'products:shop' %}?sort={{ current_sort }}" class="filter-link {% if not current_category %}active fw-bold text-primary{% endif %}">
-                <span>All Categories</span>
+              <a href="{% url 'products:shop' %}?{% if current_brand %}brand={{ current_brand }}&{% endif %}{% if current_size %}size={{ current_size }}&{% endif %}{% if current_color %}color={{ current_color }}&{% endif %}{% if current_sort %}sort={{ current_sort }}{% endif %}" class="filter-category-link {% if not current_category %}active{% endif %}">
+                <span>All Collections</span>
+                <i class="bi bi-arrow-right-short text-muted"></i>
               </a>
               {% for cat in all_categories %}
-                <a href="{% url 'products:shop' %}?category={{ cat.slug }}&sort={{ current_sort }}" class="filter-link {% if current_category == cat.slug %}active fw-bold text-primary{% endif %}">
+                <a href="{% url 'products:shop' %}?category={{ cat.slug }}&{% if current_brand %}brand={{ current_brand }}&{% endif %}{% if current_size %}size={{ current_size }}&{% endif %}{% if current_color %}color={{ current_color }}&{% endif %}{% if current_sort %}sort={{ current_sort }}{% endif %}" class="filter-category-link {% if current_category == cat.slug %}active{% endif %}">
                   <span>{{ cat.name }}</span>
-                  <span class="badge bg-secondary bg-opacity-25 text-body rounded-pill font-monospace small">{{ cat.p_count }}</span>
+                  <span class="badge bg-secondary-subtle text-body rounded-pill font-monospace small px-2">{{ cat.p_count }}</span>
                 </a>
               {% endfor %}
             </div>
           </div>
 
           <!-- Brand Filter -->
-          <div class="mb-4">
-            <div class="filter-heading">Brand</div>
-            <select name="brand" class="form-select form-select-sm" onchange="this.form.submit()">
+          <div class="filter-section-block">
+            <div class="filter-heading">
+              <i class="bi bi-patch-check-fill"></i>
+              <span>Designer Brand</span>
+            </div>
+            <select name="brand" class="form-select form-select-sm rounded-3 py-2 bg-body" onchange="this.form.submit()">
               <option value="">All Brands</option>
               {% for b in all_brands %}
                 <option value="{{ b }}" {% if current_brand == b %}selected{% endif %}>{{ b }}</option>
@@ -59,12 +122,20 @@
             </select>
           </div>
 
-          <!-- Size Filter -->
-          <div class="mb-4">
-            <div class="filter-heading">Size</div>
-            <div class="d-flex flex-wrap gap-2">
+          <!-- Size Filter (Clean Non-Duplicate Grid) -->
+          <div class="filter-section-block">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <div class="filter-heading mb-0">
+                <i class="bi bi-rulers"></i>
+                <span>Garment Size</span>
+              </div>
+              {% if current_size %}
+                <a href="{% url 'products:shop' %}?{% if current_category %}category={{ current_category }}&{% endif %}{% if current_brand %}brand={{ current_brand }}&{% endif %}{% if current_color %}color={{ current_color }}&{% endif %}{% if current_sort %}sort={{ current_sort }}{% endif %}" class="small text-muted text-decoration-none" style="font-size: 0.75rem;">Reset</a>
+              {% endif %}
+            </div>
+            <div class="filter-size-grid">
               {% for s in all_sizes %}
-                <label class="btn btn-sm btn-sh-outline py-1 px-2 {% if current_size == s %}btn-sh-primary text-white{% endif %}" style="font-size: 0.8rem; cursor: pointer;">
+                <label class="filter-size-chip {% if current_size == s %}active{% endif %}" title="Size {{ s }}">
                   <input type="radio" name="size" value="{{ s }}" class="d-none" onchange="this.form.submit()" {% if current_size == s %}checked{% endif %}>
                   {{ s }}
                 </label>
@@ -72,42 +143,90 @@
             </div>
           </div>
 
-          <!-- Color Filter -->
-          <div class="mb-4">
-            <div class="filter-heading">Color</div>
-            <div class="d-flex flex-wrap gap-2">
+          <!-- Color Filter (Circular Swatches with Tooltips) -->
+          <div class="filter-section-block">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <div class="filter-heading mb-0">
+                <i class="bi bi-palette-fill"></i>
+                <span>Color Palette</span>
+              </div>
+              {% if current_color %}
+                <a href="{% url 'products:shop' %}?{% if current_category %}category={{ current_category }}&{% endif %}{% if current_brand %}brand={{ current_brand }}&{% endif %}{% if current_size %}size={{ current_size }}&{% endif %}{% if current_sort %}sort={{ current_sort }}{% endif %}" class="small text-muted text-decoration-none" style="font-size: 0.75rem;">Reset</a>
+              {% endif %}
+            </div>
+            {% if current_color %}
+              <div class="small text-muted mb-2" style="font-size: 0.75rem;">
+                Active: <span class="fw-bold text-sh-accent">{{ current_color }}</span>
+              </div>
+            {% endif %}
+            <div class="filter-color-grid">
               {% for c in all_colors %}
-                <label class="btn btn-sm btn-sh-outline py-1 px-2 d-flex align-items-center gap-1 {% if current_color == c.color %}btn-sh-primary text-white{% endif %}" style="font-size: 0.8rem; cursor: pointer;">
+                <label class="filter-color-circle {% if current_color == c.color %}active{% endif %}" style="background-color: {{ c.color_code }};" title="{{ c.color }}">
                   <input type="radio" name="color" value="{{ c.color }}" class="d-none" onchange="this.form.submit()" {% if current_color == c.color %}checked{% endif %}>
-                  <span class="rounded-circle border d-inline-block" style="width: 12px; height: 12px; background-color: {{ c.color_code }};"></span>
-                  {{ c.color }}
+                  {% if current_color == c.color %}
+                    <i class="bi bi-check-lg"></i>
+                  {% endif %}
                 </label>
               {% endfor %}
             </div>
           </div>
 
-          <!-- Price Range Filter -->
-          <div class="mb-4">
-            <div class="filter-heading">Price Range (₹)</div>
-            <div class="d-flex align-items-center gap-2 mb-2">
-              <input type="number" name="min_price" class="form-control form-control-sm" placeholder="Min" value="{{ current_min_price }}">
-              <span>-</span>
-              <input type="number" name="max_price" class="form-control form-control-sm" placeholder="Max" value="{{ current_max_price }}">
+          <!-- Price Range Filter with Quick Presets -->
+          <div class="filter-section-block">
+            <div class="filter-heading">
+              <i class="bi bi-currency-rupee"></i>
+              <span>Price Range</span>
             </div>
-            <button type="submit" class="btn btn-sm btn-sh-outline w-100">Apply Price</button>
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <div class="input-group input-group-sm">
+                <span class="input-group-text bg-transparent text-muted">₹</span>
+                <input type="number" id="min_price_input" name="min_price" class="form-control" placeholder="Min" value="{{ current_min_price }}">
+              </div>
+              <span class="text-muted">-</span>
+              <div class="input-group input-group-sm">
+                <span class="input-group-text bg-transparent text-muted">₹</span>
+                <input type="number" id="max_price_input" name="max_price" class="form-control" placeholder="Max" value="{{ current_max_price }}">
+              </div>
+            </div>
+
+            <!-- Quick Price Presets -->
+            <div class="d-flex flex-wrap gap-1 mb-2">
+              <button type="button" class="price-preset-btn" onclick="applyPricePreset('', '1500')">Under ₹1.5k</button>
+              <button type="button" class="price-preset-btn" onclick="applyPricePreset('1500', '3000')">₹1.5k - ₹3k</button>
+              <button type="button" class="price-preset-btn" onclick="applyPricePreset('3000', '')">₹3k+</button>
+            </div>
+
+            <button type="submit" class="btn btn-sm btn-sh-primary w-100 fw-semibold py-2">Apply Price</button>
           </div>
 
-          <!-- Rating Filter -->
-          <div class="mb-4">
-            <div class="filter-heading">Customer Rating</div>
-            <div class="d-flex flex-column gap-1">
-              <label class="small d-flex align-items-center gap-2" style="cursor: pointer;">
-                <input type="radio" name="rating" value="4" onchange="this.form.submit()" {% if current_rating == '4' %}checked{% endif %}>
-                <span class="text-warning"><i class="bi bi-star-fill"></i> 4.0 & above</span>
+          <!-- Customer Rating Filter -->
+          <div class="filter-section-block">
+            <div class="filter-heading">
+              <i class="bi bi-star-fill"></i>
+              <span>Customer Rating</span>
+            </div>
+            <div class="d-flex flex-column gap-2">
+              <label class="small d-flex align-items-center gap-2 p-1 rounded transition-hover" style="cursor: pointer;">
+                <input type="radio" name="rating" value="4" class="form-check-input mt-0" onchange="this.form.submit()" {% if current_rating == '4' %}checked{% endif %}>
+                <span class="text-warning">
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star"></i>
+                </span>
+                <span class="text-body fw-semibold">4.0 & above</span>
               </label>
-              <label class="small d-flex align-items-center gap-2" style="cursor: pointer;">
-                <input type="radio" name="rating" value="3" onchange="this.form.submit()" {% if current_rating == '3' %}checked{% endif %}>
-                <span class="text-warning"><i class="bi bi-star-fill"></i> 3.0 & above</span>
+              <label class="small d-flex align-items-center gap-2 p-1 rounded transition-hover" style="cursor: pointer;">
+                <input type="radio" name="rating" value="3" class="form-check-input mt-0" onchange="this.form.submit()" {% if current_rating == '3' %}checked{% endif %}>
+                <span class="text-warning">
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star"></i>
+                  <i class="bi bi-star"></i>
+                </span>
+                <span class="text-body fw-semibold">3.0 & above</span>
               </label>
             </div>
           </div>
@@ -120,7 +239,7 @@
     </div>
 
     <!-- Products Grid & Sort Header -->
-    <div class="col-lg-9">
+    <div class="col-xl-9 col-lg-8">
       <!-- Top Control Bar -->
       <div class="d-flex flex-wrap justify-content-between align-items-center p-3 mb-4 sh-card">
         <div>
@@ -192,7 +311,21 @@
                   {% endif %}
                 </div>
 
-                <a href="{% url 'products:product_detail' product.slug %}" class="btn btn-sh-outline btn-sm w-100 mt-3">
+                <!-- Live Colorway Swatches Preview -->
+                {% with colors=product.get_available_colors %}
+                  {% if colors %}
+                    <div class="card-color-swatches d-flex align-items-center gap-1 my-2">
+                      {% for c in colors|slice:":4" %}
+                        <a href="{% url 'products:product_detail' product.slug %}?color={{ c.name }}" class="card-swatch-dot rounded-circle border" style="background-color: {{ c.code }}; width: 14px; height: 14px; display: inline-block;" title="{{ c.name }}"></a>
+                      {% endfor %}
+                      {% if colors|length > 4 %}
+                        <span class="text-muted small" style="font-size: 0.68rem;">+{{ colors|length|add:"-4" }}</span>
+                      {% endif %}
+                    </div>
+                  {% endif %}
+                {% endwith %}
+
+                <a href="{% url 'products:product_detail' product.slug %}" class="btn btn-sh-outline btn-sm w-100 mt-2">
                   Select Size & Color
                 </a>
               </div>
@@ -247,4 +380,17 @@
     </div>
   </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function applyPricePreset(min, max) {
+  const minInput = document.getElementById('min_price_input');
+  const maxInput = document.getElementById('max_price_input');
+  const form = document.getElementById('filter-form');
+  if (minInput) minInput.value = min;
+  if (maxInput) maxInput.value = max;
+  if (form) form.submit();
+}
+</script>
 {% endblock %}

@@ -1,0 +1,30 @@
+<!-- Studio Picker Card Component -->
+<div class="card border rounded-3 p-2 bg-body shadow-xs transition-hover h-100 studio-picker-card" data-product-id="{{ item.id }}">
+  <div class="position-relative overflow-hidden rounded-2 mb-2" style="height: 170px;">
+    <img src="{{ item.image_url }}" alt="{{ item.name }}" class="w-100 h-100 object-fit-cover">
+    <div class="position-absolute bottom-0 start-0 m-1">
+      <span class="badge bg-dark bg-opacity-75 text-white small font-monospace">{{ item.brand }}</span>
+    </div>
+  </div>
+  <div class="d-flex flex-column flex-grow-1 justify-content-between">
+    <div>
+      <div class="fw-semibold small text-truncate mb-1" title="{{ item.name }}">{{ item.name }}</div>
+      <div class="d-flex align-items-center gap-2 mb-2">
+        <span class="fw-bold text-sh-accent">₹{{ item.price|floatformat:2 }}</span>
+        {% if item.original_price > item.price %}
+          <span class="text-muted small text-decoration-line-through">₹{{ item.original_price|floatformat:2 }}</span>
+        {% endif %}
+      </div>
+    </div>
+    <button type="button" 
+            class="btn btn-outline-dark btn-sm w-100 fw-semibold studio-card-btn"
+            data-slot="{{ slot_type }}"
+            data-product-id="{{ item.id }}"
+            data-product-name="{{ item.name }}"
+            data-product-price="{{ item.price }}"
+            data-product-image="{{ item.image_url }}"
+            data-variant-id="{{ item.variant_id|default:'' }}">
+      <i class="bi bi-plus-circle me-1"></i> Add to Outfit
+    </button>
+  </div>
+</div>

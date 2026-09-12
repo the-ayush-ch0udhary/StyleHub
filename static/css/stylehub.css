@@ -1,6 +1,6 @@
 /* ==========================================================================
    StyleHub — Modern Luxury Fashion E-Commerce Design System
-   STRICT RULE: ZERO GLASSMORPHISM (Clean, solid, crisp surfaces only)
+   
    ========================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap');
@@ -198,12 +198,17 @@ a {
   font-weight: 500;
   font-size: 0.95rem;
   color: var(--text-secondary) !important;
-  padding: 0.5rem 0.9rem !important;
+  padding: 0.5rem 0.85rem !important;
   transition: color var(--transition-fast);
+  white-space: nowrap !important;
 }
 
 .nav-link:hover, .nav-link.active {
   color: var(--text-primary) !important;
+}
+
+.nav-link.active {
+  font-weight: 600;
 }
 
 .nav-badge-icon {
@@ -218,6 +223,7 @@ a {
   color: var(--text-primary);
   border: 1px solid var(--border-subtle);
   transition: all var(--transition-fast);
+  flex-shrink: 0;
 }
 
 .nav-badge-icon:hover {
@@ -248,7 +254,9 @@ a {
 .search-box-wrap {
   position: relative;
   width: 100%;
-  max-width: 420px;
+  max-width: 320px;
+  min-width: 180px;
+  flex-shrink: 1;
 }
 
 .search-input {
@@ -572,38 +580,188 @@ a {
 }
 
 /* ==========================================================================
-   SHOP SIDEBAR FILTERS
+   SHOP SIDEBAR FILTERS — LUXURY & SPACIOUS DESIGN
    ========================================================================== */
 .filter-sidebar {
   background-color: var(--bg-surface);
   border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  padding: 1.5rem;
+  border-radius: var(--radius-lg, 16px);
+  padding: 1.75rem 1.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
 }
 
-.filter-heading {
-  font-size: 0.95rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--text-primary);
-  margin-bottom: 1rem;
-  padding-bottom: 0.5rem;
+@media (min-width: 992px) {
+  .filter-sidebar-sticky {
+    position: sticky;
+    top: 85px;
+    max-height: calc(100vh - 105px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(212, 175, 55, 0.4) transparent;
+  }
+
+  .filter-sidebar-sticky::-webkit-scrollbar {
+    width: 5px;
+  }
+  .filter-sidebar-sticky::-webkit-scrollbar-thumb {
+    background-color: rgba(212, 175, 55, 0.4);
+    border-radius: 4px;
+  }
+}
+
+.filter-section-block {
+  margin-bottom: 1.75rem;
+  padding-bottom: 1.5rem;
   border-bottom: 1px solid var(--border-subtle);
 }
 
-.filter-link {
+.filter-section-block:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.filter-heading {
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin-bottom: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.filter-category-link {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.35rem 0;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
   color: var(--text-secondary);
   font-size: 0.9rem;
+  text-decoration: none;
+  transition: all var(--transition-fast);
 }
 
-.filter-link:hover, .filter-link.active {
+.filter-category-link:hover {
+  background-color: var(--bg-surface-alt, rgba(0, 0, 0, 0.04));
   color: var(--text-primary);
+  transform: translateX(3px);
+}
+
+.filter-category-link.active {
+  background-color: rgba(212, 175, 55, 0.15);
+  color: #b48512;
   font-weight: 600;
+}
+
+[data-bs-theme="dark"] .filter-category-link.active {
+  background-color: rgba(212, 175, 55, 0.2);
+  color: #fbbf24;
+}
+
+/* Size Chips Grid */
+.filter-size-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(46px, 1fr));
+  gap: 0.45rem;
+}
+
+.filter-size-chip {
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  background-color: var(--bg-surface);
+  color: var(--text-primary);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-align: center;
+  user-select: none;
+  text-decoration: none;
+}
+
+.filter-size-chip:hover {
+  border-color: #D4AF37;
+  color: #D4AF37;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.filter-size-chip.active {
+  background-color: #111827;
+  border-color: #111827;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+[data-bs-theme="dark"] .filter-size-chip.active {
+  background-color: #D4AF37;
+  border-color: #D4AF37;
+  color: #111827;
+  box-shadow: 0 2px 10px rgba(212, 175, 55, 0.3);
+}
+
+/* Color Circles Grid */
+.filter-color-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.filter-color-circle {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid var(--border-subtle);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+  position: relative;
+  text-decoration: none;
+}
+
+.filter-color-circle:hover {
+  transform: scale(1.25);
+  box-shadow: 0 0 0 2px #D4AF37;
+  z-index: 2;
+}
+
+.filter-color-circle.active {
+  transform: scale(1.15);
+  box-shadow: 0 0 0 3px #D4AF37;
+}
+
+.filter-color-circle.active i {
+  color: #ffffff;
+  text-shadow: 0 0 3px rgba(0,0,0,0.9);
+  font-size: 0.75rem;
+}
+
+/* Quick Price Preset Pills */
+.price-preset-btn {
+  font-size: 0.75rem;
+  padding: 0.35rem 0.7rem;
+  border-radius: 20px;
+  border: 1px solid var(--border-subtle);
+  background: transparent;
+  color: var(--text-secondary);
+  transition: all var(--transition-fast);
+  cursor: pointer;
+}
+
+.price-preset-btn:hover {
+  border-color: #D4AF37;
+  color: #D4AF37;
+  background-color: rgba(212, 175, 55, 0.08);
 }
 
 /* ==========================================================================
@@ -872,6 +1030,127 @@ a {
   border: 1px solid var(--border-subtle);
 }
 
+/* Dynamic Hero Clothing Showcase Carousel */
+.hero-carousel-wrapper {
+  max-width: 320px;
+  margin: 0 auto;
+  border-radius: 1rem;
+  background: transparent;
+  border: none;
+  padding: 0;
+  box-shadow: none;
+  position: relative;
+}
+
+.hero-showcase-card {
+  display: block;
+  overflow: hidden;
+  border-radius: 0.85rem;
+  cursor: pointer;
+}
+
+.hero-img-wrap {
+  width: 100%;
+  height: 350px;
+  max-height: 360px;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  background-color: #111827;
+  position: relative;
+}
+
+.hero-showcase-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.5s ease;
+}
+
+.hero-showcase-card:hover .hero-showcase-img {
+  transform: scale(1.05);
+}
+
+.hero-product-overlay {
+  z-index: 5;
+  background: linear-gradient(180deg, transparent 0%, rgba(10, 14, 23, 0.88) 100%);
+  padding-top: 2.5rem !important;
+}
+
+.hero-info-glass {
+  background: rgba(17, 24, 39, 0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+  transition: all 0.3s ease;
+}
+
+.hero-showcase-card:hover .hero-info-glass {
+  background: rgba(17, 24, 39, 0.96);
+  border-color: rgba(212, 175, 55, 0.7);
+  box-shadow: 0 10px 35px rgba(212, 175, 55, 0.2);
+}
+
+.carousel-nav-btn {
+  width: 36px;
+  height: 36px;
+  background: rgba(17, 24, 39, 0.75);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+
+.carousel-nav-btn:hover {
+  background: #D4AF37;
+  color: #111827;
+  transform: scale(1.08);
+}
+
+.hero-carousel-wrapper .carousel-control-prev,
+.hero-carousel-wrapper .carousel-control-next {
+  width: 44px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.hero-carousel-wrapper:hover .carousel-control-prev,
+.hero-carousel-wrapper:hover .carousel-control-next {
+  opacity: 1;
+}
+
+.hero-carousel-wrapper .carousel-indicators {
+  margin-bottom: 0.5rem;
+}
+
+.hero-carousel-wrapper .carousel-indicators [data-bs-target] {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.45);
+  border: 0;
+  margin: 0 3px;
+  transition: all 0.3s ease;
+}
+
+.hero-carousel-wrapper .carousel-indicators .active {
+  width: 22px;
+  border-radius: 4px;
+  background-color: #D4AF37;
+}
+
+@media (max-width: 576px) {
+  .hero-img-wrap {
+    height: 340px;
+  }
+}
+
 .category-pill-card {
   background-color: var(--bg-surface);
   border: 1px solid var(--border-subtle);
@@ -896,3 +1175,194 @@ a {
   margin: 0 auto 0.75rem;
   border: 2px solid var(--border-subtle);
 }
+
+/* Discovery & Recommendation Tabs on Product Detail */
+#discoveryTabs .nav-link {
+  color: var(--text-muted);
+  background-color: var(--bg-surface-alt, #f3f4f6);
+  border: 1px solid var(--border-subtle);
+  transition: all var(--transition-normal);
+  font-size: 0.95rem;
+}
+
+[data-bs-theme="dark"] #discoveryTabs .nav-link {
+  background-color: var(--bg-surface-alt, #1e2530);
+  color: #94a3b8;
+}
+
+#discoveryTabs .nav-link:hover {
+  color: var(--text-primary);
+  border-color: #D4AF37;
+}
+
+#discoveryTabs .nav-link.active {
+  background-color: #D4AF37;
+  color: #111827;
+  border-color: #D4AF37;
+  box-shadow: 0 4px 14px rgba(212, 175, 55, 0.35);
+}
+
+/* ==========================================================================
+   STYLEHUB UNIQUE FEATURES: DRAWER, LOOKBOOK, STUDIO, FIT FINDER & SWATCHES
+   ========================================================================== */
+
+/* Gold & Accent Utilities */
+.bg-gradient-gold {
+  background: linear-gradient(90deg, #D4AF37 0%, #f59e0b 100%) !important;
+}
+
+.text-sh-accent {
+  color: #b48512 !important;
+}
+
+[data-bs-theme="dark"] .text-sh-accent {
+  color: #fbbf24 !important;
+}
+
+.border-sh-accent {
+  border-color: #D4AF37 !important;
+}
+
+/* Cart Drawer */
+.cart-drawer {
+  background-color: var(--bg-surface, #ffffff);
+}
+
+.cart-drawer-item {
+  transition: background-color 0.2s ease;
+}
+
+.cart-drawer-item:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+[data-bs-theme="dark"] .cart-drawer-item:hover {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+/* Lookbook Canvas Hotspots */
+.lookbook-canvas-wrap {
+  position: relative;
+}
+
+.lookbook-hotspot {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+}
+
+.hotspot-pin {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.hotspot-dot {
+  width: 14px;
+  height: 14px;
+  background: #D4AF37;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.9);
+  z-index: 2;
+  transition: transform 0.2s ease;
+}
+
+.hotspot-pin:hover .hotspot-dot,
+.lookbook-hotspot.active .hotspot-dot {
+  transform: scale(1.3);
+  background: #ffffff;
+  border-color: #D4AF37;
+}
+
+.hotspot-pulse {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(212, 175, 55, 0.6);
+  animation: hotspotPulse 2s infinite ease-out;
+}
+
+@keyframes hotspotPulse {
+  0% { transform: scale(0.6); opacity: 1; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+
+.hotspot-popover {
+  position: absolute;
+  bottom: 38px;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  width: 220px;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 10;
+}
+
+.lookbook-hotspot:hover .hotspot-popover,
+.lookbook-hotspot.active .hotspot-popover {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+
+.lookbook-product-row {
+  transition: all 0.2s ease;
+}
+
+/* Outfit Builder Studio */
+.outfit-slot-card {
+  transition: all 0.2s ease;
+  background-color: var(--bg-surface);
+}
+
+.outfit-slot-card:hover {
+  border-color: var(--border-focus);
+}
+
+.studio-picker-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.studio-picker-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Find My Fit Quiz */
+.fit-build-btn.active,
+.fit-pref-btn.active {
+  background-color: #111827 !important;
+  color: #ffffff !important;
+  border-color: #111827 !important;
+  font-weight: 600;
+}
+
+[data-bs-theme="dark"] .fit-build-btn.active,
+[data-bs-theme="dark"] .fit-pref-btn.active {
+  background-color: #D4AF37 !important;
+  color: #111827 !important;
+  border-color: #D4AF37 !important;
+}
+
+/* Card Swatches Preview */
+.card-swatch-dot {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  cursor: pointer;
+}
+
+.card-swatch-dot:hover {
+  transform: scale(1.3);
+  box-shadow: 0 0 0 2px #D4AF37;
+}
+
+

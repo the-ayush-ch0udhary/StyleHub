@@ -9,4 +9,6 @@ urlpatterns = [
     path('api/update/', views.api_update_cart, name='api_update'),
     path('api/remove/', views.api_remove_cart, name='api_remove'),
     path('api/clear/', views.api_clear_cart, name='api_clear'),
+    path('api/drawer/', views.api_cart_drawer, name='api_drawer'),
+    path('api/bundle/', views.api_add_bundle, name='api_bundle'),
 ]
