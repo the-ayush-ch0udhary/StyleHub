@@ -17,6 +17,7 @@ class Coupon(models.Model):
     valid_from = models.DateTimeField(default=timezone.now)
     valid_until = models.DateTimeField()
     usage_limit = models.PositiveIntegerField(default=100, help_text="Total number of times this coupon can be used")
+    per_user_limit = models.PositiveIntegerField(default=1, help_text="Number of times an individual customer can use this coupon")
     used_count = models.PositiveIntegerField(default=0)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -41,6 +42,17 @@ class Coupon(models.Model):
         if not self.is_valid_now():
             return False
         return subtotal >= self.minimum_order_amount
+
+    def is_valid_for_user(self, user, subtotal):
+        if not self.is_valid_now():
+            return False, "This coupon has expired or reached its usage limit."
+        if subtotal < self.minimum_order_amount:
+            return False, f"Minimum order amount of ₹{self.minimum_order_amount} required to apply this coupon."
+        if user and user.is_authenticated:
+            user_usages = self.usages.filter(user=user).count()
+            if user_usages >= self.per_user_limit:
+                return False, f"You have already used this coupon the maximum allowed {self.per_user_limit} time(s)."
+        return True, "Valid"
 
     def calculate_discount(self, subtotal):
         if not self.is_valid_for_cart(subtotal):

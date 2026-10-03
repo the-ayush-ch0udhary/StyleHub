@@ -15,7 +15,15 @@
 
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="h2 fw-bold mb-0">Saved Styles <span class="text-muted fs-5">({{ wishlist_items|length }})</span></h1>
-    <a href="{% url 'products:shop' %}" class="btn btn-sh-outline btn-sm">Explore More</a>
+    <div class="d-flex gap-2">
+      {% if wishlist_items %}
+        <form action="{% url 'wishlist:move_all_to_cart' %}" method="POST" class="d-inline">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-sh-primary btn-sm"><i class="bi bi-bag-check me-1"></i> Move All to Bag</button>
+        </form>
+      {% endif %}
+      <a href="{% url 'products:shop' %}" class="btn btn-sh-outline btn-sm">Explore More</a>
+    </div>
   </div>
 
   {% if wishlist_items %}

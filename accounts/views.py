@@ -57,13 +57,15 @@ def register_view(request):
             password = form.cleaned_data['password']
             phone_number = form.cleaned_data.get('phone_number', '')
 
-            # Save in session for pending verification
+            from django.contrib.auth.hashers import make_password
+
+            # Save in session for pending verification with securely hashed password
             request.session['pending_registration'] = {
                 'username': username,
                 'email': email,
                 'first_name': first_name,
                 'last_name': last_name,
-                'password': password,
+                'password_hash': make_password(password),
                 'phone_number': phone_number,
             }
             request.session['otp_last_sent_at'] = int(timezone.now().timestamp())
@@ -125,13 +127,17 @@ def verify_otp_view(request):
                         return redirect('accounts:register')
 
                     # Create verified user
-                    user = User.objects.create_user(
+                    user = User(
                         username=username,
                         email=email,
                         first_name=first_name,
                         last_name=pending_data.get('last_name', ''),
-                        password=pending_data['password']
                     )
+                    if 'password_hash' in pending_data:
+                        user.password = pending_data['password_hash']
+                    elif 'password' in pending_data:
+                        user.set_password(pending_data['password'])
+                    user.save()
 
                     # Update UserProfile
                     profile = user.profile

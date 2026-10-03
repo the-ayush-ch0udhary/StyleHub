@@ -9,4 +9,5 @@ urlpatterns = [
     path('cod-place-order/', views.cod_place_order, name='cod_place_order'),
     path('success/<str:order_number>/', views.payment_success_view, name='payment_success'),
     path('failed/', views.payment_failed_view, name='payment_failed'),
+    path('webhook/razorpay/', views.razorpay_webhook, name='razorpay_webhook'),
 ]

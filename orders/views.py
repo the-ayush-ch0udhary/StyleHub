@@ -1,3 +1,5 @@
+import logging
+import razorpay
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -10,6 +12,9 @@ from accounts.forms import AddressForm
 from cart.services import CartService
 from cart.views import get_cart_totals
 from coupons.models import Coupon
+from products.models import ProductVariant
+
+logger = logging.getLogger(__name__)
 
 @login_required
 def checkout_view(request):
@@ -108,18 +113,40 @@ def order_cancel_view(request, order_number):
         messages.error(request, f"Order #{order.order_number} cannot be cancelled as it has already reached status '{order.get_status_display()}'.")
         return redirect('orders:order_detail', order_number=order_number)
 
-    # Restore inventory
-    for item in order.items.select_related('variant'):
-        if item.variant:
-            item.variant.stock_quantity += item.quantity
-            item.variant.save()
+    # Restore inventory with row locks
+    order_items = list(order.items.select_related('variant'))
+    variant_ids = [item.variant_id for item in order_items if item.variant_id]
+    locked_variants = {
+        v.id: v for v in ProductVariant.objects.select_for_update().filter(id__in=variant_ids)
+    }
+
+    for item in order_items:
+        variant = locked_variants.get(item.variant_id)
+        if variant:
+            variant.stock_quantity += item.quantity
+            variant.save(update_fields=['stock_quantity', 'updated_at'])
 
     order.status = 'CANCELLED'
+    refund_note = ""
     if order.payment_status == 'PAID':
         order.payment_status = 'REFUNDED'
-        refund_note = "Your refund has been initiated to your original payment method."
-    else:
-        refund_note = ""
+        if order.payment_method == 'RAZORPAY' and order.razorpay_payment_id:
+            try:
+                client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+                refund_payload = {
+                    'amount': int(order.total_amount * 100),
+                    'notes': {
+                        'order_number': order.order_number,
+                        'reason': 'Customer requested cancellation'
+                    }
+                }
+                client.payment.refund(order.razorpay_payment_id, refund_payload)
+                refund_note = "Your refund has been initiated to your original payment method via Razorpay."
+            except Exception as e:
+                logger.error(f"Razorpay refund initiation failed for order {order.order_number}: {e}")
+                refund_note = "Cancellation recorded. Our support team will verify and process your refund within 2-3 business days."
+        else:
+            refund_note = "Your refund request has been queued."
 
     order.save()
     messages.success(request, f"Order #{order.order_number} has been cancelled successfully. {refund_note}")

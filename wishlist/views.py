@@ -62,3 +62,29 @@ def move_to_cart_view(request, item_id):
         messages.error(request, message)
 
     return redirect('wishlist:wishlist_view')
+
+
+@login_required
+@require_POST
+def move_all_to_cart_view(request):
+    wishlist_items = WishlistItem.objects.filter(user=request.user).select_related('product')
+    if not wishlist_items.exists():
+        messages.info(request, "Your wishlist is empty.")
+        return redirect('wishlist:wishlist_view')
+
+    cart = CartService.get_or_create_cart(request)
+    moved_count = 0
+    for item in wishlist_items:
+        variant = item.product.variants.filter(is_active=True, stock_quantity__gt=0).first()
+        if variant:
+            success, _ = CartService.add_to_cart(cart, variant.id, 1)
+            if success:
+                item.delete()
+                moved_count += 1
+
+    if moved_count > 0:
+        messages.success(request, f"Successfully moved {moved_count} available item(s) to your shopping bag.")
+    else:
+        messages.warning(request, "None of the wishlist items are currently in stock.")
+
+    return redirect('cart:cart_detail')

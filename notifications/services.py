@@ -1,6 +1,11 @@
+import logging
+from concurrent.futures import ThreadPoolExecutor
 from django.conf import settings
 from django.core.mail import send_mail
 from twilio.rest import Client
+
+logger = logging.getLogger(__name__)
+_notification_executor = ThreadPoolExecutor(max_workers=4)
 
 
 def send_email_notification(subject, message, recipient):
@@ -18,12 +23,15 @@ def send_email_notification(subject, message, recipient):
         return True
 
     except Exception as e:
-        print(f"Email notification failed: {e}")
+        logger.warning(f"Email notification failed: {e}")
         return False
 
 
 def send_sms_notification(message, phone_number):
     if not phone_number:
+        return False
+
+    if not getattr(settings, 'TWILIO_ACCOUNT_SID', None) or not getattr(settings, 'TWILIO_AUTH_TOKEN', None):
         return False
 
     try:
@@ -41,17 +49,11 @@ def send_sms_notification(message, phone_number):
         return True
 
     except Exception as e:
-        print(f"SMS notification failed: {e}")
+        logger.warning(f"SMS notification failed: {e}")
         return False
 
 
-def notify_order_confirmed(order):
-    """
-    Send email and SMS confirmation for a successfully confirmed order.
-
-    Notification failures should never break the order flow.
-    """
-
+def _dispatch_order_confirmed_sync(order):
     user = order.user
 
     name = (
@@ -87,3 +89,15 @@ def notify_order_confirmed(order):
         "email": email_sent,
         "sms": sms_sent,
     }
+
+
+def notify_order_confirmed(order, async_dispatch=True):
+    """
+    Send email and SMS confirmation for a successfully confirmed order.
+    Dispatched in background thread by default so checkout response is instantaneous.
+    Notification failures never break the order flow.
+    """
+    if async_dispatch:
+        _notification_executor.submit(_dispatch_order_confirmed_sync, order)
+        return {"status": "queued"}
+    return _dispatch_order_confirmed_sync(order)

@@ -2,14 +2,16 @@ import json
 import razorpay
 
 from django.shortcuts import render, get_object_or_404
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 from django.db import transaction
 
 from orders.models import Order, OrderItem
 from accounts.models import Address
+from products.models import ProductVariant
 from cart.services import CartService
 from cart.views import get_cart_totals
 from coupons.models import Coupon, CouponUsage
@@ -345,62 +347,55 @@ def verify_razorpay_payment(request):
                     status=400
                 )
 
+            cart_items = list(cart.items.select_related('variant', 'variant__product'))
+            variant_ids = [item.variant_id for item in cart_items if item.variant_id]
+
+            # Lock variants with select_for_update to eliminate race conditions
+            locked_variants = {
+                v.id: v for v in ProductVariant.objects.select_for_update().filter(id__in=variant_ids).select_related('product')
+            }
+
             # Re-check stock before completing payment
-            for item in cart.items.select_related(
-                'variant',
-                'variant__product'
-            ):
-                if (
-                    not item.variant.is_active
-                    or item.variant.stock_quantity < item.quantity
-                ):
+            for item in cart_items:
+                variant = locked_variants.get(item.variant_id)
+                if not variant or not variant.is_active or variant.stock_quantity < item.quantity:
+                    p_name = variant.product.name if variant and variant.product else "an item"
                     return JsonResponse(
                         {
                             'success': False,
-                            'message': (
-                                f"Insufficient stock for "
-                                f"{item.variant.product.name}."
-                            )
+                            'message': f"Insufficient stock for {p_name}."
                         },
                         status=400
                     )
 
-            # Create OrderItems
-            for item in cart.items.select_related(
-                'variant',
-                'variant__product'
-            ):
-
+            # Create OrderItems & safely deduct inventory
+            for item in cart_items:
+                variant = locked_variants.get(item.variant_id)
                 OrderItem.objects.create(
                     order=order,
-                    variant=item.variant,
-                    product_name=item.variant.product.name,
-                    sku=item.variant.sku,
-                    size=item.variant.size,
-                    color=item.variant.color,
+                    variant=variant,
+                    product_name=variant.product.name,
+                    sku=variant.sku,
+                    size=variant.size,
+                    color=variant.color,
                     quantity=item.quantity,
                     unit_price=item.unit_price,
                     subtotal=item.total_price,
                 )
 
-                # Reduce stock
-                item.variant.stock_quantity = max(
-                    0,
-                    item.variant.stock_quantity - item.quantity
-                )
-
-                item.variant.save()
+                # Reduce stock atomically
+                variant.stock_quantity = max(0, variant.stock_quantity - item.quantity)
+                variant.save(update_fields=['stock_quantity', 'updated_at'])
 
             # Record coupon usage
             if order.coupon_code:
-
-                coupon = Coupon.objects.filter(
+                coupon = Coupon.objects.select_for_update().filter(
                     code__iexact=order.coupon_code
                 ).first()
 
                 if coupon:
                     coupon.used_count += 1
-                    coupon.save()
+                    coupon.save(update_fields=['used_count'])
 
                     CouponUsage.objects.create(
                         coupon=coupon,
@@ -526,6 +521,22 @@ def cod_place_order(request):
     totals = get_cart_totals(cart, coupon)
 
     with transaction.atomic():
+        cart_items = list(cart.items.select_related('variant', 'variant__product'))
+        variant_ids = [item.variant_id for item in cart_items if item.variant_id]
+
+        locked_variants = {
+            v.id: v for v in ProductVariant.objects.select_for_update().filter(id__in=variant_ids).select_related('product')
+        }
+
+        # Check stock with locked rows
+        for item in cart_items:
+            variant = locked_variants.get(item.variant_id)
+            if not variant or not variant.is_active or variant.stock_quantity < item.quantity:
+                p_name = variant.product.name if variant and variant.product else "an item"
+                return JsonResponse({
+                    'success': False,
+                    'message': f"Insufficient stock for {p_name}."
+                }, status=400)
 
         order = Order.objects.create(
             user=request.user,
@@ -548,43 +559,35 @@ def cod_place_order(request):
             payment_method='COD',
         )
 
-        for item in cart.items.select_related(
-            'variant',
-            'variant__product'
-        ):
-
+        for item in cart_items:
+            variant = locked_variants.get(item.variant_id)
             OrderItem.objects.create(
                 order=order,
-                variant=item.variant,
-                product_name=item.variant.product.name,
-                sku=item.variant.sku,
-                size=item.variant.size,
-                color=item.variant.color,
+                variant=variant,
+                product_name=variant.product.name,
+                sku=variant.sku,
+                size=variant.size,
+                color=variant.color,
                 quantity=item.quantity,
                 unit_price=item.unit_price,
                 subtotal=item.total_price,
             )
 
-            item.variant.stock_quantity = max(
-                0,
-                item.variant.stock_quantity - item.quantity
-            )
-
-            item.variant.save()
+            variant.stock_quantity = max(0, variant.stock_quantity - item.quantity)
+            variant.save(update_fields=['stock_quantity', 'updated_at'])
 
         # Coupon usage
         if order.coupon_code:
-
-            coupon = Coupon.objects.filter(
+            coupon_obj = Coupon.objects.select_for_update().filter(
                 code__iexact=order.coupon_code
             ).first()
 
-            if coupon:
-                coupon.used_count += 1
-                coupon.save()
+            if coupon_obj:
+                coupon_obj.used_count += 1
+                coupon_obj.save(update_fields=['used_count'])
 
                 CouponUsage.objects.create(
-                    coupon=coupon,
+                    coupon=coupon_obj,
                     user=request.user,
                     order=order
                 )
@@ -640,3 +643,55 @@ def payment_failed_view(request):
             'order_number': order_number
         }
     )
+
+
+@csrf_exempt
+@require_POST
+def razorpay_webhook(request):
+    """
+    Razorpay Webhook listener to handle order.paid and payment.captured events.
+    Verifies X-Razorpay-Signature with RAZORPAY_WEBHOOK_SECRET.
+    Ensures orders are confirmed and stock is deducted even if the customer's browser disconnected.
+    """
+    webhook_secret = getattr(settings, 'RAZORPAY_WEBHOOK_SECRET', '')
+    if not webhook_secret:
+        return HttpResponse("Webhook secret not configured", status=200)
+
+    signature = request.headers.get('X-Razorpay-Signature') or request.META.get('HTTP_X_RAZORPAY_SIGNATURE')
+    if not signature:
+        return HttpResponse("Missing signature", status=400)
+
+    body = request.body.decode('utf-8')
+    client = get_razorpay_client()
+
+    try:
+        client.utility.verify_webhook_signature(body, signature, webhook_secret)
+    except Exception as e:
+        return HttpResponse(f"Invalid signature: {e}", status=400)
+
+    try:
+        data = json.loads(body)
+        event = data.get('event')
+
+        if event in ('order.paid', 'payment.captured'):
+            payload = data.get('payload', {})
+            payment_entity = payload.get('payment', {}).get('entity', {})
+            rzp_order_id = payment_entity.get('order_id')
+            rzp_payment_id = payment_entity.get('id')
+
+            if rzp_order_id:
+                order = Order.objects.filter(razorpay_order_id=rzp_order_id).first()
+                if order and order.payment_status != 'PAID':
+                    with transaction.atomic():
+                        order.payment_status = 'PAID'
+                        order.status = 'CONFIRMED'
+                        if rzp_payment_id:
+                            order.razorpay_payment_id = rzp_payment_id
+                        order.save(update_fields=['payment_status', 'status', 'razorpay_payment_id'])
+
+                    notify_order_confirmed(order)
+
+        return HttpResponse("Webhook processed successfully", status=200)
+
+    except Exception as e:
+        return HttpResponse(f"Webhook processing error: {e}", status=500)

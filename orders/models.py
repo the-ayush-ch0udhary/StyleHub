@@ -64,6 +64,12 @@ class Order(models.Model):
 
     class Meta:
         ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['user', '-created_at']),
+            models.Index(fields=['status', '-created_at']),
+            models.Index(fields=['payment_status', '-created_at']),
+            models.Index(fields=['razorpay_order_id']),
+        ]
 
     def save(self, *args, **kwargs):
         if not self.order_number:

@@ -16,17 +16,12 @@ def api_apply_coupon(request):
     if not coupon:
         return JsonResponse({'success': False, 'message': 'Invalid coupon code.'}, status=404)
 
-    if not coupon.is_valid_now():
-        return JsonResponse({'success': False, 'message': 'This coupon has expired or reached its usage limit.'}, status=400)
-
     cart = CartService.get_or_create_cart(request)
     subtotal = cart.subtotal
 
-    if subtotal < coupon.minimum_order_amount:
-        return JsonResponse({
-            'success': False,
-            'message': f'Minimum order amount of ₹{coupon.minimum_order_amount} required to apply this coupon.'
-        }, status=400)
+    valid, reason = coupon.is_valid_for_user(request.user if request.user.is_authenticated else None, subtotal)
+    if not valid:
+        return JsonResponse({'success': False, 'message': reason}, status=400)
 
     # Save coupon in session
     request.session['applied_coupon'] = coupon.code

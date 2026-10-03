@@ -20,6 +20,13 @@ class Category(models.Model):
         if not self.slug:
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
+        from django.core.cache import cache
+        cache.delete('nav_active_categories')
+
+    def delete(self, *args, **kwargs):
+        from django.core.cache import cache
+        cache.delete('nav_active_categories')
+        super().delete(*args, **kwargs)
 
     def __str__(self):
         return self.name
@@ -45,6 +52,12 @@ class Product(models.Model):
 
     class Meta:
         ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['is_active', '-created_at']),
+            models.Index(fields=['is_active', 'base_price']),
+            models.Index(fields=['is_active', 'is_featured']),
+            models.Index(fields=['is_active', 'is_bestseller']),
+        ]
 
     def save(self, *args, **kwargs):
         if not self.slug:
