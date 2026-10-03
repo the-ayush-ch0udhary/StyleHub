@@ -85,8 +85,34 @@ DB_HOST = os.environ.get('DB_HOST', 'localhost')
 DB_PORT = os.environ.get('DB_PORT', '5432')
 
 
-# Use DATABASE_URL if provided (Render), otherwise fall back to individual env vars
+# Use DATABASE_URL if provided (Neon / Render), otherwise fall back to individual env vars
 DATABASE_URL = os.environ.get('DATABASE_URL')
+
+# Robust DNS fallback for ISP resolvers refusing cloud database hosts (e.g. Neon CNAMEs)
+import socket
+import json
+import urllib.request
+
+_orig_getaddrinfo = socket.getaddrinfo
+
+def _safe_cloud_getaddrinfo(host, port, *args, **kwargs):
+    try:
+        return _orig_getaddrinfo(host, port, *args, **kwargs)
+    except socket.gaierror:
+        if host and ('neon.tech' in str(host) or 'supabase.co' in str(host)):
+            try:
+                url = f"https://dns.google/resolve?name={host}&type=A"
+                req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+                resp = json.loads(urllib.request.urlopen(req, timeout=4).read())
+                for ans in resp.get('Answer', []):
+                    ip = ans.get('data')
+                    if ip and ip.replace('.', '').isdigit():
+                        return _orig_getaddrinfo(ip, port, *args, **kwargs)
+            except Exception:
+                pass
+        raise
+
+socket.getaddrinfo = _safe_cloud_getaddrinfo
 
 if DATABASE_URL:
     DATABASES = {
