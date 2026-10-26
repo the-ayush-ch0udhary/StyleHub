@@ -1,4 +1,4 @@
-# StyleHub — Luxury Fashion E-Commerce Platform
+# StyleHub - Luxury Fashion E-Commerce Platform
 
 **StyleHub** is a modern, full-featured luxury fashion e-commerce platform built with Django 5, PostgreSQL, and Razorpay. Designed for a sleek shopping experience, it delivers end-to-end e-commerce capabilities—from variant-based catalog browsing and coupon promotions to secure payment processing and operational analytics.
 
