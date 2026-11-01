@@ -35,11 +35,11 @@
       <div class="col-lg-2 col-md-6 col-6">
         <h5 class="footer-heading">Customer Care</h5>
         <ul class="list-unstyled footer-links">
+          <li><a href="{% url 'products:about' %}">About StyleHub</a></li>
+          <li><a href="{% url 'products:contact' %}">Contact Concierge</a></li>
           <li><a href="{% url 'orders:my_orders' %}">Track My Order</a></li>
           <li><a href="{% url 'cart:cart_detail' %}">Shipping Policy</a></li>
-          <li><a href="#">Easy Returns & Refunds</a></li>
-          <li><a href="#">Privacy Policy</a></li>
-          <li><a href="#">Terms & Conditions</a></li>
+          <li><a href="{% url 'products:contact' %}">Returns & Refunds</a></li>
         </ul>
       </div>
 

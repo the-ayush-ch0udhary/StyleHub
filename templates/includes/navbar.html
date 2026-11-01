@@ -65,6 +65,13 @@
             <li><a class="dropdown-item text-primary fw-bold" href="{% url 'products:shop' %}">View All Collections <i class="bi bi-arrow-right ms-1"></i></a></li>
           </ul>
         </li>
+
+        <li class="nav-item">
+          <a class="nav-link text-nowrap {% if request.resolver_match.url_name == 'about' %}active fw-bold text-sh-accent{% endif %}" href="{% url 'products:about' %}">About Us</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-nowrap {% if request.resolver_match.url_name == 'contact' %}active fw-bold text-sh-accent{% endif %}" href="{% url 'products:contact' %}">Contact</a>
+        </li>
       </ul>
 
       <!-- Search Bar -->

@@ -210,3 +210,31 @@ class ProductVariant(models.Model):
     @property
     def is_in_stock(self):
         return self.stock_quantity > 0 and self.is_active
+
+class ContactMessage(models.Model):
+    SUBJECT_CHOICES = [
+        ('general', 'General Inquiry'),
+        ('order', 'Order Status & Tracking'),
+        ('styling', 'Personal Styling & Sizing Advice'),
+        ('returns', 'Returns, Exchanges & Refunds'),
+        ('wholesale', 'Wholesale & Press Inquiries'),
+        ('custom', 'Custom Bespoke Tailoring'),
+    ]
+
+    name = models.CharField(max_length=150)
+    email = models.EmailField()
+    phone = models.CharField(max_length=20, blank=True)
+    subject = models.CharField(max_length=50, choices=SUBJECT_CHOICES, default='general')
+    order_number = models.CharField(max_length=50, blank=True, help_text="Optional Order Reference")
+    message = models.TextField()
+    is_resolved = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = 'Contact Inquiry'
+        verbose_name_plural = 'Contact Inquiries'
+
+    def __str__(self):
+        return f"{self.get_subject_display()} - {self.name} ({self.created_at.strftime('%Y-%m-%d')})"
+

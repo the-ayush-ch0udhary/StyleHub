@@ -3,7 +3,7 @@ from django.db.models import Q, Avg, Count, Min, Max
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import JsonResponse
 from django.contrib import messages
-from .models import Category, Product, ProductImage, ProductVariant
+from .models import Category, Product, ProductImage, ProductVariant, ContactMessage
 
 def home_view(request):
     featured_categories = Category.objects.filter(is_active=True)[:8]
@@ -514,4 +514,110 @@ def api_pincode_check(request):
         'cod_available': True,
         'free_shipping': True,
     })
+
+
+def about_view(request):
+    """
+    Renders the StyleHub About Us page showcasing brand story, craftsmanship,
+    sustainable sourcing pillars, design philosophy, leadership, and customer milestones.
+    """
+    stats = [
+        {'value': '50K+', 'label': 'Discerning Clients', 'icon': 'bi-people'},
+        {'value': '100%', 'label': 'Ethical Sourcing', 'icon': 'bi-shield-check'},
+        {'value': '280 GSM', 'label': 'Signature Combed Fabric', 'icon': 'bi-gem'},
+        {'value': '4.9 / 5', 'label': 'Craftsmanship Rating', 'icon': 'bi-star-fill'},
+    ]
+
+    pillars = [
+        {
+            'title': 'Bespoke Craftsmanship',
+            'desc': 'Every seam, stitch, and cut is engineered with micrometric precision. We marry centuries-old tailoring traditions with contemporary streetwear ergonomics.',
+            'icon': 'bi-scissors',
+        },
+        {
+            'title': 'Conscious Sourcing',
+            'desc': 'From 14oz Japanese shuttle-loom selvedge denim to certified organic combed cotton, our materials are chosen for both tactile indulgence and longevity.',
+            'icon': 'bi-tree',
+        },
+        {
+            'title': 'Sustainable Luxury',
+            'desc': 'We vehemently reject disposable fast-fashion. Our capsule collections are produced in limited batches with zero-waste cutting and carbon-neutral logistics.',
+            'icon': 'bi-recycle',
+        },
+        {
+            'title': 'Timeless Silhouettes',
+            'desc': 'Our aesthetic champions refined minimalism: drop shoulders, boxy drape cuts, rich earth tones, and enduring luxury that outlives seasonal hype.',
+            'icon': 'bi-palette',
+        },
+    ]
+
+    team = [
+        {
+            'name': 'Aarav Sharma',
+            'role': 'Creative Director & Founder',
+            'bio': 'Alumnus of Central Saint Martins with 12+ years directing luxury atelier capsules across Milan and Paris.',
+            'image': 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&auto=format&fit=crop&q=80',
+        },
+        {
+            'name': 'Elena Rostova',
+            'role': 'Head of Tailoring & Textiles',
+            'bio': 'Master pattern-maker trained in Savile Row tailoring, specializing in heavyweight selvedge denim and pure silk drape.',
+            'image': 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=500&auto=format&fit=crop&q=80',
+        },
+        {
+            'name': 'Devrath Mehra',
+            'role': 'Lead Technology & E-Commerce Architect',
+            'bio': 'Bridging haute couture with bespoke digital shopping journeys, AI wardrobe styling, and instant checkout architecture.',
+            'image': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&auto=format&fit=crop&q=80',
+        },
+        {
+            'name': 'Sophia Chen',
+            'role': 'Head of Sustainable Sourcing',
+            'bio': 'Pioneering ethical textile loops, water-free denim washing treatments, and organic botanical dyeing techniques.',
+            'image': 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=500&auto=format&fit=crop&q=80',
+        },
+    ]
+
+    context = {
+        'stats': stats,
+        'pillars': pillars,
+        'team': team,
+    }
+    return render(request, 'products/about.html', context)
+
+
+def contact_view(request):
+    """
+    Renders the Contact Us page and handles concierge inquiry submissions.
+    """
+    if request.method == 'POST':
+        name = request.POST.get('name', '').strip()
+        email = request.POST.get('email', '').strip()
+        phone = request.POST.get('phone', '').strip()
+        subject = request.POST.get('subject', 'general').strip()
+        order_number = request.POST.get('order_number', '').strip()
+        message = request.POST.get('message', '').strip()
+
+        if not name or not email or not message:
+            messages.error(request, 'Please complete all required fields (Name, Email, and Message).')
+        else:
+            ContactMessage.objects.create(
+                name=name,
+                email=email,
+                phone=phone,
+                subject=subject,
+                order_number=order_number,
+                message=message,
+            )
+            messages.success(
+                request,
+                f"Thank you, {name}! Your message has been received by our Style Concierge team. We will respond to {email} within 24 hours."
+            )
+            return redirect('products:contact')
+
+    context = {
+        'subject_choices': ContactMessage.SUBJECT_CHOICES,
+    }
+    return render(request, 'products/contact.html', context)
+
 

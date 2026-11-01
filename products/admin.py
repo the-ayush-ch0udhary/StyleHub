@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import Category, Product, ProductImage, ProductVariant
+from .models import Category, Product, ProductImage, ProductVariant, ContactMessage
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
@@ -56,3 +56,12 @@ class ProductVariantAdmin(admin.ModelAdmin):
     list_filter = ('size', 'color', 'is_active', 'product__category')
     search_fields = ('sku', 'product__name', 'color')
     list_editable = ('stock_quantity', 'is_active')
+
+@admin.register(ContactMessage)
+class ContactMessageAdmin(admin.ModelAdmin):
+    list_display = ('name', 'email', 'phone', 'subject', 'order_number', 'is_resolved', 'created_at')
+    list_filter = ('is_resolved', 'subject', 'created_at')
+    search_fields = ('name', 'email', 'order_number', 'message')
+    list_editable = ('is_resolved',)
+    readonly_fields = ('created_at',)
+

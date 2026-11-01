@@ -1,0 +1,182 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}About Us — The StyleHub Atelier & Heritage{% endblock %}
+{% block meta_description %}Learn about StyleHub's commitment to modern luxury tailoring, sustainable selvedge denim, 280 GSM combed cottons, and timeless silhouette elegance.{% endblock %}
+
+{% block content %}
+<!-- Page Header / Hero Banner -->
+<div class="position-relative overflow-hidden py-5 mb-5" style="background: linear-gradient(135deg, #111827 0%, #1a2233 50%, #0d121c 100%); border-bottom: 1px solid var(--border-subtle);">
+  <div class="container py-4 text-center text-white position-relative" style="z-index: 2;">
+    <span class="badge bg-warning text-dark font-monospace px-3 py-2 text-uppercase mb-3 fw-bold rounded-pill" style="letter-spacing: 0.1em; font-size: 0.75rem;">
+      <i class="bi bi-gem me-1"></i> The StyleHub Atelier
+    </span>
+    <h1 class="display-4 fw-bold mb-3 tracking-tight">Crafting Timeless Everyday Luxury</h1>
+    <p class="lead text-light text-opacity-75 mx-auto mb-4" style="max-width: 680px; font-size: 1.15rem; line-height: 1.8;">
+      StyleHub was founded with a singular conviction: luxury shouldn't be defined by superficial brand logos, but by uncompromising fabric density, architectural tailoring, and enduring silhouettes.
+    </p>
+    <div class="d-flex justify-content-center gap-3">
+      <a href="{% url 'products:shop' %}" class="btn btn-sh-gold px-4 py-2">
+        <i class="bi bi-bag me-2"></i>Explore The Collection
+      </a>
+      <a href="{% url 'products:contact' %}" class="btn btn-outline-light px-4 py-2">
+        <i class="bi bi-chat-dots me-2"></i>Contact Our Atelier
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Metrics / Numbers Strip -->
+<div class="container mb-5">
+  <div class="row g-3">
+    {% for stat in stats %}
+      <div class="col-6 col-lg-3">
+        <div class="card h-100 border text-center p-4 rounded-4 shadow-sm" style="background: var(--bg-surface); border-color: var(--border-subtle) !important;">
+          <div class="mb-2">
+            <i class="bi {{ stat.icon }} fs-2" style="color: var(--gold-accent);"></i>
+          </div>
+          <div class="fs-2 fw-bold text-body font-monospace">{{ stat.value }}</div>
+          <div class="text-secondary small text-uppercase tracking-wider mt-1">{{ stat.label }}</div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- Brand Story & Origin Section -->
+<section class="container my-5 py-4">
+  <div class="row align-items-center g-5">
+    <div class="col-lg-6">
+      <div class="position-relative">
+        <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&auto=format&fit=crop&q=80" 
+             alt="StyleHub Studio Atelier" 
+             class="img-fluid rounded-4 shadow-lg w-100" 
+             style="max-height: 520px; object-fit: cover;">
+        <div class="position-absolute bottom-0 start-0 m-4 p-3 rounded-3 shadow-sm bg-dark bg-opacity-90 text-white d-none d-sm-block border border-secondary border-opacity-25" style="max-width: 260px;">
+          <div class="d-flex align-items-center gap-2 mb-1">
+            <i class="bi bi-shield-check text-warning fs-5"></i>
+            <span class="fw-bold small">Certified Ethical</span>
+          </div>
+          <p class="small text-secondary mb-0" style="font-size: 0.78rem;">
+            100% fair-wage artisan workshops and zero single-use plastic packaging.
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <span class="badge bg-secondary-subtle text-secondary font-monospace px-3 py-1 text-uppercase rounded-pill mb-2">Our Origin</span>
+      <h2 class="display-6 fw-bold mb-4 text-body">From a Small Pattern Studio to Global Disruption</h2>
+      <p class="text-secondary mb-3" style="line-height: 1.8;">
+        StyleHub began in 2024 as an independent bespoke studio in New Delhi, driven by a growing frustration with disposable "fast fashion" cycles and low-grade synthetic fabrics flooding the mainstream market.
+      </p>
+      <p class="text-secondary mb-4" style="line-height: 1.8;">
+        We partnered directly with heritage fabric mills in Okayama for authentic 14oz Japanese shuttle-loom selvedge denim, and organic cotton ginners in Tamil Nadu for our signature 280 GSM single jersey. By cutting out distributor markups and retail middlemen, we offer museum-grade sartorial craftsmanship at an honest, accessible valuation.
+      </p>
+      
+      <div class="row g-3 pt-2">
+        <div class="col-sm-6">
+          <div class="d-flex align-items-start gap-3">
+            <div class="rounded-circle p-2 bg-success bg-opacity-10 text-success flex-shrink-0">
+              <i class="bi bi-check2 fs-5"></i>
+            </div>
+            <div>
+              <h6 class="fw-bold text-body mb-1">Micro-Batch Runs</h6>
+              <p class="small text-secondary mb-0">Under 500 units per drop to ensure zero deadstock waste.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="d-flex align-items-start gap-3">
+            <div class="rounded-circle p-2 bg-success bg-opacity-10 text-success flex-shrink-0">
+              <i class="bi bi-check2 fs-5"></i>
+            </div>
+            <div>
+              <h6 class="fw-bold text-body mb-1">Reinforced Hardware</h6>
+              <p class="small text-secondary mb-0">Antiqued copper rivets and custom engraved YKK zippers.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Core Pillars / Sourcing Philosophy -->
+<section class="py-5" style="background-color: var(--bg-surface-alt); border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle);">
+  <div class="container py-3">
+    <div class="text-center max-w-xl mx-auto mb-5" style="max-width: 640px;">
+      <span class="badge bg-secondary-subtle text-secondary font-monospace px-3 py-1 text-uppercase rounded-pill mb-2">Our Standard</span>
+      <h2 class="display-6 fw-bold text-body mb-3">Engineered Elegance in Every Thread</h2>
+      <p class="text-secondary">
+        Four fundamental pillars govern every piece of apparel that earns the StyleHub woven label.
+      </p>
+    </div>
+
+    <div class="row g-4">
+      {% for pillar in pillars %}
+        <div class="col-md-6 col-lg-3">
+          <div class="card h-100 p-4 rounded-4 border shadow-sm transition-all" style="background: var(--bg-surface); border-color: var(--border-subtle) !important;">
+            <div class="rounded-3 p-3 d-inline-flex align-items-center justify-content-center mb-4" style="width: 52px; height: 52px; background: rgba(217, 119, 6, 0.12); color: var(--gold-accent);">
+              <i class="bi {{ pillar.icon }} fs-4"></i>
+            </div>
+            <h5 class="fw-bold text-body mb-2">{{ pillar.title }}</h5>
+            <p class="text-secondary small mb-0" style="line-height: 1.7;">
+              {{ pillar.desc }}
+            </p>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- The Creative Leadership Team -->
+<section class="container my-5 py-4">
+  <div class="text-center mx-auto mb-5" style="max-width: 640px;">
+    <span class="badge bg-secondary-subtle text-secondary font-monospace px-3 py-1 text-uppercase rounded-pill mb-2">The Minds</span>
+    <h2 class="display-6 fw-bold text-body mb-3">Atelier Leadership & Designers</h2>
+    <p class="text-secondary">
+      Driven by master tailors, sustainable materials scientists, and digital innovators united by a shared obsession with detail.
+    </p>
+  </div>
+
+  <div class="row g-4">
+    {% for member in team %}
+      <div class="col-sm-6 col-lg-3">
+        <div class="card h-100 border rounded-4 overflow-hidden shadow-sm" style="background: var(--bg-surface); border-color: var(--border-subtle) !important;">
+          <div style="height: 280px; overflow: hidden;">
+            <img src="{{ member.image }}" alt="{{ member.name }}" class="w-100 h-100 object-fit-cover" style="transition: transform 0.4s ease;">
+          </div>
+          <div class="card-body p-4">
+            <h5 class="fw-bold text-body mb-1">{{ member.name }}</h5>
+            <div class="small fw-semibold mb-2" style="color: var(--gold-accent);">{{ member.role }}</div>
+            <p class="text-secondary small mb-0" style="line-height: 1.6;">
+              {{ member.bio }}
+            </p>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="container my-5">
+  <div class="rounded-4 p-5 text-center text-white position-relative overflow-hidden" style="background: linear-gradient(135deg, #111827 0%, #0d121c 100%); border: 1px solid var(--border-subtle);">
+    <div class="position-relative" style="z-index: 2;">
+      <h2 class="display-6 fw-bold mb-3">Experience the StyleHub Difference</h2>
+      <p class="lead text-light text-opacity-75 mx-auto mb-4" style="max-width: 580px;">
+        Curate your personal silhouette with complimentary express shipping on your initial capsule order.
+      </p>
+      <div class="d-flex flex-wrap justify-content-center gap-3">
+        <a href="{% url 'products:shop' %}" class="btn btn-sh-gold px-4 py-3 fs-6">
+          <i class="bi bi-bag me-1"></i> Shop New Season
+        </a>
+        <a href="{% url 'products:outfit_builder' %}" class="btn btn-outline-light px-4 py-3 fs-6">
+          <i class="bi bi-magic me-1"></i> Launch Outfit Studio
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

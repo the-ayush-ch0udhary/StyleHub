@@ -1,0 +1,260 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Contact Concierge — StyleHub Support & Atelier{% endblock %}
+{% block meta_description %}Get in touch with the StyleHub concierge team for order inquiries, bespoke sizing guidance, return requests, or styling advice.{% endblock %}
+
+{% block content %}
+<!-- Header Banner -->
+<div class="position-relative overflow-hidden py-5 mb-5" style="background: linear-gradient(135deg, #111827 0%, #1a2233 50%, #0d121c 100%); border-bottom: 1px solid var(--border-subtle);">
+  <div class="container py-4 text-center text-white position-relative" style="z-index: 2;">
+    <span class="badge bg-warning text-dark font-monospace px-3 py-2 text-uppercase mb-3 fw-bold rounded-pill" style="letter-spacing: 0.1em; font-size: 0.75rem;">
+      <i class="bi bi-headset me-1"></i> Dedicated Concierge Service
+    </span>
+    <h1 class="display-4 fw-bold mb-3 tracking-tight">We're Here to Elevate Your Experience</h1>
+    <p class="lead text-light text-opacity-75 mx-auto mb-0" style="max-width: 650px; font-size: 1.15rem; line-height: 1.8;">
+      Have a question regarding your order, fabric specifications, or custom tailoring? Our styling concierge team responds to every inquiry within 24 hours.
+    </p>
+  </div>
+</div>
+
+<div class="container mb-5">
+  <div class="row g-5">
+    <!-- Contact Form Column -->
+    <div class="col-lg-7">
+      <div class="card p-4 p-md-5 rounded-4 border shadow-sm" style="background: var(--bg-surface); border-color: var(--border-subtle) !important;">
+        <div class="mb-4">
+          <span class="badge bg-secondary-subtle text-secondary font-monospace px-3 py-1 text-uppercase rounded-pill mb-2">Direct Message</span>
+          <h3 class="fw-bold text-body mb-2">Send Us an Inquiry</h3>
+          <p class="text-secondary small mb-0">Fill out the form below and an atelier representative will contact you promptly.</p>
+        </div>
+
+        <form method="POST" action="{% url 'products:contact' %}" novalidate>
+          {% csrf_token %}
+
+          <div class="row g-3">
+            <!-- Full Name -->
+            <div class="col-md-6">
+              <label for="id_name" class="form-label small fw-semibold text-body">Full Name <span class="text-danger">*</span></label>
+              <div class="input-group">
+                <span class="input-group-text bg-body-tertiary border-end-0 text-muted"><i class="bi bi-person"></i></span>
+                <input type="text" class="form-control border-start-0 ps-0" id="id_name" name="name" placeholder="e.g. Rahul Kapoor" required value="{{ user.get_full_name|default:'' }}">
+              </div>
+            </div>
+
+            <!-- Email Address -->
+            <div class="col-md-6">
+              <label for="id_email" class="form-label small fw-semibold text-body">Email Address <span class="text-danger">*</span></label>
+              <div class="input-group">
+                <span class="input-group-text bg-body-tertiary border-end-0 text-muted"><i class="bi bi-envelope"></i></span>
+                <input type="email" class="form-control border-start-0 ps-0" id="id_email" name="email" placeholder="rahul@example.com" required value="{{ user.email|default:'' }}">
+              </div>
+            </div>
+
+            <!-- Phone Number -->
+            <div class="col-md-6">
+              <label for="id_phone" class="form-label small fw-semibold text-body">Phone Number (Optional)</label>
+              <div class="input-group">
+                <span class="input-group-text bg-body-tertiary border-end-0 text-muted"><i class="bi bi-telephone"></i></span>
+                <input type="tel" class="form-control border-start-0 ps-0" id="id_phone" name="phone" placeholder="+91 98765 43210">
+              </div>
+            </div>
+
+            <!-- Order Reference -->
+            <div class="col-md-6">
+              <label for="id_order_number" class="form-label small fw-semibold text-body">Order Number (If Applicable)</label>
+              <div class="input-group">
+                <span class="input-group-text bg-body-tertiary border-end-0 text-muted"><i class="bi bi-receipt"></i></span>
+                <input type="text" class="form-control border-start-0 ps-0" id="id_order_number" name="order_number" placeholder="e.g. SH-2026-9041">
+              </div>
+            </div>
+
+            <!-- Subject Dropdown -->
+            <div class="col-12">
+              <label for="id_subject" class="form-label small fw-semibold text-body">Subject Category <span class="text-danger">*</span></label>
+              <div class="input-group">
+                <span class="input-group-text bg-body-tertiary border-end-0 text-muted"><i class="bi bi-tag"></i></span>
+                <select class="form-select border-start-0 ps-0" id="id_subject" name="subject" required>
+                  {% for code, label in subject_choices %}
+                    <option value="{{ code }}">{{ label }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+
+            <!-- Message Body -->
+            <div class="col-12">
+              <label for="id_message" class="form-label small fw-semibold text-body">Detailed Message <span class="text-danger">*</span></label>
+              <textarea class="form-control" id="id_message" name="message" rows="5" placeholder="Please describe how we can assist you..." required></textarea>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="col-12 pt-2">
+              <button type="submit" class="btn btn-sh-primary px-5 py-3 w-100 fw-bold">
+                <i class="bi bi-send-fill me-2"></i> Transmit Message to Concierge
+              </button>
+              <div class="small text-muted text-center mt-2">
+                <i class="bi bi-lock-fill me-1"></i> Your communication is encrypted and securely logged.
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Contact Information & Atelier Coordinates -->
+    <div class="col-lg-5">
+      <div class="d-flex flex-column gap-4">
+        <!-- Atelier Studio Card -->
+        <div class="card p-4 rounded-4 border shadow-sm" style="background: var(--bg-surface); border-color: var(--border-subtle) !important;">
+          <h5 class="fw-bold text-body mb-3 d-flex align-items-center gap-2">
+            <i class="bi bi-geo-alt-fill text-danger"></i> Flagship Atelier & Headquarters
+          </h5>
+          <p class="text-secondary small mb-3" style="line-height: 1.7;">
+            <strong>StyleHub Fashion Group</strong><br>
+            4th Floor, Crescent Luxe Enclave, MG Road,<br>
+            Chhatarpur, New Delhi, 110074, India
+          </p>
+          <div class="d-flex align-items-center gap-2 text-secondary small mb-2">
+            <i class="bi bi-train-front text-primary"></i> Nearest Metro: Chhatarpur (Yellow Line)
+          </div>
+          <div class="d-flex align-items-center gap-2 text-secondary small">
+            <i class="bi bi-car-front text-primary"></i> Valet Parking Available on Premises
+          </div>
+        </div>
+
+        <!-- Direct Channels Card -->
+        <div class="card p-4 rounded-4 border shadow-sm" style="background: var(--bg-surface); border-color: var(--border-subtle) !important;">
+          <h5 class="fw-bold text-body mb-3 d-flex align-items-center gap-2">
+            <i class="bi bi-chat-heart-fill" style="color: var(--gold-accent);"></i> Direct Concierge Channels
+          </h5>
+
+          <ul class="list-unstyled mb-0 d-flex flex-column gap-3 small">
+            <li class="d-flex align-items-center gap-3">
+              <div class="rounded-circle p-2 bg-primary bg-opacity-10 text-primary flex-shrink-0" style="width: 38px; height: 38px; display: flex; align-items: center; justify-content: center;">
+                <i class="bi bi-envelope-fill"></i>
+              </div>
+              <div>
+                <div class="text-secondary">Official Inquiries:</div>
+                <a href="mailto:concierge@stylehub.com" class="fw-bold text-body text-decoration-none">concierge@stylehub.com</a>
+              </div>
+            </li>
+
+            <li class="d-flex align-items-center gap-3">
+              <div class="rounded-circle p-2 bg-success bg-opacity-10 text-success flex-shrink-0" style="width: 38px; height: 38px; display: flex; align-items: center; justify-content: center;">
+                <i class="bi bi-whatsapp"></i>
+              </div>
+              <div>
+                <div class="text-secondary">VIP Styling WhatsApp:</div>
+                <a href="https://wa.me/919876543210" class="fw-bold text-success text-decoration-none">+91 98765 43210</a>
+              </div>
+            </li>
+
+            <li class="d-flex align-items-center gap-3">
+              <div class="rounded-circle p-2 bg-warning bg-opacity-10 text-warning flex-shrink-0" style="width: 38px; height: 38px; display: flex; align-items: center; justify-content: center;">
+                <i class="bi bi-telephone-fill"></i>
+              </div>
+              <div>
+                <div class="text-secondary">Telephone Desk:</div>
+                <span class="fw-bold text-body">+91 (011) 4567-8900</span>
+              </div>
+            </li>
+
+            <li class="d-flex align-items-center gap-3">
+              <div class="rounded-circle p-2 bg-info bg-opacity-10 text-info flex-shrink-0" style="width: 38px; height: 38px; display: flex; align-items: center; justify-content: center;">
+                <i class="bi bi-clock-history"></i>
+              </div>
+              <div>
+                <div class="text-secondary">Operating Hours:</div>
+                <span class="fw-bold text-body">Monday – Saturday: 9:00 AM – 8:00 PM IST</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Response Guarantee Badge -->
+        <div class="p-4 rounded-4 border" style="background: rgba(217, 119, 6, 0.08); border-color: rgba(217, 119, 6, 0.25) !important;">
+          <div class="d-flex align-items-center gap-3">
+            <i class="bi bi-patch-check-fill fs-2" style="color: var(--gold-accent);"></i>
+            <div>
+              <h6 class="fw-bold text-body mb-1">Guaranteed 24-Hour Resolution</h6>
+              <p class="text-secondary small mb-0">Every message received is ticketed and assigned to a dedicated fashion specialist.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Frequently Asked Questions Accordion -->
+<section class="py-5" style="background-color: var(--bg-surface-alt); border-top: 1px solid var(--border-subtle);">
+  <div class="container py-3">
+    <div class="text-center mx-auto mb-5" style="max-width: 600px;">
+      <span class="badge bg-secondary-subtle text-secondary font-monospace px-3 py-1 text-uppercase rounded-pill mb-2">Instant Answers</span>
+      <h2 class="display-6 fw-bold text-body mb-3">Frequently Asked Questions</h2>
+      <p class="text-secondary">Quick answers to our most common shipping, exchange, and styling inquiries.</p>
+    </div>
+
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="accordion accordion-flush rounded-4 overflow-hidden shadow-sm border" id="contactFaqAccordion" style="border-color: var(--border-subtle) !important;">
+          
+          <div class="accordion-item" style="background: var(--bg-surface); border-color: var(--border-subtle);">
+            <h2 class="accordion-header" id="headingOne">
+              <button class="accordion-button fw-bold text-body collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                How soon will my order be dispatched and delivered?
+              </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#contactFaqAccordion">
+              <div class="accordion-body text-secondary small" style="line-height: 1.8;">
+                All orders are processed within 24 hours of placement. Metro cities (Delhi-NCR, Mumbai, Bengaluru, Hyderabad, Chennai) receive express 2-day doorstep delivery. All other pincodes are serviced within 3 to 5 business days with live tracking links sent via email and SMS.
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item" style="background: var(--bg-surface); border-color: var(--border-subtle);">
+            <h2 class="accordion-header" id="headingTwo">
+              <button class="accordion-button fw-bold text-body collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                What is StyleHub's return and sizing exchange policy?
+              </button>
+            </h2>
+            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#contactFaqAccordion">
+              <div class="accordion-body text-secondary small" style="line-height: 1.8;">
+                We offer a hassle-free 14-day return and exchange policy from the delivery date. Items must be unworn with original tags attached. You can initiate an exchange directly from your <a href="{% url 'orders:my_orders' %}" class="fw-semibold text-decoration-underline">My Orders</a> dashboard with complimentary reverse courier pickup.
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item" style="background: var(--bg-surface); border-color: var(--border-subtle);">
+            <h2 class="accordion-header" id="headingThree">
+              <button class="accordion-button fw-bold text-body collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                Can I request custom tailoring or fit consultations?
+              </button>
+            </h2>
+            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#contactFaqAccordion">
+              <div class="accordion-body text-secondary small" style="line-height: 1.8;">
+                Yes! Our atelier offers complimentary digital fit consultations. Simply select "Personal Styling & Sizing Advice" in the contact form above or message our VIP WhatsApp desk with your measurements.
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item" style="background: var(--bg-surface); border-color: var(--border-subtle);">
+            <h2 class="accordion-header" id="headingFour">
+              <button class="accordion-button fw-bold text-body collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                Which payment methods are accepted on StyleHub?
+              </button>
+            </h2>
+            <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#contactFaqAccordion">
+              <div class="accordion-body text-secondary small" style="line-height: 1.8;">
+                We accept all major Credit/Debit Cards (Visa, Mastercard, RuPay, American Express), UPI (Google Pay, PhonePe, Paytm), Netbanking across 50+ banks, and Cash on Delivery (COD) for eligible pincodes across India via Razorpay 256-bit encryption.
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
