@@ -89,7 +89,9 @@ WSGI_APPLICATION = 'config.wsgi.application'
 ASGI_APPLICATION = 'config.asgi.application'
 
 # Database Configuration
-# Default connects to PostgreSQL if available, fallback to SQLite for portable dev/testing
+# Default connects to SQLite for ultra-fast local development when DEBUG=True,
+# or uses DATABASE_URL in cloud / production (Render, Neon).
+USE_SQLITE = os.environ.get('USE_SQLITE', 'True' if DEBUG else 'False').lower() in ('true', '1', 'yes')
 DB_ENGINE = os.environ.get('DB_ENGINE', '')
 DB_NAME = os.environ.get('DB_NAME', '')
 DB_USER = os.environ.get('DB_USER', '')
@@ -97,29 +99,36 @@ DB_PASSWORD = os.environ.get('DB_PASSWORD', '')
 DB_HOST = os.environ.get('DB_HOST', 'localhost')
 DB_PORT = os.environ.get('DB_PORT', '5432')
 
-
 # Use DATABASE_URL if provided (Neon / Render), otherwise fall back to individual env vars
 DATABASE_URL = os.environ.get('DATABASE_URL')
 
-# Robust DNS fallback for ISP resolvers refusing cloud database hosts (e.g. Neon CNAMEs)
+# Robust DNS fallback & in-memory cache for cloud database hosts (e.g. Neon CNAMEs)
 import socket
 import json
 import urllib.request
 
 _orig_getaddrinfo = socket.getaddrinfo
+_DNS_CACHE = {
+    'ep-wispy-art-b54idiu8-pooler.c-7.us-east-2.aws.neon.tech': '3.18.239.121',
+    'c-7.us-east-2.aws.neon.tech': '3.18.239.121',
+}
 
 def _safe_cloud_getaddrinfo(host, port, *args, **kwargs):
+    host_str = str(host) if host else ''
+    if host_str in _DNS_CACHE:
+        return _orig_getaddrinfo(_DNS_CACHE[host_str], port, *args, **kwargs)
     try:
         return _orig_getaddrinfo(host, port, *args, **kwargs)
     except socket.gaierror:
-        if host and ('neon.tech' in str(host) or 'supabase.co' in str(host)):
+        if host_str and ('neon.tech' in host_str or 'supabase.co' in host_str):
             try:
-                url = f"https://dns.google/resolve?name={host}&type=A"
+                url = f"https://dns.google/resolve?name={host_str}&type=A"
                 req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
-                resp = json.loads(urllib.request.urlopen(req, timeout=4).read())
+                resp = json.loads(urllib.request.urlopen(req, timeout=3).read())
                 for ans in resp.get('Answer', []):
                     ip = ans.get('data')
                     if ip and ip.replace('.', '').isdigit():
+                        _DNS_CACHE[host_str] = ip
                         return _orig_getaddrinfo(ip, port, *args, **kwargs)
             except Exception:
                 pass
@@ -127,7 +136,14 @@ def _safe_cloud_getaddrinfo(host, port, *args, **kwargs):
 
 socket.getaddrinfo = _safe_cloud_getaddrinfo
 
-if DATABASE_URL:
+if USE_SQLITE:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+elif DATABASE_URL:
     DATABASES = {
         'default': dj_database_url.parse(
             DATABASE_URL,
@@ -135,15 +151,22 @@ if DATABASE_URL:
             conn_health_checks=True,
         )
     }
-else:
+elif DB_NAME:
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.postgresql',
+            'ENGINE': DB_ENGINE or 'django.db.backends.postgresql',
             'NAME': DB_NAME,
             'USER': DB_USER,
             'PASSWORD': DB_PASSWORD,
             'HOST': DB_HOST,
             'PORT': DB_PORT,
+        }
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
 
