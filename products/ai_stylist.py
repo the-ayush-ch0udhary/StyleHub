@@ -241,3 +241,4 @@ def _local_intelligent_fashion_agent(query, catalog, current_product_id=None):
             recommended_ids.append(p['id'])
 
     return text, recommended_ids
+

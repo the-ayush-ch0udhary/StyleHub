@@ -254,8 +254,8 @@ a {
 .search-box-wrap {
   position: relative;
   width: 100%;
-  max-width: 320px;
-  min-width: 180px;
+  max-width: 250px;
+  min-width: 150px;
   flex-shrink: 1;
 }
 
@@ -291,6 +291,7 @@ a {
    BUTTONS & CONTROLS
    ========================================================================== */
 .btn-sh-primary {
+  white-space: nowrap !important;
   background-color: var(--accent-primary);
   color: var(--accent-text) !important;
   border: 1px solid var(--accent-primary);
@@ -314,6 +315,7 @@ a {
 }
 
 .btn-sh-outline {
+  white-space: nowrap !important;
   background-color: transparent;
   color: var(--text-primary) !important;
   border: 1px solid var(--border-strong);
@@ -1366,3 +1368,49 @@ a {
 }
 
 
+
+
+/* ==========================================================================
+   NAVBAR AUTH BUTTONS (Clean, Non-wrapping, Luxury Aesthetic)
+   ========================================================================== */
+.nav-auth-btn {
+  white-space: nowrap !important;
+  font-size: 0.88rem !important;
+  font-weight: 600 !important;
+  padding: 0.42rem 1.15rem !important;
+  border-radius: var(--radius-pill) !important;
+  flex-shrink: 0 !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none !important;
+  line-height: 1.4 !important;
+  transition: all var(--transition-fast) !important;
+}
+
+.nav-btn-signin {
+  background-color: transparent !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-strong) !important;
+}
+
+.nav-btn-signin:hover {
+  background-color: var(--bg-surface-alt) !important;
+  border-color: var(--gold-accent) !important;
+  color: var(--gold-accent) !important;
+}
+
+.nav-btn-signup {
+  background-color: var(--gold-accent) !important;
+  color: #FFFFFF !important;
+  border: 1px solid var(--gold-accent) !important;
+  box-shadow: 0 2px 6px rgba(217, 119, 6, 0.25);
+}
+
+.nav-btn-signup:hover {
+  background-color: var(--gold-accent-hover) !important;
+  border-color: var(--gold-accent-hover) !important;
+  color: #FFFFFF !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.35);
+}

@@ -261,3 +261,4 @@ document.addEventListener('DOMContentLoaded', function () {
     return cookie ? cookie.split('=')[1] : '';
   }
 });
+

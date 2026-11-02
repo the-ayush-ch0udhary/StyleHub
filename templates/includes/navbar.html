@@ -83,7 +83,7 @@
       <!-- Search Bar -->
       <form class="d-flex my-2 my-lg-0 me-lg-3 search-box-wrap" action="{% url 'products:search' %}" method="GET">
         <i class="bi bi-search search-icon"></i>
-        <input class="search-input" type="search" name="q" placeholder="Search luxury shirts, jackets, denim..." aria-label="Search" value="{{ request.GET.q|default:'' }}">
+        <input class="search-input" type="search" name="q" placeholder="Search luxury fashion..." aria-label="Search" value="{{ request.GET.q|default:'' }}">
       </form>
 
       <!-- Right Action Items -->
@@ -141,9 +141,9 @@
             </ul>
           </div>
         {% else %}
-          <div class="d-flex align-items-center gap-2 ms-lg-2">
-            <a href="{% url 'accounts:login' %}" class="btn btn-sh-outline py-2 px-3">Sign In</a>
-            <a href="{% url 'accounts:register' %}" class="btn btn-sh-primary py-2 px-3">Sign Up</a>
+          <div class="d-flex align-items-center gap-2 ms-lg-2 flex-shrink-0">
+            <a href="{% url 'accounts:login' %}" class="nav-auth-btn nav-btn-signin">Sign In</a>
+            <a href="{% url 'accounts:register' %}" class="nav-auth-btn nav-btn-signup">Sign Up</a>
           </div>
         {% endif %}
       </div>
