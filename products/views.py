@@ -29,10 +29,10 @@ def home_view(request):
     products_by_id = {p.id: p for p in Product.objects.filter(id__in=bundle_pids, is_active=True).prefetch_related('images', 'variants')}
     
     pin_configs = [
-        {'id': 18, 'label': 'Layer 1: Denim Jacket', 'top': 30, 'left': 44},
-        {'id': 5, 'label': 'Layer 2: Boxy Crewneck', 'top': 46, 'left': 56},
-        {'id': 4, 'label': 'Bottom: Selvedge Denim', 'top': 68, 'left': 45},
-        {'id': 11, 'label': 'Footwear: Urban Sneakers', 'top': 88, 'left': 53},
+        {'id': 18, 'label': 'Layer 1: Denim Jacket', 'top': 36, 'left': 38},
+        {'id': 5, 'label': 'Layer 2: Boxy Crewneck', 'top': 44, 'left': 51},
+        {'id': 4, 'label': 'Bottom: Selvedge Denim', 'top': 67, 'left': 45},
+        {'id': 11, 'label': 'Footwear: Urban Sneakers', 'top': 88, 'left': 42},
     ]
 
     lookbook_items = []

@@ -259,8 +259,8 @@
       <!-- Left: Interactive Canvas with Glowing Hotspot Pins -->
       <div class="col-lg-6">
         <div class="lookbook-canvas-wrap position-relative mx-auto rounded-4 overflow-hidden shadow-lg" style="max-width: 480px; height: 560px;">
-          <!-- High-Fashion Editorial Model Image -->
-          <img src="https://images.unsplash.com/photo-1509631179647-0177331693ae?w=800&auto=format&fit=crop&q=85" alt="StyleHub Editorial Lookbook" class="w-100 h-100 object-fit-cover">
+          <!-- High-Fashion Editorial Model Image matching the Denim Outfit -->
+          <img src="{% static 'images/lookbook/urban_sartorial_look.jpg' %}" alt="The Urban Sartorial Look - StyleHub Editorial" class="w-100 h-100 object-fit-cover">
           
           <div class="lookbook-canvas-overlay position-absolute top-0 start-0 w-100 h-100" style="background: radial-gradient(circle, transparent 40%, rgba(0,0,0,0.4) 100%);"></div>
           
@@ -284,7 +284,7 @@
                     <img src="{{ item.product.primary_image.image.url }}" alt="{{ item.product.name }}" class="rounded object-fit-cover" style="width: 44px; height: 44px;">
                   {% endif %}
                   <div class="min-w-0">
-                    <div class="text-xs text-muted text-uppercase font-monospace" style="font-size: 0.68rem;">{{ item.label }}</div>
+                    <div class="text-uppercase fw-semibold" style="font-size: 0.68rem; letter-spacing: 0.05em; color: var(--gold-accent, #d97706);">{{ item.label }}</div>
                     <div class="fw-bold small text-truncate" style="max-width: 140px;">{{ item.product.name }}</div>
                     <div class="fw-bold text-sh-accent small">₹{{ item.product.discounted_price }}</div>
                   </div>
@@ -316,7 +316,7 @@
                     <img src="{{ item.product.primary_image.image.url }}" alt="{{ item.product.name }}" class="rounded-2 object-fit-cover flex-shrink-0" style="width: 48px; height: 48px;">
                   {% endif %}
                   <div class="min-w-0">
-                    <div class="text-muted small font-monospace" style="font-size: 0.72rem;">{{ item.label }}</div>
+                    <div class="text-uppercase fw-semibold mb-0.5" style="font-size: 0.72rem; letter-spacing: 0.05em; color: var(--gold-accent, #d97706);">{{ item.label }}</div>
                     <a href="{% url 'products:product_detail' item.product.slug %}" class="fw-semibold text-reset text-decoration-none small text-truncate d-block">
                       {{ item.product.name }}
                     </a>
