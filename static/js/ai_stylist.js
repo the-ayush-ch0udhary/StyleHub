@@ -129,26 +129,26 @@ document.addEventListener('DOMContentLoaded', function () {
           </div>
           <div class="d-flex flex-column gap-2">
             ${products.map(p => `
-              <div class="card border rounded-3 p-2 shadow-sm d-flex flex-row align-items-center gap-2" style="background: var(--bg-surface, #ffffff);">
+              <div class="card border rounded-3 p-2 shadow-xs d-flex flex-row align-items-center gap-2 overflow-hidden position-relative ai-card-row" style="background: var(--bg-surface, #ffffff);">
                 <a href="/product/${p.slug}/" class="flex-shrink-0">
-                  <img src="${p.image_url || 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=200'}" alt="${escapeHtml(p.name)}" class="rounded object-fit-cover" style="width: 52px; height: 52px;">
+                  <img src="${p.image_url || 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=200'}" alt="${escapeHtml(p.name)}" class="rounded object-fit-cover" style="width: 46px; height: 46px;">
                 </a>
-                <div class="flex-grow-1 min-w-0" style="font-size: 0.8rem;">
-                  <a href="/product/${p.slug}/" class="fw-bold text-body text-truncate d-block text-decoration-none" title="${escapeHtml(p.name)}">
+                <div class="flex-grow-1 min-w-0" style="font-size: 0.8rem; overflow: hidden;">
+                  <a href="/product/${p.slug}/" class="fw-bold text-body text-truncate d-block text-decoration-none" title="${escapeHtml(p.name)}" style="font-size: 0.78rem;">
                     ${escapeHtml(p.name)}
                   </a>
-                  <div class="d-flex align-items-center gap-2 mt-0.5">
-                    <span class="fw-bold text-body">₹${Math.round(p.price).toLocaleString()}</span>
-                    ${p.discount_pct > 0 ? `<span class="text-muted text-decoration-line-through small" style="font-size: 0.7rem;">₹${Math.round(p.original_price).toLocaleString()}</span>` : ''}
-                    <span class="badge bg-secondary rounded-pill px-1.5" style="font-size: 0.65rem;">${escapeHtml(p.category)}</span>
+                  <div class="d-flex align-items-center flex-wrap gap-1 mt-0.5" style="row-gap: 2px;">
+                    <span class="fw-bold text-body" style="font-size: 0.8rem;">₹${Math.round(p.price).toLocaleString()}</span>
+                    ${p.discount_pct > 0 ? `<span class="text-muted text-decoration-line-through" style="font-size: 0.68rem;">₹${Math.round(p.original_price).toLocaleString()}</span>` : ''}
+                    <span class="badge bg-secondary bg-opacity-25 text-secondary rounded-pill px-1.5 py-0.5 text-truncate" style="font-size: 0.62rem; max-width: 90px;" title="${escapeHtml(p.category)}">${escapeHtml(p.category)}</span>
                   </div>
                 </div>
                 ${p.default_variant_id ? `
-                  <button type="button" class="btn btn-sm btn-sh-gold px-2 py-1 flex-shrink-0 ai-add-bag-btn" data-variant-id="${p.default_variant_id}" title="1-Click Add to Bag" style="font-size: 0.75rem;">
-                    <i class="bi bi-plus-lg"></i> Bag
+                  <button type="button" class="btn btn-sm ai-add-bag-btn flex-shrink-0 d-inline-flex align-items-center justify-content-center gap-1 ms-auto" data-variant-id="${p.default_variant_id}" title="1-Click Add to Bag">
+                    <i class="bi bi-plus-lg" style="font-size: 0.7rem;"></i> Bag
                   </button>
                 ` : `
-                  <a href="/product/${p.slug}/" class="btn btn-sm btn-outline-dark px-2 py-1 flex-shrink-0" style="font-size: 0.75rem;">
+                  <a href="/product/${p.slug}/" class="btn btn-sm btn-outline-secondary flex-shrink-0 ms-auto py-1 px-2" style="font-size: 0.72rem; border-radius: 6px;">
                     View
                   </a>
                 `}
@@ -163,7 +163,7 @@ document.addEventListener('DOMContentLoaded', function () {
       <div class="rounded-circle flex-shrink-0 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; background: #111827; color: #fbbf24;">
         <i class="bi bi-stars" style="font-size: 0.85rem;"></i>
       </div>
-      <div class="p-3 rounded-4 shadow-sm" style="max-width: 85%; background: var(--bg-surface-alt, #f8f9fa); border: 1px solid var(--border-subtle, #e5e7eb); border-top-left-radius: 4px;">
+      <div class="p-3 rounded-4 shadow-sm ai-msg-bubble" style="background: var(--bg-surface-alt, #f8f9fa); border: 1px solid var(--border-subtle, #e5e7eb); border-top-left-radius: 4px;">
         <div class="d-flex justify-content-between align-items-center mb-1">
           <span class="fw-bold small text-body">Aria • Stylist</span>
           <span class="badge bg-secondary bg-opacity-25 text-secondary font-monospace" style="font-size: 0.6rem;">${escapeHtml(engine || 'AI')}</span>

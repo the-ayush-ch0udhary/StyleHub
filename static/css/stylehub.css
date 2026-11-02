@@ -353,6 +353,43 @@ a {
   transform: translateY(-1px);
 }
 
+.btn-sh-gold.btn-sm,
+.btn-sm.btn-sh-gold {
+  padding: 0.3rem 0.75rem !important;
+  font-size: 0.75rem !important;
+  border-radius: var(--radius-sm) !important;
+}
+
+.ai-add-bag-btn {
+  background-color: var(--gold-accent) !important;
+  color: #FFFFFF !important;
+  border: none !important;
+  font-weight: 600 !important;
+  font-size: 0.72rem !important;
+  padding: 0.3rem 0.65rem !important;
+  border-radius: 6px !important;
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
+  line-height: 1.2 !important;
+  transition: all var(--transition-fast) !important;
+}
+
+.ai-add-bag-btn:hover {
+  background-color: var(--gold-accent-hover) !important;
+  color: #FFFFFF !important;
+  transform: scale(1.02);
+}
+
+.ai-msg-bubble {
+  max-width: calc(100% - 42px) !important;
+  width: 100%;
+}
+
+.ai-card-row {
+  overflow: hidden !important;
+  border-color: var(--border-subtle) !important;
+}
+
 /* ==========================================================================
    PRODUCT CARDS & GRIDS
    ========================================================================== */
