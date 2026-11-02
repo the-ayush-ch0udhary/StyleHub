@@ -13,5 +13,6 @@ urlpatterns = [
     path('product/<slug:slug>/', views.product_detail_view, name='product_detail'),
     path('api/variant-stock/', views.api_variant_stock, name='api_variant_stock'),
     path('api/pincode-check/', views.api_pincode_check, name='api_pincode_check'),
+    path('api/ai-stylist/', views.api_ai_stylist, name='api_ai_stylist'),
     path('newsletter/subscribe/', views.newsletter_subscribe_view, name='newsletter_subscribe'),
 ]

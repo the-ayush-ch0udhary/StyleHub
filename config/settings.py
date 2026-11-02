@@ -351,3 +351,6 @@ JAZZMIN_UI_TWEAKS = {
 }
 
 
+
+# Google Gemini AI Stylist API Configuration
+GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', '')

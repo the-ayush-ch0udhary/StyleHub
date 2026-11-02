@@ -72,6 +72,12 @@
         <li class="nav-item">
           <a class="nav-link text-nowrap {% if request.resolver_match.url_name == 'contact' %}active fw-bold text-sh-accent{% endif %}" href="{% url 'products:contact' %}">Contact</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link text-nowrap d-inline-flex align-items-center gap-1 trigger-ai-stylist" href="#" style="color: var(--gold-accent, #d97706) !important;">
+            <i class="bi bi-stars"></i>
+            <span>AI Stylist</span>
+          </a>
+        </li>
       </ul>
 
       <!-- Search Bar -->

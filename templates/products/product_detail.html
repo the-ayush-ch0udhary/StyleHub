@@ -141,6 +141,24 @@
         </div>
       </form>
 
+      <!-- Ask Atelier AI Stylist CTA -->
+      <div class="card border-0 rounded-3 p-3 mb-4 shadow-sm" style="background: linear-gradient(135deg, rgba(217, 119, 6, 0.08) 0%, rgba(17, 24, 39, 0.05) 100%); border: 1px solid rgba(217, 119, 6, 0.25) !important;" data-product-id="{{ product.id }}">
+        <div class="d-flex align-items-center justify-content-between gap-2 flex-wrap">
+          <div class="d-flex align-items-center gap-2">
+            <span class="rounded-circle p-1.5 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; background: rgba(217, 119, 6, 0.2); color: var(--gold-accent, #d97706);">
+              <i class="bi bi-stars"></i>
+            </span>
+            <div>
+              <div class="fw-bold small text-body">Unsure how to style or which size fits?</div>
+              <div class="text-secondary small" style="font-size: 0.76rem;">Get instant styling advice from Aria, our Atelier AI.</div>
+            </div>
+          </div>
+          <button type="button" class="btn btn-sm btn-outline-dark rounded-pill px-3 py-1.5 trigger-ai-stylist" data-ai-prompt="How should I style the {{ product.name|escapejs }} and what size would you recommend for my height and build?">
+            <i class="bi bi-chat-dots me-1"></i> Ask AI Stylist
+          </button>
+        </div>
+      </div>
+
       <!-- Interactive Pincode & Express Delivery Checker -->
       <div class="card border rounded-3 p-3 mb-4 bg-body-tertiary shadow-xs" id="pincode-checker-widget">
         <label class="form-label fw-bold small mb-2 d-flex align-items-center gap-2">

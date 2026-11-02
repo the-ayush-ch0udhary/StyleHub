@@ -1,3 +1,4 @@
+from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q, Avg, Count, Min, Max
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -621,3 +622,67 @@ def contact_view(request):
     return render(request, 'products/contact.html', context)
 
 
+
+
+@csrf_exempt
+def api_ai_stylist(request):
+    """
+    AI Stylist API endpoint.
+    Accepts POST requests with user message, optional product ID, and conversation history.
+    Returns tailored styling recommendations, sizing advice, and grounded product cards.
+    """
+    from .ai_stylist import ask_ai_stylist
+    import json
+
+    if request.method == 'POST':
+        try:
+            if request.content_type == 'application/json' and request.body:
+                data = json.loads(request.body)
+            else:
+                data = request.POST
+
+            user_message = data.get('message', '').strip()
+            current_product_id = data.get('product_id')
+            if current_product_id:
+                try:
+                    current_product_id = int(current_product_id)
+                except (ValueError, TypeError):
+                    current_product_id = None
+
+            history = data.get('history', [])
+            if isinstance(history, str):
+                try:
+                    history = json.loads(history)
+                except Exception:
+                    history = []
+
+            if not user_message:
+                return JsonResponse({'success': False, 'error': 'Message cannot be empty.'}, status=400)
+
+            result = ask_ai_stylist(
+                user_message=user_message,
+                current_product_id=current_product_id,
+                conversation_history=history
+            )
+
+            return JsonResponse({
+                'success': True,
+                'response': result['response'],
+                'products': result['products'],
+                'engine': result['engine'],
+            })
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+    # GET request returns welcome greeting and suggested prompts
+    return JsonResponse({
+        'success': True,
+        'greeting': "Welcome to the StyleHub Atelier. I am Aria, your personal fashion stylist. How may I assist your wardrobe curation today?",
+        'prompts': [
+            "✨ Style a dinner date look",
+            "🧥 Winter layering recommendations",
+            "📐 Fit and sizing advice",
+            "💰 Curate an outfit under ₹5000",
+            "🌿 Linen & breathable summer tops"
+        ]
+    })
