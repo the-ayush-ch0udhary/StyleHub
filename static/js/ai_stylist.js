@@ -106,8 +106,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const wrap = document.createElement('div');
     wrap.className = 'd-flex gap-2 justify-content-end align-items-start user-msg-wrap mt-2';
     wrap.innerHTML = `
-      <div class="p-3 rounded-4 shadow-sm text-white" style="max-width: 85%; background: var(--accent-primary, #111827); border-bottom-right-radius: 4px;">
-        <p class="small mb-0" style="line-height: 1.5;">${escapeHtml(text)}</p>
+      <div class="p-3 rounded-4 shadow-sm" style="max-width: 85%; background: #111827; color: #ffffff; border: 1px solid rgba(217, 119, 6, 0.35); border-bottom-right-radius: 4px;">
+        <p class="small mb-0" style="line-height: 1.5; color: #ffffff !important;">${escapeHtml(text)}</p>
       </div>
     `;
     messagesList.appendChild(wrap);
