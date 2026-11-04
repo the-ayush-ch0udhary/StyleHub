@@ -1,5 +1,6 @@
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, reverse_lazy
+from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.conf.urls.static import static
 from django.shortcuts import render
@@ -29,6 +30,18 @@ urlpatterns = [
     path('reviews/', include('reviews.urls', namespace='reviews')),
     path('coupons/', include('coupons.urls', namespace='coupons')),
     path('', include('products.urls', namespace='products')),
+
+    # Direct non-namespaced auth fallbacks for standard Django compatibility
+    path('password-reset-confirm/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(
+        template_name='accounts/password_reset_confirm.html',
+        success_url=reverse_lazy('accounts:password_reset_complete')
+    ), name='password_reset_confirm'),
+    path('password-reset/done/', auth_views.PasswordResetDoneView.as_view(
+        template_name='accounts/password_reset_done.html'
+    ), name='password_reset_done'),
+    path('password-reset-complete/', auth_views.PasswordResetCompleteView.as_view(
+        template_name='accounts/password_reset_complete.html'
+    ), name='password_reset_complete'),
 ]
 
 if settings.DEBUG:
