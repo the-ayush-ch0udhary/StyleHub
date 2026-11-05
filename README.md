@@ -1,11 +1,11 @@
 # StyleHub - Luxury Fashion E-Commerce Platform
 
-**StyleHub** is a modern, full-featured luxury fashion e-commerce platform built with Django 5, PostgreSQL, Razorpay, and Google Gemini AI. Designed for a sleek shopping experience, it delivers end-to-end e-commerce capabilities—from variant-based catalog browsing and AI-powered personal styling to secure payment processing and operational analytics.
+**StyleHub** is a modern, full-featured luxury fashion e-commerce platform built with Django 5, PostgreSQL, Razorpay, and Google Gemini AI. Designed for a sleek shopping experience, it delivers end-to-end e-commerce capabilities - from variant-based catalog browsing and AI-powered personal styling to secure payment processing and operational analytics.
 
 ---
 
 ## 🌐 Live Deployment
-
+    
 - **Live Storefront**: [https://stylehub-9ljl.onrender.com/](https://stylehub-9ljl.onrender.com/)
 - **Admin Portal**: [https://stylehub-9ljl.onrender.com/admin/](https://stylehub-9ljl.onrender.com/admin/)
 
