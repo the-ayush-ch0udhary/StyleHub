@@ -122,7 +122,9 @@ class Product(models.Model):
         return distribution_with_pct
 
     def get_available_sizes(self):
-        return list(self.variants.filter(is_active=True).values_list('size', flat=True).distinct())
+        SIZE_ORDER = ['XS', 'S', 'M', 'L', 'XL', 'XXL', '3XL', '28', '30', '32', '34', '36', 'UK 6', 'UK 7', 'UK 8', 'UK 9', 'UK 10', 'UK 11', 'Free Size']
+        raw_sizes = list(self.variants.filter(is_active=True).order_by().values_list('size', flat=True).distinct())
+        return sorted(raw_sizes, key=lambda s: SIZE_ORDER.index(s) if s in SIZE_ORDER else 999)
 
     def get_available_colors(self):
         colors = []

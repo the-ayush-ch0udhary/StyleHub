@@ -86,7 +86,7 @@ def get_catalog_summary():
         primary_img = p.primary_image
         img_url = primary_img.image.url if (primary_img and primary_img.image) else ''
         first_variant = p.variants.filter(is_active=True, stock_quantity__gt=0).first()
-        sizes = list(p.variants.filter(is_active=True, stock_quantity__gt=0).values_list('size', flat=True).distinct())
+        sizes = p.get_available_sizes()
 
         catalog.append({
             'id': p.id,

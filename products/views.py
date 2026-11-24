@@ -386,7 +386,9 @@ def api_variant_stock(request):
                 'message': 'This variant combination is currently unavailable.'
             })
     elif color:
-        available_sizes = list(variants.filter(color__iexact=color, stock_quantity__gt=0).values_list('size', flat=True))
+        SIZE_ORDER = ['XS', 'S', 'M', 'L', 'XL', 'XXL', '3XL', '28', '30', '32', '34', '36', 'UK 6', 'UK 7', 'UK 8', 'UK 9', 'UK 10', 'UK 11', 'Free Size']
+        raw_sizes = list(variants.filter(color__iexact=color, stock_quantity__gt=0).order_by().values_list('size', flat=True).distinct())
+        available_sizes = sorted(raw_sizes, key=lambda s: SIZE_ORDER.index(s) if s in SIZE_ORDER else 999)
         return JsonResponse({
             'success': True,
             'available_sizes': available_sizes
