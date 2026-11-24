@@ -188,7 +188,7 @@ document.addEventListener('DOMContentLoaded', function () {
       </div>
       <div class="p-3 rounded-4 shadow-sm ai-msg-bubble" style="background: var(--bg-surface-alt, #f8f9fa); border: 1px solid var(--border-subtle, #e5e7eb); border-top-left-radius: 4px;">
         <div class="d-flex justify-content-between align-items-center mb-1">
-          <span class="fw-bold small text-body">Aria • Stylist</span>
+          <span class="fw-bold small text-body">Aamo • Stylist</span>
           <span class="badge bg-secondary bg-opacity-25 text-secondary font-monospace" style="font-size: 0.6rem;">${escapeHtml(engine || 'AI')}</span>
         </div>
         <div class="small text-secondary mb-0 ai-formatted-text" style="line-height: 1.6;">

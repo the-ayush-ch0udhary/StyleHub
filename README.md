@@ -13,7 +13,7 @@
 ## Key Features
 
 ### 🤖 Artificial Intelligence & Personal Concierge
-- **Atelier AI Stylist ("Aria")**: Interactive personal fashion consultant powered by Google Gemini 1.5 Flash with a zero-downtime offline semantic fallback engine.
+- **Atelier AI Stylist ("Aamo")**: Interactive personal fashion consultant powered by Google Gemini 1.5 Flash with a zero-downtime offline semantic fallback engine.
 - **Contextual Outfit Recommendations**: Suggests matching garments grounded exclusively in StyleHub's live catalog with interactive cards and 1-click *"Add to Bag"*.
 - **Smart Sizing & Fit Advisor**: Delivers personalized fit guidance based on garment weight (e.g. 280 GSM cotton jersey, 14oz raw Japanese selvedge) and customer build.
 - **Natural Language Product Discovery**: Understands occasion requests (e.g., *"monochrome evening cocktail look"* or *"breathable summer linen"*).

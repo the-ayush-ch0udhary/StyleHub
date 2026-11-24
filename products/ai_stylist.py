@@ -8,7 +8,7 @@ from .models import Product
 
 logger = logging.getLogger(__name__)
 
-SYSTEM_PROMPT = """You are "Aria", the Chief Fashion Stylist and Atelier Concierge for StyleHub, a contemporary luxury fashion house.
+SYSTEM_PROMPT = """You are "Aamo", the Chief Fashion Stylist and Atelier Concierge for StyleHub, a contemporary luxury fashion house.
 Your tone is sophisticated, discerning, warm, and sartorially expert (reminiscent of Savile Row tailors and high-end Milanese personal stylists).
 
 CRITICAL GENDER-AWARE STYLING RULES:
@@ -153,7 +153,7 @@ def ask_ai_stylist(user_message, current_product_id=None, conversation_history=N
         chat_parts = [prompt]
         if conversation_history:
             for msg in conversation_history[-4:]:
-                prefix = "Customer: " if msg.get('role') == 'user' else "Aria: "
+                prefix = "Customer: " if msg.get('role') == 'user' else "Aamo: "
                 chat_parts.append(f"{prefix}{msg.get('text', '')}")
 
         chat_parts.append(f"Customer: {user_message}")

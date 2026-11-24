@@ -673,7 +673,7 @@ def api_ai_stylist(request):
     # GET request returns welcome greeting and suggested prompts
     return JsonResponse({
         'success': True,
-        'greeting': "Welcome to the StyleHub Atelier. I am Aria, your personal fashion stylist. How may I assist your wardrobe curation today?",
+        'greeting': "Welcome to the StyleHub Atelier. I am Aamo, your personal fashion stylist. How may I assist your wardrobe curation today?",
         'prompts': [
             "✨ Style a dinner date look",
             "🧥 Winter layering recommendations",
