@@ -15,7 +15,7 @@ venv.bak/
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
-media/
+# media/ (uncommented so product & lookbook media images are tracked and deployed to Render)
 
 # Environment variables
 .env
