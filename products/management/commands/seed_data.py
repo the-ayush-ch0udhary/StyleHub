@@ -96,15 +96,18 @@ class Command(BaseCommand):
                 'is_featured': True,
                 'is_bestseller': True,
                 'is_new_arrival': True,
+                'images': [
+                    {'image': 'products/Premium_Charcoal_Oversized_Hoodie.png', 'alt_text': 'Oversized Heavyweight French Terry Hoodie', 'is_primary': True},
+                ],
                 'variants': [
-                    {'size': 'S', 'color': 'Obsidian Black', 'color_code': '#111827', 'sku': 'SH-HD-BLK-S', 'stock': 12},
-                    {'size': 'M', 'color': 'Obsidian Black', 'color_code': '#111827', 'sku': 'SH-HD-BLK-M', 'stock': 18},
-                    {'size': 'L', 'color': 'Obsidian Black', 'color_code': '#111827', 'sku': 'SH-HD-BLK-L', 'stock': 8},
-                    {'size': 'XL', 'color': 'Obsidian Black', 'color_code': '#111827', 'sku': 'SH-HD-BLK-XL', 'stock': 4},
-                    {'size': 'S', 'color': 'Heather Grey', 'color_code': '#9CA3AF', 'sku': 'SH-HD-GRY-S', 'stock': 10},
-                    {'size': 'M', 'color': 'Heather Grey', 'color_code': '#9CA3AF', 'sku': 'SH-HD-GRY-M', 'stock': 15},
                     {'size': 'L', 'color': 'Heather Grey', 'color_code': '#9CA3AF', 'sku': 'SH-HD-GRY-L', 'stock': 6},
-                    {'size': 'M', 'color': 'Desert Camel', 'color_code': '#D97706', 'sku': 'SH-HD-CML-M', 'stock': 3}, # Low stock test
+                    {'size': 'L', 'color': 'Obsidian Black', 'color_code': '#111827', 'sku': 'SH-HD-BLK-L', 'stock': 8},
+                    {'size': 'M', 'color': 'Desert Camel', 'color_code': '#D97706', 'sku': 'SH-HD-CML-M', 'stock': 3},
+                    {'size': 'M', 'color': 'Heather Grey', 'color_code': '#9CA3AF', 'sku': 'SH-HD-GRY-M', 'stock': 15},
+                    {'size': 'M', 'color': 'Obsidian Black', 'color_code': '#111827', 'sku': 'SH-HD-BLK-M', 'stock': 18},
+                    {'size': 'S', 'color': 'Heather Grey', 'color_code': '#9CA3AF', 'sku': 'SH-HD-GRY-S', 'stock': 10},
+                    {'size': 'S', 'color': 'Obsidian Black', 'color_code': '#111827', 'sku': 'SH-HD-BLK-S', 'stock': 12},
+                    {'size': 'XL', 'color': 'Obsidian Black', 'color_code': '#111827', 'sku': 'SH-HD-BLK-XL', 'stock': 4},
                 ]
             },
             {
@@ -118,12 +121,15 @@ class Command(BaseCommand):
                 'is_featured': True,
                 'is_bestseller': True,
                 'is_new_arrival': False,
+                'images': [
+                    {'image': 'products/Charcoal_Double-Breasted_Overcoat.png', 'alt_text': 'Structured Wool-Blend Overcoat', 'is_primary': True},
+                ],
                 'variants': [
-                    {'size': 'M', 'color': 'Obsidian Black', 'color_code': '#111827', 'sku': 'SH-OC-BLK-M', 'stock': 5},
+                    {'size': 'L', 'color': 'Midnight Navy', 'color_code': '#1E3A8A', 'sku': 'SH-OC-NVY-L', 'stock': 6},
                     {'size': 'L', 'color': 'Obsidian Black', 'color_code': '#111827', 'sku': 'SH-OC-BLK-L', 'stock': 7},
                     {'size': 'M', 'color': 'Midnight Navy', 'color_code': '#1E3A8A', 'sku': 'SH-OC-NVY-M', 'stock': 4},
-                    {'size': 'L', 'color': 'Midnight Navy', 'color_code': '#1E3A8A', 'sku': 'SH-OC-NVY-L', 'stock': 6},
-                    {'size': 'XL', 'color': 'Camel Tan', 'color_code': '#B45309', 'sku': 'SH-OC-CML-XL', 'stock': 2}, # Low stock
+                    {'size': 'M', 'color': 'Obsidian Black', 'color_code': '#111827', 'sku': 'SH-OC-BLK-M', 'stock': 5},
+                    {'size': 'XL', 'color': 'Camel Tan', 'color_code': '#B45309', 'sku': 'SH-OC-CML-XL', 'stock': 10},
                 ]
             },
             {
@@ -137,12 +143,15 @@ class Command(BaseCommand):
                 'is_featured': False,
                 'is_bestseller': True,
                 'is_new_arrival': True,
+                'images': [
+                    {'image': 'products/Beige_Linen_Camp-Collar_Shirt.png', 'alt_text': 'Relaxed Camp-Collar Linen Shirt', 'is_primary': True},
+                ],
                 'variants': [
-                    {'size': 'S', 'color': 'Pure White', 'color_code': '#FFFFFF', 'sku': 'SH-LS-WHT-S', 'stock': 14},
-                    {'size': 'M', 'color': 'Pure White', 'color_code': '#FFFFFF', 'sku': 'SH-LS-WHT-M', 'stock': 20},
+                    {'size': 'L', 'color': 'Olive Green', 'color_code': '#15803D', 'sku': 'SH-LS-OLV-L', 'stock': 7},
                     {'size': 'L', 'color': 'Pure White', 'color_code': '#FFFFFF', 'sku': 'SH-LS-WHT-L', 'stock': 12},
                     {'size': 'M', 'color': 'Olive Green', 'color_code': '#15803D', 'sku': 'SH-LS-OLV-M', 'stock': 8},
-                    {'size': 'L', 'color': 'Olive Green', 'color_code': '#15803D', 'sku': 'SH-LS-OLV-L', 'stock': 7},
+                    {'size': 'M', 'color': 'Pure White', 'color_code': '#FFFFFF', 'sku': 'SH-LS-WHT-M', 'stock': 20},
+                    {'size': 'S', 'color': 'Pure White', 'color_code': '#FFFFFF', 'sku': 'SH-LS-WHT-S', 'stock': 14},
                 ]
             },
             {
@@ -156,11 +165,14 @@ class Command(BaseCommand):
                 'is_featured': True,
                 'is_bestseller': False,
                 'is_new_arrival': True,
+                'images': [
+                    {'image': 'products/Selvedge_Straight_Leg_Japanese_Denim.jpg', 'alt_text': 'Selvedge Straight-Leg Japanese Denim', 'is_primary': True},
+                ],
                 'variants': [
                     {'size': '30', 'color': 'Raw Indigo', 'color_code': '#1E3A8A', 'sku': 'SH-DN-IND-30', 'stock': 8},
                     {'size': '32', 'color': 'Raw Indigo', 'color_code': '#1E3A8A', 'sku': 'SH-DN-IND-32', 'stock': 15},
-                    {'size': '34', 'color': 'Raw Indigo', 'color_code': '#1E3A8A', 'sku': 'SH-DN-IND-34', 'stock': 10},
                     {'size': '32', 'color': 'Washed Charcoal', 'color_code': '#374151', 'sku': 'SH-DN-CHR-32', 'stock': 9},
+                    {'size': '34', 'color': 'Raw Indigo', 'color_code': '#1E3A8A', 'sku': 'SH-DN-IND-34', 'stock': 10},
                 ]
             },
             {
@@ -174,13 +186,16 @@ class Command(BaseCommand):
                 'is_featured': False,
                 'is_bestseller': True,
                 'is_new_arrival': False,
+                'images': [
+                    {'image': 'products/Heavy_Cotton_Boxy_Crewneck_TShirt.jpg', 'alt_text': 'Heavy Cotton Boxy Crewneck T-Shirt', 'is_primary': True},
+                ],
                 'variants': [
-                    {'size': 'S', 'color': 'Obsidian Black', 'color_code': '#111827', 'sku': 'SH-TS-BLK-S', 'stock': 25},
-                    {'size': 'M', 'color': 'Obsidian Black', 'color_code': '#111827', 'sku': 'SH-TS-BLK-M', 'stock': 30},
                     {'size': 'L', 'color': 'Obsidian Black', 'color_code': '#111827', 'sku': 'SH-TS-BLK-L', 'stock': 20},
-                    {'size': 'S', 'color': 'Pure White', 'color_code': '#FFFFFF', 'sku': 'SH-TS-WHT-S', 'stock': 22},
-                    {'size': 'M', 'color': 'Pure White', 'color_code': '#FFFFFF', 'sku': 'SH-TS-WHT-M', 'stock': 28},
                     {'size': 'L', 'color': 'Pure White', 'color_code': '#FFFFFF', 'sku': 'SH-TS-WHT-L', 'stock': 18},
+                    {'size': 'M', 'color': 'Obsidian Black', 'color_code': '#111827', 'sku': 'SH-TS-BLK-M', 'stock': 30},
+                    {'size': 'M', 'color': 'Pure White', 'color_code': '#FFFFFF', 'sku': 'SH-TS-WHT-M', 'stock': 28},
+                    {'size': 'S', 'color': 'Obsidian Black', 'color_code': '#111827', 'sku': 'SH-TS-BLK-S', 'stock': 25},
+                    {'size': 'S', 'color': 'Pure White', 'color_code': '#FFFFFF', 'sku': 'SH-TS-WHT-S', 'stock': 22},
                 ]
             },
             {
@@ -194,12 +209,15 @@ class Command(BaseCommand):
                 'is_featured': True,
                 'is_bestseller': True,
                 'is_new_arrival': True,
+                'images': [
+                    {'image': 'products/Silk_Charmeuse_Bias_Cut_Slip_Dress.jpg', 'alt_text': 'Silk Charmeuse Bias-Cut Slip Dress', 'is_primary': True},
+                ],
                 'variants': [
-                    {'size': 'XS', 'color': 'Champagne Gold', 'color_code': '#F59E0B', 'sku': 'SH-DR-GLD-XS', 'stock': 6},
-                    {'size': 'S', 'color': 'Champagne Gold', 'color_code': '#F59E0B', 'sku': 'SH-DR-GLD-S', 'stock': 9},
                     {'size': 'M', 'color': 'Champagne Gold', 'color_code': '#F59E0B', 'sku': 'SH-DR-GLD-M', 'stock': 7},
-                    {'size': 'S', 'color': 'Obsidian Black', 'color_code': '#111827', 'sku': 'SH-DR-BLK-S', 'stock': 11},
                     {'size': 'M', 'color': 'Obsidian Black', 'color_code': '#111827', 'sku': 'SH-DR-BLK-M', 'stock': 8},
+                    {'size': 'S', 'color': 'Champagne Gold', 'color_code': '#F59E0B', 'sku': 'SH-DR-GLD-S', 'stock': 9},
+                    {'size': 'S', 'color': 'Obsidian Black', 'color_code': '#111827', 'sku': 'SH-DR-BLK-S', 'stock': 11},
+                    {'size': 'XS', 'color': 'Champagne Gold', 'color_code': '#F59E0B', 'sku': 'SH-DR-GLD-XS', 'stock': 6},
                 ]
             },
             {
@@ -213,11 +231,14 @@ class Command(BaseCommand):
                 'is_featured': True,
                 'is_bestseller': False,
                 'is_new_arrival': True,
+                'images': [
+                    {'image': 'products/Minimalist_Calfskin_Leather_Low_Tops.jpg', 'alt_text': 'Minimalist Calfskin Leather Low-Tops', 'is_primary': True},
+                ],
                 'variants': [
-                    {'size': 'UK 7', 'color': 'Monochrome White', 'color_code': '#FFFFFF', 'sku': 'SH-SN-WHT-7', 'stock': 5},
+                    {'size': 'UK 10', 'color': 'Monochrome White', 'color_code': '#FFFFFF', 'sku': 'SH-SN-WHT-10', 'stock': 6},
+                    {'size': 'UK 7', 'color': 'Monochrome White', 'color_code': '#FFFFFF', 'sku': 'SH-SN-WHT-7', 'stock': 4},
                     {'size': 'UK 8', 'color': 'Monochrome White', 'color_code': '#FFFFFF', 'sku': 'SH-SN-WHT-8', 'stock': 8},
                     {'size': 'UK 9', 'color': 'Monochrome White', 'color_code': '#FFFFFF', 'sku': 'SH-SN-WHT-9', 'stock': 10},
-                    {'size': 'UK 10', 'color': 'Monochrome White', 'color_code': '#FFFFFF', 'sku': 'SH-SN-WHT-10', 'stock': 6},
                 ]
             },
             {
@@ -231,13 +252,243 @@ class Command(BaseCommand):
                 'is_featured': False,
                 'is_bestseller': False,
                 'is_new_arrival': True,
+                'images': [
+                    {'image': 'products/Full_Grain_Bridle_Leather_Belt.jpg', 'alt_text': 'Full-Grain Bridle Leather Minimalist Belt', 'is_primary': True},
+                    {'image': 'products/Coiled_Dark_Brown_Leather_Belt.png', 'alt_text': 'Hand-burnished leather belt coiled detail view', 'is_primary': False},
+                ],
                 'variants': [
-                    {'size': 'Free Size', 'color': 'Rich Cognac Brown', 'color_code': '#78350F', 'sku': 'SH-BLT-BRN-FS', 'stock': 15},
                     {'size': 'Free Size', 'color': 'Obsidian Black', 'color_code': '#111827', 'sku': 'SH-BLT-BLK-FS', 'stock': 20},
+                    {'size': 'Free Size', 'color': 'Rich Cognac Brown', 'color_code': '#78350F', 'sku': 'SH-BLT-BRN-FS', 'stock': 15},
                 ]
-            }
+            },
+            {
+                'category': 'men',
+                'name': 'Classic Oxford Cotton Shirt',
+                'slug': 'classic-oxford-cotton-shirt',
+                'brand': 'StyleHub Signature',
+                'description': 'Premium cotton Oxford shirt with a comfortable regular fit, button-down collar, and versatile design suitable for casual and semi-formal occasions',
+                'base_price': Decimal('1499.00'),
+                'discount_percentage': Decimal('10.00'),
+                'is_featured': True,
+                'is_bestseller': True,
+                'is_new_arrival': True,
+                'images': [
+                    {'image': 'products/ChatGPT_Image_Aug_28_2026_07_40_01_PM.png', 'alt_text': 'Classic Oxford Cotton Shirt', 'is_primary': True},
+                    {'image': 'products/ChatGPT_Image_Aug_28_2026_07_35_43_PM.png', 'alt_text': 'Classic Oxford Cotton Shirt styling and collar view', 'is_primary': False},
+                ],
+                'variants': [
+                    {'size': 'L', 'color': 'White', 'color_code': '#000000', 'sku': 'SH-OXF-WHT-L', 'stock': 10},
+                    {'size': 'M', 'color': 'White', 'color_code': '#000000', 'sku': 'SH-OXF-WHT-M', 'stock': 15},
+                    {'size': 'S', 'color': 'White', 'color_code': '#000000', 'sku': 'SH-OXF-WHT-S', 'stock': 15},
+                    {'size': 'XL', 'color': 'White', 'color_code': '#000000', 'sku': 'SH-OXF-WHT-XL', 'stock': 7},
+                    {'size': 'XXL', 'color': 'White', 'color_code': '#000000', 'sku': 'SH-OXF-WHT-XXL', 'stock': 20},
+                ]
+            },
+            {
+                'category': 'men',
+                'name': 'Slim Fit Casual T-Shirt',
+                'slug': 'slim-fit-casual-tshirt',
+                'brand': 'StyleHub Signature',
+                'description': 'Soft premium cotton T-shirt featuring a modern slim fit and minimalist design for everyday casual wear.',
+                'base_price': Decimal('799.00'),
+                'discount_percentage': Decimal('15.00'),
+                'is_featured': False,
+                'is_bestseller': True,
+                'is_new_arrival': False,
+                'images': [
+                    {'image': 'products/ChatGPT_Image_Aug_28_2026_08_00_20_PM.png', 'alt_text': 'Slim Fit Casual T-Shirt', 'is_primary': True},
+                ],
+                'variants': [
+                    {'size': 'L', 'color': 'Black', 'color_code': '#000000', 'sku': 'SH-TST-BLK-L', 'stock': 10},
+                    {'size': 'M', 'color': 'Black', 'color_code': '#000000', 'sku': 'SH-TST-BLK-M', 'stock': 10},
+                    {'size': 'S', 'color': 'Black', 'color_code': '#000000', 'sku': 'SH-TST-BLK-S', 'stock': 10},
+                ]
+            },
+            {
+                'category': 'footwear',
+                'name': 'Urban White Low-Top Sneakers',
+                'slug': 'urban-white-low-top-sneakers',
+                'brand': 'StyleHub Signature',
+                'description': 'Clean low-top sneakers with a classic white finish, cushioned footbed, and durable rubber outsole for everyday casual wear.',
+                'base_price': Decimal('2499.00'),
+                'discount_percentage': Decimal('15.00'),
+                'is_featured': True,
+                'is_bestseller': True,
+                'is_new_arrival': False,
+                'images': [
+                    {'image': 'products/ChatGPT_Image_Aug_28_2026_08_03_54_PM.png', 'alt_text': 'Urban White Low-Top Sneakers', 'is_primary': True},
+                ],
+                'variants': [
+                    {'size': 'UK 7', 'color': 'White', 'color_code': '#000000', 'sku': 'SH-SNK-WHT-07', 'stock': 10},
+                    {'size': 'UK 8', 'color': 'White', 'color_code': '#000000', 'sku': 'SH-SNK-WHT-08', 'stock': 10},
+                    {'size': 'UK 9', 'color': 'White', 'color_code': '#000000', 'sku': 'SH-SNK-WHT-09', 'stock': 9},
+                ]
+            },
+            {
+                'category': 'footwear',
+                'name': 'Black Performance Sneakers',
+                'slug': 'black-performance-sneakers',
+                'brand': 'StyleHub Signature',
+                'description': 'Lightweight black sneakers designed with breathable mesh, cushioned support, and a flexible outsole for active everyday use.',
+                'base_price': Decimal('2799.00'),
+                'discount_percentage': Decimal('9.00'),
+                'is_featured': False,
+                'is_bestseller': True,
+                'is_new_arrival': False,
+                'images': [
+                    {'image': 'products/ChatGPT_Image_Aug_28_2026_08_06_31_PM.png', 'alt_text': 'Black Performance Sneakers', 'is_primary': True},
+                ],
+                'variants': [
+                    {'size': 'UK 10', 'color': 'Black', 'color_code': '#000000', 'sku': 'SH-PRS-BLK-10', 'stock': 9},
+                    {'size': 'UK 7', 'color': 'Black', 'color_code': '#000000', 'sku': 'SH-PRS-BLK-07', 'stock': 10},
+                    {'size': 'UK 8', 'color': 'Black', 'color_code': '#000000', 'sku': 'SH-PRS-BLK-08', 'stock': 10},
+                ]
+            },
+            {
+                'category': 'footwear',
+                'name': 'Grey Knit Running Sneakers',
+                'slug': 'grey-knit-running-sneakers',
+                'brand': 'StyleHub Signature',
+                'description': 'Modern knit running sneakers featuring a breathable upper, responsive cushioning, and lightweight construction for comfortable daily movement.',
+                'base_price': Decimal('2999.00'),
+                'discount_percentage': Decimal('10.00'),
+                'is_featured': False,
+                'is_bestseller': False,
+                'is_new_arrival': True,
+                'images': [
+                    {'image': 'products/ChatGPT_Image_Aug_28_2026_08_09_51_PM.png', 'alt_text': 'Grey Knit Running Sneakers', 'is_primary': True},
+                ],
+                'variants': [
+                    {'size': 'UK 7', 'color': 'Grey', 'color_code': '#808080', 'sku': 'SH-RUN-GRY-07', 'stock': 20},
+                    {'size': 'UK 8', 'color': 'Grey', 'color_code': '#808080', 'sku': 'SH-RUN-GRY-08', 'stock': 20},
+                    {'size': 'UK 9', 'color': 'Grey', 'color_code': '#808080', 'sku': 'SH-RUN-GRY-09', 'stock': 19},
+                ]
+            },
+            {
+                'category': 'women',
+                'name': 'Classic Floral Midi Dress',
+                'slug': 'classic-floral-midi-dress',
+                'brand': 'StyleHub Signature',
+                'description': 'Elegant floral midi dress crafted from lightweight fabric with a flattering silhouette, short sleeves, and a comfortable fit for casual and semi-formal occasions.',
+                'base_price': Decimal('1999.00'),
+                'discount_percentage': Decimal('20.00'),
+                'is_featured': True,
+                'is_bestseller': False,
+                'is_new_arrival': True,
+                'images': [
+                    {'image': 'products/ChatGPT_Image_Aug_28_2026_08_13_15_PM.png', 'alt_text': 'Classic Floral Midi Dress', 'is_primary': True},
+                ],
+                'variants': [
+                    {'size': 'L', 'color': 'Floral Pink', 'color_code': '#D98C9A', 'sku': 'SH-WDR-FLR-L', 'stock': 10},
+                    {'size': 'M', 'color': 'Floral Pink', 'color_code': '#D98C9A', 'sku': 'SH-WDR-FLR-M', 'stock': 10},
+                    {'size': 'S', 'color': 'Floral Pink', 'color_code': '#D98C9A', 'sku': 'SH-WDR-FLR-S', 'stock': 10},
+                ]
+            },
+            {
+                'category': 'women',
+                'name': 'Ribbed Fitted Top',
+                'slug': 'ribbed-fitted-top',
+                'brand': 'StyleHub Signature',
+                'description': 'Soft ribbed cotton-blend top featuring a flattering fitted silhouette, crew neckline, and versatile minimalist styling for everyday wear.',
+                'base_price': Decimal('899.00'),
+                'discount_percentage': Decimal('5.00'),
+                'is_featured': True,
+                'is_bestseller': False,
+                'is_new_arrival': False,
+                'images': [
+                    {'image': 'products/ChatGPT_Image_Aug_28_2026_08_15_33_PM.png', 'alt_text': 'Ribbed Fitted Top', 'is_primary': True},
+                    {'image': 'products/ChatGPT_Image_Aug_28_2026_08_15_53_PM.png', 'alt_text': 'Ribbed Fitted Top alternate angle detail', 'is_primary': False},
+                ],
+                'variants': [
+                    {'size': 'L', 'color': 'Black', 'color_code': '#000000', 'sku': 'SH-WTP-BLK-L', 'stock': 20},
+                    {'size': 'M', 'color': 'Black', 'color_code': '#000000', 'sku': 'SH-WTP-BLK-M', 'stock': 20},
+                    {'size': 'S', 'color': 'Black', 'color_code': '#000000', 'sku': 'SH-WTP-BLK-S', 'stock': 20},
+                    {'size': 'XL', 'color': 'Black', 'color_code': '#000000', 'sku': 'SH-WTP-BLK-XL', 'stock': 20},
+                ]
+            },
+            {
+                'category': 'women',
+                'name': 'High-Waist Wide-Leg Trousers',
+                'slug': 'high-waist-wide-leg-trousers',
+                'brand': 'StyleHub Signature',
+                'description': 'Modern high-waist trousers with a flowing wide-leg silhouette, smooth finish, and comfortable construction designed for smart-casual styling.',
+                'base_price': Decimal('1599.00'),
+                'discount_percentage': Decimal('15.00'),
+                'is_featured': False,
+                'is_bestseller': False,
+                'is_new_arrival': False,
+                'images': [
+                    {'image': 'products/ChatGPT_Image_Aug_28_2026_08_21_36_PM.png', 'alt_text': 'High-Waist Wide-Leg Trousers', 'is_primary': True},
+                ],
+                'variants': [
+                    {'size': 'L', 'color': 'Beige', 'color_code': '#D8C3A5', 'sku': 'SH-WTR-BGE-L', 'stock': 20},
+                    {'size': 'M', 'color': 'Beige', 'color_code': '#D8C3A5', 'sku': 'SH-WTR-BGE-M', 'stock': 20},
+                    {'size': 'S', 'color': 'Beige', 'color_code': '#D8C3A5', 'sku': 'SH-WTR-BGE-S', 'stock': 20},
+                ]
+            },
+            {
+                'category': 'women',
+                'name': 'Elegant Wrap Dress',
+                'slug': 'elegant-wrap-dress',
+                'brand': 'StyleHub Signature',
+                'description': 'Sophisticated wrap dress featuring a flattering V-neckline, adjustable waist tie, flowing skirt, and elegant design suitable for evening and special occasions.',
+                'base_price': Decimal('2199.00'),
+                'discount_percentage': Decimal('20.00'),
+                'is_featured': False,
+                'is_bestseller': False,
+                'is_new_arrival': True,
+                'images': [
+                    {'image': 'products/ChatGPT_Image_Aug_28_2026_08_25_57_PM.png', 'alt_text': 'Elegant Wrap Dress', 'is_primary': True},
+                    {'image': 'products/ChatGPT_Image_Aug_28_2026_08_27_53_PM.png', 'alt_text': 'Elegant Wrap Dress evening silhouette view', 'is_primary': False},
+                ],
+                'variants': [
+                    {'size': 'L', 'color': 'Emerald Green', 'color_code': '#087F5B', 'sku': 'SH-WRD-GRN-L', 'stock': 20},
+                    {'size': 'M', 'color': 'Emerald Green', 'color_code': '#087F5B', 'sku': 'SH-WRD-GRN-M', 'stock': 20},
+                    {'size': 'S', 'color': 'Emerald Green', 'color_code': '#087F5B', 'sku': 'SH-WRD-GRN-S', 'stock': 20},
+                    {'size': 'XL', 'color': 'Emerald Green', 'color_code': '#087F5B', 'sku': 'SH-WRD-GRN-XL', 'stock': 20},
+                ]
+            },
+            {
+                'category': 'jackets',
+                'name': 'Classic Denim Jacket',
+                'slug': 'classic-denim-jacket',
+                'brand': 'StyleHub Signature',
+                'description': 'Timeless denim jacket crafted from durable cotton denim with a classic fit, button closure, chest pockets, and versatile styling for everyday casual wear.',
+                'base_price': Decimal('2499.00'),
+                'discount_percentage': Decimal('20.00'),
+                'is_featured': True,
+                'is_bestseller': True,
+                'is_new_arrival': False,
+                'images': [
+                    {'image': 'products/ChatGPT_Image_Aug_28_2026_08_30_35_PM.png', 'alt_text': 'Classic Denim Jacket', 'is_primary': True},
+                ],
+                'variants': [
+                    {'size': 'L', 'color': 'Blue', 'color_code': '#315A7D', 'sku': 'SH-JKT-DNM-L', 'stock': 14},
+                    {'size': 'M', 'color': 'Blue', 'color_code': '#315A7D', 'sku': 'SH-JKT-DNM-M', 'stock': 14},
+                    {'size': 'XL', 'color': 'Blue', 'color_code': '#315A7D', 'sku': 'SH-JKT-DNM-XL', 'stock': 15},
+                ]
+            },
+            {
+                'category': 'jackets',
+                'name': 'Lightweight Bomber Jacket',
+                'slug': 'lightweight-bomber-jacket',
+                'brand': 'StyleHub Signature',
+                'description': 'Lightweight bomber jacket featuring a modern silhouette, zip-front closure, ribbed cuffs and hem, and a clean versatile design for everyday layering.',
+                'base_price': Decimal('2299.00'),
+                'discount_percentage': Decimal('20.00'),
+                'is_featured': True,
+                'is_bestseller': False,
+                'is_new_arrival': True,
+                'images': [
+                    {'image': 'products/ChatGPT_Image_Aug_28_2026_08_32_59_PM.png', 'alt_text': 'Lightweight Bomber Jacket', 'is_primary': True},
+                ],
+                'variants': [
+                    {'size': 'L', 'color': 'Black', 'color_code': '#000000', 'sku': 'SH-BOM-BLK-L', 'stock': 48},
+                    {'size': 'M', 'color': 'Black', 'color_code': '#000000', 'sku': 'SH-BOM-BLK-M', 'stock': 50},
+                    {'size': 'XL', 'color': 'Black', 'color_code': '#000000', 'sku': 'SH-BOM-BLK-XL', 'stock': 14},
+                ]
+            },
         ]
-
         for p_data in products_data:
             cat = categories[p_data['category']]
             prod, _ = Product.objects.get_or_create(
@@ -270,7 +521,16 @@ class Command(BaseCommand):
                     }
                 )
 
-        self.stdout.write(self.style.SUCCESS(f"Loaded {len(products_data)} products with complete variant matrices."))
+            # Create Images
+            for img_info in p_data.get('images', []):
+                ProductImage.objects.get_or_create(
+                    product=prod,
+                    image=img_info['image'],
+                    defaults={
+                        'alt_text': img_info.get('alt_text', prod.name),
+                        'is_primary': img_info.get('is_primary', False),
+                    }
+                )
 
         # 5. Active Discount Coupons
         now = timezone.now()
