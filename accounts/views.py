@@ -1,4 +1,5 @@
 import logging
+from concurrent.futures import ThreadPoolExecutor
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout, authenticate, update_session_auth_hash
 from django.contrib.auth.models import User
@@ -13,6 +14,7 @@ from .models import UserProfile, Address, EmailVerificationOTP
 from .forms import UserRegistrationForm, UserLoginForm, OTPVerificationForm, UserProfileUpdateForm, AddressForm
 
 logger = logging.getLogger(__name__)
+_email_executor = ThreadPoolExecutor(max_workers=3)
 
 def send_otp_email(email, otp_code, first_name=''):
     subject = f"{otp_code} is your StyleHub verification code"
@@ -43,6 +45,10 @@ def send_otp_email(email, otp_code, first_name=''):
         logger.error(f"Error sending OTP verification email to {email}: {e}")
         return False
 
+def send_otp_email_async(email, otp_code, first_name=''):
+    """Dispatches verification email in a background thread for instantaneous page responsiveness."""
+    _email_executor.submit(send_otp_email, email, otp_code, first_name)
+
 def register_view(request):
     if request.user.is_authenticated:
         return redirect('products:home')
@@ -70,14 +76,14 @@ def register_view(request):
             }
             request.session['otp_last_sent_at'] = int(timezone.now().timestamp())
 
-            # Generate OTP & Send Verification Email
+            # Generate OTP & Dispatch Verification Email asynchronously
             otp_obj = EmailVerificationOTP.generate_otp(email=email, validity_minutes=10)
-            email_sent = send_otp_email(email, otp_obj.otp_code, first_name=first_name)
+            send_otp_email_async(email, otp_obj.otp_code, first_name=first_name)
 
-            if email_sent:
-                messages.info(request, f"A 6-digit verification code has been sent to {email}. Please enter it below to activate your account.")
+            if settings.DEBUG:
+                messages.info(request, f"A 6-digit verification code has been sent to {email}. (Dev Code: {otp_obj.otp_code})")
             else:
-                messages.info(request, f"Verification code generated. (Dev code: {otp_obj.otp_code}). Please enter it below.")
+                messages.info(request, f"A 6-digit verification code has been sent to {email}. Please enter it below to activate your account.")
 
             return redirect('accounts:verify_otp')
     else:
@@ -145,18 +151,21 @@ def verify_otp_view(request):
                     profile.is_email_verified = True
                     profile.save()
 
-                    # Send welcome email
-                    try:
-                        subject = "Welcome to StyleHub - Your Account is Verified!"
-                        message = (
-                            f"Hello {user.first_name or user.username},\n\n"
-                            f"Thank you for verifying your email! Your StyleHub account is active and ready.\n"
-                            f"Discover the latest designer apparel and exclusive collections crafted for you.\n\n"
-                            f"Happy Shopping,\nThe StyleHub Team"
-                        )
-                        send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [user.email], fail_silently=True)
-                    except Exception:
-                        pass
+                    # Send welcome email in background
+                    def _send_welcome_async(recipient_email, recipient_name):
+                        try:
+                            subject = "Welcome to StyleHub - Your Account is Verified!"
+                            message = (
+                                f"Hello {recipient_name},\n\n"
+                                f"Thank you for verifying your email! Your StyleHub account is active and ready.\n"
+                                f"Discover the latest designer apparel and exclusive collections crafted for you.\n\n"
+                                f"Happy Shopping,\nThe StyleHub Team"
+                            )
+                            send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [recipient_email], fail_silently=True)
+                        except Exception:
+                            pass
+
+                    _email_executor.submit(_send_welcome_async, user.email, user.first_name or user.username)
 
                     # Clean up pending session
                     session_key = request.session.session_key
@@ -185,12 +194,18 @@ def verify_otp_view(request):
         else:
             masked_email = f"{local[0]}*@{domain}"
 
+    active_otp = EmailVerificationOTP.objects.filter(
+        email__iexact=email,
+        is_used=False
+    ).order_by('-created_at').first()
+
     context = {
         'form': form,
         'email': email,
         'masked_email': masked_email,
         'first_name': first_name,
         'cooldown_remaining': cooldown_remaining,
+        'dev_code': active_otp.otp_code if (settings.DEBUG and active_otp) else None,
     }
     return render(request, 'accounts/verify_otp.html', context)
 
@@ -216,11 +231,11 @@ def resend_otp_view(request):
     otp_obj = EmailVerificationOTP.generate_otp(email=email, validity_minutes=10)
     request.session['otp_last_sent_at'] = now_ts
 
-    email_sent = send_otp_email(email, otp_obj.otp_code, first_name=first_name)
-    if email_sent:
-        messages.success(request, f"A new 6-digit verification code has been sent to {email}.")
+    send_otp_email_async(email, otp_obj.otp_code, first_name=first_name)
+    if settings.DEBUG:
+        messages.success(request, f"A new 6-digit verification code has been sent to {email}. (Dev Code: {otp_obj.otp_code})")
     else:
-        messages.info(request, f"New verification code generated. (Dev code: {otp_obj.otp_code}).")
+        messages.success(request, f"A new 6-digit verification code has been sent to {email}.")
 
     return redirect('accounts:verify_otp')
 

@@ -14,8 +14,16 @@
       <p class="text-muted small">Join StyleHub for exclusive drops and tailored recommendations.</p>
     </div>
 
-    <form method="POST" action="{% url 'accounts:register' %}">
+    <form method="POST" action="{% url 'accounts:register' %}" id="registerForm">
       {% csrf_token %}
+
+      {% if form.non_field_errors %}
+        <div class="alert alert-danger py-2 px-3 small mb-3">
+          {% for err in form.non_field_errors %}
+            <div><i class="bi bi-exclamation-triangle-fill me-1"></i>{{ err }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
 
       <div class="row g-2 mb-3">
         <div class="col-6">
@@ -61,7 +69,7 @@
         </div>
       </div>
 
-      <button type="submit" class="btn btn-sh-primary w-100 py-2">
+      <button type="submit" id="registerSubmitBtn" class="btn btn-sh-primary w-100 py-2">
         Create My StyleHub Account
       </button>
     </form>
@@ -71,4 +79,17 @@
     </div>
   </div>
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const regForm = document.getElementById('registerForm');
+    const submitBtn = document.getElementById('registerSubmitBtn');
+    if (regForm && submitBtn) {
+      regForm.addEventListener('submit', () => {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Creating Account...';
+      });
+    }
+  });
+</script>
 {% endblock %}

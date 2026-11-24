@@ -15,6 +15,11 @@
       <p class="text-muted small mb-1">We've sent a 6-digit verification code to:</p>
       <div class="fw-semibold text-primary font-monospace fs-6 mb-2">{{ masked_email }}</div>
       <p class="text-muted small" style="font-size: 0.82rem;">Enter the code below to confirm your email and activate your account.</p>
+      {% if dev_code %}
+        <div class="alert alert-info py-2 px-3 small my-2 text-start">
+          <i class="bi bi-info-circle-fill me-1 text-primary"></i> <strong>Dev / Demo Code:</strong> <code class="fw-bold fs-6 text-dark bg-white px-2 py-0.5 rounded border">{{ dev_code }}</code>
+        </div>
+      {% endif %}
     </div>
 
     <!-- OTP Input Form -->
@@ -35,7 +40,7 @@
         {% endif %}
       </div>
 
-      <button type="submit" class="btn btn-dark w-100 py-2 fw-semibold mb-3">
+      <button type="submit" id="verifyOtpBtn" class="btn btn-dark w-100 py-2 fw-semibold mb-3">
         <i class="bi bi-check2-circle me-1"></i> Verify & Complete Sign-Up
       </button>
     </form>
@@ -100,6 +105,15 @@
           resendBtnText.innerHTML = `Resend Code in <strong id="countdownSecs">${remaining}</strong>s`;
         }
       }, 1000);
+    }
+    // Form submit loading feedback
+    const otpForm = document.getElementById('otpForm');
+    const verifyBtn = document.getElementById('verifyOtpBtn');
+    if (otpForm && verifyBtn) {
+      otpForm.addEventListener('submit', () => {
+        verifyBtn.disabled = true;
+        verifyBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Verifying...';
+      });
     }
   });
 </script>
