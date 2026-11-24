@@ -147,7 +147,7 @@ def verify_otp_view(request):
 
                     # Send welcome email
                     try:
-                        subject = "Welcome to StyleHub — Your Account is Verified!"
+                        subject = "Welcome to StyleHub - Your Account is Verified!"
                         message = (
                             f"Hello {user.first_name or user.username},\n\n"
                             f"Thank you for verifying your email! Your StyleHub account is active and ready.\n"

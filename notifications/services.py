@@ -63,7 +63,7 @@ def _dispatch_order_confirmed_sync(order):
     )
 
     email_sent = send_email_notification(
-        subject=f"Order Confirmed: #{order.order_number} — StyleHub",
+        subject=f"Order Confirmed: #{order.order_number} - StyleHub",
         message=(
             f"Hello {name},\n\n"
             f"Thank you for shopping at StyleHub!\n\n"

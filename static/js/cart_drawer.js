@@ -1,5 +1,5 @@
 /**
- * StyleHub — Real-Time Mini Cart Drawer & Free Shipping Meter Engine
+ * StyleHub - Real-Time Mini Cart Drawer & Free Shipping Meter Engine
  */
 
 async function fetchCartDrawerData() {

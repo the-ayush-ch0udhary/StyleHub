@@ -1,5 +1,5 @@
 /**
- * StyleHub — Interactive Shopping Bag & Coupon Engine
+ * StyleHub - Interactive Shopping Bag & Coupon Engine
  */
 
 document.addEventListener('DOMContentLoaded', () => {

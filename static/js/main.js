@@ -1,5 +1,5 @@
 /**
- * StyleHub — Main JavaScript Engine
+ * StyleHub - Main JavaScript Engine
  */
 
 function getCookie(name) {

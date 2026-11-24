@@ -1,5 +1,5 @@
 /**
- * StyleHub — Interactive Product Detail Page Engine
+ * StyleHub - Interactive Product Detail Page Engine
  * Handles Color Swatches, Size Selection, Dynamic Stock Status, Live Price, and AJAX Add to Bag.
  */
 

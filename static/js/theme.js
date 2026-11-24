@@ -1,5 +1,5 @@
 /**
- * StyleHub — Light/Dark Theme Switcher
+ * StyleHub - Light/Dark Theme Switcher
  * Persists theme preference across page reloads using localStorage.
  */
 (function () {

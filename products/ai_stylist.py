@@ -357,7 +357,7 @@ def _local_intelligent_fashion_agent(query, catalog, current_product_id=None, ge
     # Default versatile styling response
     text = (
         "### StyleHub Atelier Consultation\n\n"
-        "Welcome to the StyleHub styling suite. Our philosophy centers on **timeless modular wardrobes**—minimal silhouettes, dropped shoulders, and museum-grade fabric density.\n\n"
+        "Welcome to the StyleHub styling suite. Our philosophy centers on **timeless modular wardrobes**-minimal silhouettes, dropped shoulders, and museum-grade fabric density.\n\n"
         "Here are our most celebrated wardrobe foundation pieces currently available in the atelier. "
         "Feel free to ask for specific occasion styling, color harmonization, or personalized size advice!"
     )

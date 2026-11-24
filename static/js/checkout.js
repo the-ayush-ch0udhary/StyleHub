@@ -1,5 +1,5 @@
 /**
- * StyleHub — Checkout & Payment Engine
+ * StyleHub - Checkout & Payment Engine
  * Razorpay Test/Live + COD
  */
 
