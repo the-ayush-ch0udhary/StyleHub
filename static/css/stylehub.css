@@ -149,6 +149,12 @@ h1, h2, h3, h4, h5, h6 {
   letter-spacing: -0.02em;
 }
 
+/* Explicit high-contrast white overrides for dark banners and .text-white elements */
+h1.text-white, h2.text-white, h3.text-white, h4.text-white, h5.text-white, h6.text-white,
+.text-white h1, .text-white h2, .text-white h3, .text-white h4, .text-white h5, .text-white h6 {
+  color: #FFFFFF !important;
+}
+
 .font-serif {
   font-family: var(--font-serif);
 }
@@ -1450,4 +1456,37 @@ a {
   color: #FFFFFF !important;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(217, 119, 6, 0.35);
+}
+
+/* ==========================================================================
+   ATELIER AI STYLIST FLOATING TRIGGER & OFFCANVAS
+   ========================================================================== */
+.ai-stylist-trigger {
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+}
+
+/* Hide floating pill whenever an offcanvas drawer is open */
+body.offcanvas-open .ai-stylist-trigger,
+.offcanvas.show ~ .ai-stylist-trigger,
+.offcanvas.showing ~ .ai-stylist-trigger,
+#aiStylistOffcanvas.show ~ .ai-stylist-trigger,
+#aiStylistOffcanvas.showing ~ .ai-stylist-trigger,
+#cartDrawerOffcanvas.show ~ .ai-stylist-trigger,
+#cartDrawerOffcanvas.showing ~ .ai-stylist-trigger {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+body:has(.offcanvas.show) .ai-stylist-trigger,
+body:has(.offcanvas.showing) .ai-stylist-trigger,
+body:has(#aiStylistOffcanvas.show) .ai-stylist-trigger,
+body:has(#aiStylistOffcanvas.showing) .ai-stylist-trigger,
+body:has(#cartDrawerOffcanvas.show) .ai-stylist-trigger,
+body:has(#cartDrawerOffcanvas.showing) .ai-stylist-trigger {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
 }

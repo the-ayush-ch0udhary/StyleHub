@@ -1,21 +1,6 @@
 {% load static %}
-<!-- Floating AI Stylist Trigger Pill -->
-<button type="button" 
-        class="btn btn-dark shadow-lg rounded-pill px-3 py-2 d-flex align-items-center gap-2 position-fixed ai-stylist-trigger" 
-        data-bs-toggle="offcanvas" 
-        data-bs-target="#aiStylistOffcanvas" 
-        aria-controls="aiStylistOffcanvas"
-        title="Open AI Fashion Stylist"
-        style="bottom: 24px; right: 24px; z-index: 1080; border: 1.5px solid rgba(217, 119, 6, 0.6); background: #111827; box-shadow: 0 8px 24px rgba(0,0,0,0.3) !important;">
-  <span class="position-relative d-inline-flex align-items-center justify-content-center" style="width: 28px; height: 28px; background: rgba(217,119,6,0.18); border-radius: 50%;">
-    <i class="bi bi-stars" style="color: var(--gold-accent, #d97706); font-size: 1rem;"></i>
-    <span class="position-absolute top-0 start-100 translate-middle p-1 bg-success border border-light rounded-circle" style="width: 8px; height: 8px;"></span>
-  </span>
-  <span class="fw-semibold small text-white tracking-wide d-none d-sm-inline">Atelier AI Stylist</span>
-</button>
-
 <!-- Slide-Out AI Stylist Offcanvas Drawer -->
-<div class="offcanvas offcanvas-end shadow-lg" tabindex="-1" id="aiStylistOffcanvas" aria-labelledby="aiStylistLabel" style="width: 460px; max-width: 95vw; background: var(--bg-surface, #ffffff);">
+<div class="offcanvas offcanvas-end shadow-lg" tabindex="-1" id="aiStylistOffcanvas" aria-labelledby="aiStylistLabel" style="width: 460px; max-width: 95vw; background: var(--bg-surface, #ffffff); z-index: 1060;">
   <!-- Drawer Header -->
   <div class="offcanvas-header border-bottom py-3 px-4" style="background: linear-gradient(135deg, #111827 0%, #1a2233 100%); color: #ffffff;">
     <div class="d-flex align-items-center gap-2">
@@ -100,4 +85,20 @@
     </div>
   </div>
 </div>
+
+<!-- Floating AI Stylist Trigger Pill -->
+<button type="button" 
+        id="ai-stylist-floating-trigger"
+        class="btn btn-dark shadow-lg rounded-pill px-3 py-2 d-flex align-items-center gap-2 position-fixed ai-stylist-trigger" 
+        data-bs-toggle="offcanvas" 
+        data-bs-target="#aiStylistOffcanvas" 
+        aria-controls="aiStylistOffcanvas"
+        title="Open AI Fashion Stylist"
+        style="bottom: 24px; right: 24px; z-index: 1035; border: 1.5px solid rgba(217, 119, 6, 0.6); background: #111827; box-shadow: 0 8px 24px rgba(0,0,0,0.3) !important;">
+  <span class="position-relative d-inline-flex align-items-center justify-content-center" style="width: 28px; height: 28px; background: rgba(217,119,6,0.18); border-radius: 50%;">
+    <i class="bi bi-stars" style="color: var(--gold-accent, #d97706); font-size: 1rem;"></i>
+    <span class="position-absolute top-0 start-100 translate-middle p-1 bg-success border border-light rounded-circle" style="width: 8px; height: 8px;"></span>
+  </span>
+  <span class="fw-semibold small text-white tracking-wide d-none d-sm-inline">Atelier AI Stylist</span>
+</button>
 

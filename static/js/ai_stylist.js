@@ -52,6 +52,29 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
+  // Automatically hide floating trigger pill whenever AI Stylist or Cart offcanvas drawer is open
+  const floatingTrigger = document.getElementById('ai-stylist-floating-trigger') || document.querySelector('.ai-stylist-trigger');
+  if (floatingTrigger) {
+    if (offcanvasEl) {
+      offcanvasEl.addEventListener('show.bs.offcanvas', function () {
+        floatingTrigger.style.setProperty('display', 'none', 'important');
+      });
+      offcanvasEl.addEventListener('hidden.bs.offcanvas', function () {
+        floatingTrigger.style.removeProperty('display');
+      });
+    }
+
+    const cartOffcanvasEl = document.getElementById('cartDrawerOffcanvas');
+    if (cartOffcanvasEl) {
+      cartOffcanvasEl.addEventListener('show.bs.offcanvas', function () {
+        floatingTrigger.style.setProperty('display', 'none', 'important');
+      });
+      cartOffcanvasEl.addEventListener('hidden.bs.offcanvas', function () {
+        floatingTrigger.style.removeProperty('display');
+      });
+    }
+  }
+
   // Form submit
   form.addEventListener('submit', function (e) {
     e.preventDefault();
