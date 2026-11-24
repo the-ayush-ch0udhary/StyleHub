@@ -556,28 +556,22 @@ def about_view(request):
 
     team = [
         {
-            'name': 'Aarav Sharma',
-            'role': 'Creative Director & Founder',
-            'bio': 'Alumnus of Central Saint Martins with 12+ years directing luxury atelier capsules across Milan and Paris.',
-            'image': 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&auto=format&fit=crop&q=80',
+            'name': 'Ayush Kumar Choudhary',
+            'role': 'Backend Developer & Founder',
+            'bio': 'Architect of the core Django backend, PostgreSQL database architecture, secure payment systems, and scalable cloud deployment on Render.',
+            'image': '/static/img/team/ayush_choudhary.jpg',
         },
         {
-            'name': 'Elena Rostova',
-            'role': 'Head of Tailoring & Textiles',
-            'bio': 'Master pattern-maker trained in Savile Row tailoring, specializing in heavyweight selvedge denim and pure silk drape.',
-            'image': 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=500&auto=format&fit=crop&q=80',
+            'name': 'Debojoty Mallick',
+            'role': 'Frontend Developer',
+            'bio': 'Designing responsive user experiences, interactive outfit studios, dynamic product filters, and luxury customer interfaces.',
+            'image': '/static/img/team/debojoty_mallick.jpg',
         },
         {
-            'name': 'Devrath Mehra',
-            'role': 'Lead Technology & E-Commerce Architect',
-            'bio': 'Bridging haute couture with bespoke digital shopping journeys, AI wardrobe styling, and instant checkout architecture.',
-            'image': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&auto=format&fit=crop&q=80',
-        },
-        {
-            'name': 'Sophia Chen',
-            'role': 'Head of Sustainable Sourcing',
-            'bio': 'Pioneering ethical textile loops, water-free denim washing treatments, and organic botanical dyeing techniques.',
-            'image': 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=500&auto=format&fit=crop&q=80',
+            'name': 'Surya Chakraborty',
+            'role': 'Marketing & Overall Developer',
+            'bio': 'Driving brand presence, digital marketing strategies, customer engagement loops, and cross-functional full-stack feature development.',
+            'image': '/static/img/team/surya_chakraborty.jpg',
         },
     ]
 
