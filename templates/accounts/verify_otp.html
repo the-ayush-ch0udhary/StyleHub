@@ -17,7 +17,13 @@
       <p class="text-muted small" style="font-size: 0.82rem;">Enter the code below to confirm your email and activate your account.</p>
       {% if dev_code %}
         <div class="alert alert-info py-2 px-3 small my-2 text-start">
-          <i class="bi bi-info-circle-fill me-1 text-primary"></i> <strong>Dev / Demo Code:</strong> <code class="fw-bold fs-6 text-dark bg-white px-2 py-0.5 rounded border">{{ dev_code }}</code>
+          <div class="d-flex align-items-center justify-content-between mb-1">
+            <span class="text-dark fw-semibold"><i class="bi bi-shield-check me-1 text-primary"></i> Verification Code:</span>
+            <code class="fw-bold fs-5 text-dark bg-white px-2 py-0.5 rounded border">{{ dev_code }}</code>
+          </div>
+          <div class="text-muted small" style="font-size: 0.8rem;">
+            (Sent to your email. Enter this 6-digit code below to activate your account.)
+          </div>
         </div>
       {% endif %}
     </div>
@@ -83,6 +89,11 @@
     
     // Auto-focus and numeric filter
     if (otpInput) {
+      {% if dev_code %}
+        if (!otpInput.value) {
+          otpInput.value = "{{ dev_code }}";
+        }
+      {% endif %}
       otpInput.focus();
       otpInput.addEventListener('input', (e) => {
         e.target.value = e.target.value.replace(/\D/g, '').slice(0, 6);

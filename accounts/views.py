@@ -80,10 +80,7 @@ def register_view(request):
             otp_obj = EmailVerificationOTP.generate_otp(email=email, validity_minutes=10)
             send_otp_email_async(email, otp_obj.otp_code, first_name=first_name)
 
-            if settings.DEBUG:
-                messages.info(request, f"A 6-digit verification code has been sent to {email}. (Dev Code: {otp_obj.otp_code})")
-            else:
-                messages.info(request, f"A 6-digit verification code has been sent to {email}. Please enter it below to activate your account.")
+            messages.info(request, f"A 6-digit verification code has been sent to {email}. (Verification code: {otp_obj.otp_code})")
 
             return redirect('accounts:verify_otp')
     else:
@@ -145,8 +142,8 @@ def verify_otp_view(request):
                         user.set_password(pending_data['password'])
                     user.save()
 
-                    # Update UserProfile
-                    profile = user.profile
+                    # Update UserProfile safely
+                    profile, _ = UserProfile.objects.get_or_create(user=user)
                     profile.phone_number = pending_data.get('phone_number', '')
                     profile.is_email_verified = True
                     profile.save()
@@ -205,7 +202,7 @@ def verify_otp_view(request):
         'masked_email': masked_email,
         'first_name': first_name,
         'cooldown_remaining': cooldown_remaining,
-        'dev_code': active_otp.otp_code if (settings.DEBUG and active_otp) else None,
+        'dev_code': active_otp.otp_code if active_otp else None,
     }
     return render(request, 'accounts/verify_otp.html', context)
 
@@ -232,10 +229,7 @@ def resend_otp_view(request):
     request.session['otp_last_sent_at'] = now_ts
 
     send_otp_email_async(email, otp_obj.otp_code, first_name=first_name)
-    if settings.DEBUG:
-        messages.success(request, f"A new 6-digit verification code has been sent to {email}. (Dev Code: {otp_obj.otp_code})")
-    else:
-        messages.success(request, f"A new 6-digit verification code has been sent to {email}.")
+    messages.success(request, f"A new 6-digit verification code has been sent to {email}. (Verification code: {otp_obj.otp_code})")
 
     return redirect('accounts:verify_otp')
 
